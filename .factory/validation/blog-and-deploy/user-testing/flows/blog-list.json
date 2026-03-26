@@ -1,0 +1,238 @@
+﻿{
+    "groupId":  "blog-list",
+    "testedAt":  "2026-03-26T20:34:22.7999486Z",
+    "isolation":  {
+                      "missionDir":  "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+                      "appUrl":  "http://localhost:4321",
+                      "browserContext":  "fresh isolated agent-browser session (--session bloglist-fee165ec)",
+                      "boundary":  "browser surface only; no source/runtime mutation",
+                      "evidenceDir":  "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\blog-and-deploy\\blog-list"
+                  },
+    "toolsUsed":  [
+                      "agent-browser",
+                      "curl"
+                  ],
+    "assertions":  [
+                       {
+                           "id":  "VAL-BLOG-LIST-001",
+                           "title":  "Schema-valid blog entries are listed exactly",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Review blog fixtures against schema requirements",
+                                             "expected":  "K schema-valid and M invalid fixtures identified",
+                                             "observed":  "Fixture manifest shows K=3 valid, M=0 invalid"
+                                         },
+                                         {
+                                             "action":  "Open /blog and count rendered list entries",
+                                             "expected":  "Rendered entries equal K",
+                                             "observed":  "Rendered blog-item count is 3"
+                                         },
+                                         {
+                                             "action":  "Check listed slugs against fixture manifest",
+                                             "expected":  "Only schema-valid entries are listed",
+                                             "observed":  "Rendered slugs match the 3 valid fixtures exactly"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-001-blog-list.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-001-fixture-manifest.json",
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-001-rendered-count-and-items.json"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-001-console-errors.txt)",
+                                            "network":  "GET /blog -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-001-network.txt)"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-002",
+                           "title":  "Listing order is deterministic and newest-first",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Capture /blog order (run 1)",
+                                             "expected":  "Newest-first with deterministic tie-break",
+                                             "observed":  "Order: shipping-a-minimal-portfolio, astro-content-collection-ordering, mdx-frontmatter-workflow"
+                                         },
+                                         {
+                                             "action":  "Reload /blog and capture order again (run 2)",
+                                             "expected":  "Order remains identical across reloads",
+                                             "observed":  "Run 2 order is identical to run 1"
+                                         },
+                                         {
+                                             "action":  "Validate same-date tie handling",
+                                             "expected":  "Equal-date entries sorted deterministically by secondary key",
+                                             "observed":  "2026-03-20 posts ordered astro-content-collection-ordering then mdx-frontmatter-workflow (slug ascending)"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-002-order.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-002-order-run1.json",
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-002-order-run2.json"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-002-console-errors.txt)",
+                                            "network":  "GET /blog -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-002-network.txt)"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-003",
+                           "title":  "Listing metadata fidelity is correct",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Extract metadata for each listed blog item",
+                                             "expected":  "Non-empty title, valid date display, correct tag count, non-empty reading-time",
+                                             "observed":  "All 3 listed posts have non-empty title/date/tags/reading-time"
+                                         },
+                                         {
+                                             "action":  "Match extracted metadata to fixture frontmatter",
+                                             "expected":  "Rendered metadata aligns with fixture data",
+                                             "observed":  "Dates, tag counts, and titles match fixture values for all entries"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-003-metadata.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-003-metadata-extraction.json"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-003-console-errors.txt)",
+                                            "network":  "GET /blog -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-003-network.txt)"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-004",
+                           "title":  "Explicit readingTime value takes precedence",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Inspect listing metadata for fixture with explicit readingTime",
+                                             "expected":  "Rendered readingTime equals frontmatter value verbatim",
+                                             "observed":  "shipping-a-minimal-portfolio renders \"6 min read\" exactly as frontmatter"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-004-explicit-reading-time.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-004-explicit-reading-time.json"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-004-console-errors.txt)",
+                                            "network":  "GET /blog -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-004-network.txt)"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-005",
+                           "title":  "Missing readingTime uses computed fallback",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Inspect listing metadata for fixtures without readingTime frontmatter",
+                                             "expected":  "Computed non-empty fallback reading-time text is shown",
+                                             "observed":  "astro-content-collection-ordering and mdx-frontmatter-workflow each render \"1 min read\""
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-005-fallback-reading-time.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-005-fallback-reading-time.json"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-005-console-errors.txt)",
+                                            "network":  "GET /blog -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-005-network.txt)"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-006",
+                           "title":  "Empty-state is rendered when there are no valid posts",
+                           "status":  "blocked",
+                           "steps":  [
+                                         {
+                                             "action":  "Attempt browser-only empty-state trigger via /blog?empty=1",
+                                             "expected":  "No valid posts and empty-state message rendered",
+                                             "observed":  "Still renders 3 blog entries; no empty-state state reachable from browser-only surface"
+                                         },
+                                         {
+                                             "action":  "Review fixture state within isolation boundary",
+                                             "expected":  "Ability to run empty dataset scenario",
+                                             "observed":  "Current fixtures contain 3 schema-valid posts and 0 invalid; switching to zero-valid dataset would require repository/runtime mutation outside assigned boundary"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-006-empty-attempt-query-param.png",
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-006-blocked-non-empty-list.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-006-empty-attempt-count.txt",
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-006-blocker-note.txt"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-006-console-errors.txt)",
+                                            "network":  "GET /blog?empty=1 -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-006-network.txt)"
+                                        },
+                           "issues":  "Blocked by isolation constraints: empty-state requires a zero-valid-post fixture run, but browser-only scope forbids mutating content/runtime inputs."
+                       },
+                       {
+                           "id":  "VAL-BLOG-LIST-007",
+                           "title":  "Blog list entry navigation is correct",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Open /blog and click first post entry from listing",
+                                             "expected":  "Navigate to corresponding /blog/\u003cslug\u003e route",
+                                             "observed":  "URL transitioned from /blog to /blog/shipping-a-minimal-portfolio"
+                                         },
+                                         {
+                                             "action":  "Verify destination page load",
+                                             "expected":  "Destination post route renders successfully",
+                                             "observed":  "Destination route loaded and screenshot captured with post content"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "blog-and-deploy/blog-list/VAL-BLOG-LIST-007-destination.png"
+                                                            ],
+                                            "artifacts":  [
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-007-click-trace.txt",
+                                                              "blog-and-deploy/blog-list/VAL-BLOG-LIST-007-url-after-click.txt"
+                                                          ],
+                                            "consoleErrors":  "none (blog-and-deploy/blog-list/VAL-BLOG-LIST-007-console-errors.txt)",
+                                            "network":  "GET /blog/shipping-a-minimal-portfolio -\u003e 200 (blog-and-deploy/blog-list/VAL-BLOG-LIST-007-network.txt)"
+                                        },
+                           "issues":  null
+                       }
+                   ],
+    "frictions":  [
+                      {
+                          "description":  "In PowerShell, unquoted @eN refs are parsed as splatting; browser click commands require quoting (e.g., \u0027@e7\u0027).",
+                          "resolved":  true,
+                          "resolution":  "Quoted element refs in agent-browser commands.",
+                          "affectedAssertions":  [
+                                                     "VAL-BLOG-LIST-007"
+                                                 ]
+                      }
+                  ],
+    "blockers":  [
+                     {
+                         "description":  "No browser-surface mechanism to force zero-valid-post dataset for empty-state assertion in current isolation boundary.",
+                         "affectedAssertions":  [
+                                                    "VAL-BLOG-LIST-006"
+                                                ],
+                         "quickFixAttempted":  "Tried non-disruptive query param run (/blog?empty=1); list still contained 3 entries."
+                     }
+                 ],
+    "summary":  "Tested 7 assertions: 6 passed, 0 failed, 1 blocked (VAL-BLOG-LIST-006 due to inability to create zero-valid fixture scenario within browser-only isolation)."
+}

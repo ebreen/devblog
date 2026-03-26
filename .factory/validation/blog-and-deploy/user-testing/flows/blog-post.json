@@ -1,0 +1,213 @@
+{
+  "groupId": "blog-post",
+  "testedAt": "2026-03-26T21:32:00Z",
+  "isolation": {
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "appUrl": "http://localhost:4321",
+    "surface": "browser",
+    "context": "fresh isolated agent-browser session (--session blogpost)"
+  },
+  "toolsUsed": [
+    "agent-browser"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-BLOG-POST-001",
+      "title": "Valid slug renders matching article",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open /blog/shipping-a-minimal-portfolio",
+          "expected": "Valid blog route renders post page",
+          "observed": "URL resolved to http://localhost:4321/blog/shipping-a-minimal-portfolio with post title shown"
+        },
+        {
+          "action": "Extract article heading and unique text",
+          "expected": "Exactly one h1 matches entry title and unique body content is present",
+          "observed": "h1Count=1, h1Text='Shipping a Minimal Portfolio with Astro', hasUniqueSnippet=true for 'The core idea is straightforward'"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-001-article.png"
+        ],
+        "consoleErrors": "none",
+        "network": "In-browser fetch: GET /blog/shipping-a-minimal-portfolio -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-002",
+      "title": "Markdown/MDX renders as structured HTML output",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect rendered content on /blog/shipping-a-minimal-portfolio",
+          "expected": "Sentinel markdown elements render as HTML (heading, paragraph, list, link, inline code)",
+          "observed": "Rendered H2 ('Practical defaults that hold up'), list items, hyperlink to https://docs.astro.build, and inline code 'npm run astro check' are present"
+        },
+        {
+          "action": "Check for raw markdown leakage",
+          "expected": "No raw markdown syntax shown",
+          "observed": "rawMarkdownVisible=false in DOM extraction"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-002-markdown-elements.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Page render validated via browser DOM snapshot on loaded route"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-003",
+      "title": "Post metadata fidelity is correct",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Capture metadata header on /blog/shipping-a-minimal-portfolio",
+          "expected": "Date, tags, reading time are shown",
+          "observed": "Metadata line='Mar 22, 2026 · 6 min read'; tags=['astro','portfolio','design']"
+        },
+        {
+          "action": "Match rendered metadata to source frontmatter",
+          "expected": "Rendered values match entry source values",
+          "observed": "Matches title/date/tags/readingTime from shipping-a-minimal-portfolio.md frontmatter"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-003-metadata-header.png"
+        ],
+        "consoleErrors": "none",
+        "network": "In-browser fetch: GET /blog/shipping-a-minimal-portfolio -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-004",
+      "title": "Post-level readingTime fallback works",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open /blog/mdx-frontmatter-workflow (entry with no readingTime frontmatter)",
+          "expected": "Post still shows non-empty reading-time metadata",
+          "observed": "Metadata line='Mar 20, 2026 · 1 min read'"
+        },
+        {
+          "action": "Extract fallback reading-time text",
+          "expected": "Computed fallback is non-empty",
+          "observed": "readingTimeText='1 min read', readingTimeNonEmpty=true"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-004-fallback-reading-time.png"
+        ],
+        "consoleErrors": "none",
+        "network": "In-browser fetch: GET /blog/mdx-frontmatter-workflow -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-005",
+      "title": "Code blocks render with language-aware highlighting",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect fenced code block on /blog/shipping-a-minimal-portfolio",
+          "expected": "Code renders in pre > code with language/highlight styling",
+          "observed": "preClass='astro-code github-dark', hasLanguageClass=true, tokenCount=76"
+        },
+        {
+          "action": "Check syntax highlighting styling",
+          "expected": "Visible tokenized/highlighted styling exists",
+          "observed": "Rendered code block uses highlighted theme class and token spans"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-005-code-block.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Rendered code block observed on loaded post route"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-006",
+      "title": "Code overflow is contained and layout stays readable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Check desktop overflow metrics at 1280x900",
+          "expected": "No page-level horizontal overflow; long code scrolls in block",
+          "observed": "pageOverflowOk=true, docScrollWidth=1280, docClientWidth=1280, preScrollWidth=1366 > preClientWidth=585 with overflowX='auto'"
+        },
+        {
+          "action": "Check mobile overflow metrics at 390x844",
+          "expected": "No page-level horizontal overflow; code remains contained",
+          "observed": "pageOverflowOk=true, docScrollWidth=390, docClientWidth=390, preScrollWidth=1366 > preClientWidth=322 with overflow containment"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-006-desktop.png",
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-006-mobile.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Layout checks performed on loaded post route in desktop+mobile viewports"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-007",
+      "title": "Invalid post routes show not-found semantics",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Open unknown slug /blog/does-not-exist",
+          "expected": "Not-found UI shown, no stale article content, and 404 behavior",
+          "observed": "Title='Not Found | Portfolio', main H1='Not Found', articleExists=false, in-browser fetch GET /blog/does-not-exist -> 404"
+        },
+        {
+          "action": "Validate schema-invalid entry route behavior",
+          "expected": "Schema-invalid entry route also resolves to not-found semantics",
+          "observed": "Blocked: no schema-invalid fixture slug was provided or discoverable in this isolated run (only valid blog links rendered: /blog/shipping-a-minimal-portfolio, /blog/astro-content-collection-ordering, /blog/mdx-frontmatter-workflow)"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-post/VAL-BLOG-POST-007-unknown-slug-not-found.png"
+        ],
+        "consoleErrors": "none",
+        "network": "In-browser fetch: GET /blog/does-not-exist -> 404"
+      },
+      "issues": "Unknown-slug path verified; schema-invalid-entry-route portion could not be executed due missing schema-invalid fixture route in assigned environment."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "agent-browser 'network requests' returned no captured entries in this run, so HTTP status evidence was captured via in-browser fetch() checks instead.",
+      "resolved": true,
+      "resolution": "Used browser-evaluated fetch(path) and recorded response status per tested routes.",
+      "affectedAssertions": [
+        "VAL-BLOG-POST-001",
+        "VAL-BLOG-POST-004",
+        "VAL-BLOG-POST-007"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Schema-invalid blog entry route was required by VAL-BLOG-POST-007, but no schema-invalid fixture slug was available/discoverable through the browser surface in this isolated run.",
+      "affectedAssertions": [
+        "VAL-BLOG-POST-007"
+      ],
+      "quickFixAttempted": "Enumerated available /blog links from rendered list and tested unknown-slug not-found behavior; schema-invalid-specific route remained unavailable."
+    }
+  ],
+  "summary": "Tested 7 assigned assertions for blog post flows: 6 passed and 1 blocked (VAL-BLOG-POST-007 blocked only on schema-invalid-route sub-check; unknown-slug 404 semantics passed)."
+}

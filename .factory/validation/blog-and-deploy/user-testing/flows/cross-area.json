@@ -1,0 +1,284 @@
+{
+  "groupId": "cross-area",
+  "testedAt": "2026-03-26T21:35:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:4321",
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "boundary": "Fresh clean-session browser state via cookies/storage clear in a single isolated run; browser surface only"
+  },
+  "toolsUsed": [
+    "agent-browser"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-001",
+      "title": "Clean-session end-to-end primary journey succeeds",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open / in clean session",
+          "expected": "Home renders",
+          "observed": "Home h1 rendered at /"
+        },
+        {
+          "action": "Navigate Home -> Projects",
+          "expected": "Projects route and content render",
+          "observed": "Navigated to /projects with h1 'Projects'"
+        },
+        {
+          "action": "Navigate Projects -> Blog list",
+          "expected": "Blog list renders",
+          "observed": "Navigated to /blog with h1 'Blog'"
+        },
+        {
+          "action": "Open first blog post from list",
+          "expected": "Blog post route/content render",
+          "observed": "Navigated to /blog/shipping-a-minimal-portfolio with matching post h1"
+        },
+        {
+          "action": "Navigate Blog post -> About",
+          "expected": "About content renders",
+          "observed": "Navigated to /about with h1 'About'"
+        },
+        {
+          "action": "Navigate About -> Contact",
+          "expected": "Contact content renders",
+          "observed": "Navigated to /contact with h1 'Contact'"
+        },
+        {
+          "action": "Navigate Contact -> Home",
+          "expected": "Return to Home",
+          "observed": "Returned to / with h1 'Home'"
+        }
+      ],
+      "evidence": {
+        "recording": "blog-and-deploy/cross-area/VAL-CROSS-001-flow.webm",
+        "screenshots": [
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step1-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step2-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step3-blog-list.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step4-blog-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step5-about.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step6-contact.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-001-step7-home-return.png"
+        ],
+        "urlTimeline": [
+          "/",
+          "/projects",
+          "/blog",
+          "/blog/shipping-a-minimal-portfolio",
+          "/about",
+          "/contact",
+          "/"
+        ],
+        "consoleErrors": "none",
+        "network": "No API calls observed; local dev asset requests only"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-002",
+      "title": "Deep-linked blog entry remains fully navigable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Deep-link open /blog/shipping-a-minimal-portfolio in clean session",
+          "expected": "Post renders and nav remains usable",
+          "observed": "Post rendered; Blog nav marked active via aria-current='page'"
+        },
+        {
+          "action": "Navigate to /",
+          "expected": "Home route reachable and active nav correct",
+          "observed": "Reached / with active nav = Home"
+        },
+        {
+          "action": "Navigate to /about",
+          "expected": "About reachable and active nav correct",
+          "observed": "Reached /about with active nav = About"
+        },
+        {
+          "action": "Navigate to /projects",
+          "expected": "Projects reachable and active nav correct",
+          "observed": "Reached /projects with active nav = Projects"
+        },
+        {
+          "action": "Navigate to /blog",
+          "expected": "Blog reachable and active nav correct",
+          "observed": "Reached /blog with active nav = Blog"
+        },
+        {
+          "action": "Navigate to /contact",
+          "expected": "Contact reachable and active nav correct",
+          "observed": "Reached /contact with active nav = Contact"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step1-deeplink-blog-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step2-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step3-about.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step4-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step5-blog-list.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-002-step6-contact.png"
+        ],
+        "activeNavCapture": "Single active nav item observed at each canonical route; deep-linked blog post route shows Blog as active",
+        "consoleErrors": "none",
+        "network": "GET /node_modules/.vite/deps/chunk-BUSYA2B4.js?v=a807ce31 -> 200; no API endpoints involved"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-003",
+      "title": "Browser history behavior is deterministic",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Build mixed-route path / -> /projects -> /blog -> /blog/shipping-a-minimal-portfolio -> /contact",
+          "expected": "Path order established",
+          "observed": "Path established in expected order with matching h1 content each step"
+        },
+        {
+          "action": "Back x4",
+          "expected": "Routes restore in reverse order",
+          "observed": "Back sequence: /blog/shipping-a-minimal-portfolio -> /blog -> /projects -> /"
+        },
+        {
+          "action": "Forward x4",
+          "expected": "Routes restore in forward order",
+          "observed": "Forward sequence: /projects -> /blog -> /blog/shipping-a-minimal-portfolio -> /contact"
+        }
+      ],
+      "evidence": {
+        "recording": "blog-and-deploy/cross-area/VAL-CROSS-003-history.webm",
+        "screenshots": [
+          "blog-and-deploy/cross-area/VAL-CROSS-003-path1-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-path2-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-path3-blog.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-path4-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-path5-contact.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-back1-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-back2-blog.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-back3-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-back4-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-forward1-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-forward2-blog.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-forward3-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-003-forward4-contact.png"
+        ],
+        "historyTimeline": {
+          "path": [
+            "/",
+            "/projects",
+            "/blog",
+            "/blog/shipping-a-minimal-portfolio",
+            "/contact"
+          ],
+          "back": [
+            "/blog/shipping-a-minimal-portfolio",
+            "/blog",
+            "/projects",
+            "/"
+          ],
+          "forward": [
+            "/projects",
+            "/blog",
+            "/blog/shipping-a-minimal-portfolio",
+            "/contact"
+          ]
+        },
+        "consoleErrors": "none",
+        "network": "No API calls observed; local dev asset requests only"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-006",
+      "title": "Desktop/mobile reachability parity is maintained",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Desktop viewport (1366x768): navigate primary routes and one blog post",
+          "expected": "All required routes reachable",
+          "observed": "Reached /, /about, /projects, /blog, /blog/shipping-a-minimal-portfolio, /contact via desktop top nav and blog link"
+        },
+        {
+          "action": "Mobile viewport (390x844): use menu toggle and route links",
+          "expected": "All required routes and one blog post reachable via mobile controls",
+          "observed": "Reached /, /about, /projects, /blog, /blog/shipping-a-minimal-portfolio, /contact via toggle menu + blog link; home reachable again via menu"
+        }
+      ],
+      "evidence": {
+        "recordingDesktop": "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-reachability.webm",
+        "screenshots": [
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-about.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-blog.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-blog-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-desktop-contact.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-menu-open-home.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-about.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-projects.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-blog.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-blog-post.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-contact.png",
+          "blog-and-deploy/cross-area/VAL-CROSS-006-mobile-home-return.png"
+        ],
+        "reachabilityMatrix": {
+          "desktop": {
+            "/": true,
+            "/about": true,
+            "/projects": true,
+            "/blog": true,
+            "/contact": true,
+            "/blog/shipping-a-minimal-portfolio": true
+          },
+          "mobile": {
+            "/": true,
+            "/about": true,
+            "/projects": true,
+            "/blog": true,
+            "/contact": true,
+            "/blog/shipping-a-minimal-portfolio": true
+          }
+        },
+        "consoleErrors": "none",
+        "network": "No API calls observed; local dev asset requests only"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "PowerShell in this runner does not support '&&' command chaining used in standard examples.",
+      "resolved": true,
+      "resolution": "Used ';' separators for sequential browser commands.",
+      "affectedAssertions": [
+        "VAL-CROSS-001",
+        "VAL-CROSS-002",
+        "VAL-CROSS-003",
+        "VAL-CROSS-006"
+      ]
+    },
+    {
+      "description": "Named browser session startup intermittently failed with daemon bind error (EACCES on 127.0.0.1:54671).",
+      "resolved": true,
+      "resolution": "Used one default browser session and explicitly cleared cookies/local/session storage before clean-session assertions.",
+      "affectedAssertions": [
+        "VAL-CROSS-001",
+        "VAL-CROSS-002"
+      ]
+    },
+    {
+      "description": "One long mobile evidence command timed out after producing full output.",
+      "resolved": true,
+      "resolution": "Confirmed captured artifacts and reran lightweight follow-up commands for URL/state verification.",
+      "affectedAssertions": [
+        "VAL-CROSS-006"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested 4 assertions (VAL-CROSS-001, VAL-CROSS-002, VAL-CROSS-003, VAL-CROSS-006): all passed on localhost:4321 with required screenshot/timeline evidence and no console errors."
+}

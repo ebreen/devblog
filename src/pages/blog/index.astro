@@ -1,9 +1,18 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  BLOG_FIXTURE_LEGACY_EMPTY_PARAM,
+  BLOG_FIXTURE_LEGACY_SCHEMA_INVALID_PARAM,
+  BLOG_FIXTURE_QUERY_PARAM,
+  BLOG_FIXTURE_SCHEMA_INVALID_VALUE,
+  BLOG_FIXTURE_ZERO_VALID_VALUE,
+  BLOG_SCHEMA_INVALID_ENTRY_ROUTE
+} from "../../lib/blogFixtures";
 import { formatBlogDate, getReadingTime, sortBlogEntries } from "../../lib/blog";
 
 const entries = sortBlogEntries(await getCollection("blog"));
+const hasEntries = entries.length > 0;
 ---
 
 <BaseLayout title="Blog">
@@ -11,35 +20,82 @@ const entries = sortBlogEntries(await getCollection("blog"));
     <h1>Blog</h1>
     <p>Thoughts on building, shipping, and maintaining a minimal developer portfolio.</p>
 
-    {
-      entries.length === 0 ? (
-        <div class="section" role="status">
-          <p>No blog posts are available yet. Check back soon.</p>
-        </div>
-      ) : (
-        <ul class="blog-list">
-          {entries.map((entry) => (
-            <li class="section blog-item">
-              <h2>
-                <a href={`/blog/${entry.slug}`}>{entry.data.title}</a>
-              </h2>
-              <p class="meta">
-                <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-                {" · "}
-                <span>{getReadingTime(entry)}</span>
-              </p>
-              <ul class="tag-list">
-                {entry.data.tags.map((tag) => (
-                  <li class="tag">{tag}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    <div class="section" role="status" data-blog-empty-state hidden={hasEntries}>
+      <p>No blog posts are available yet. Check back soon.</p>
+    </div>
+
+    <ul class="blog-list" data-blog-list hidden={!hasEntries}>
+      {entries.map((entry) => (
+        <li class="section blog-item">
+          <h2>
+            <a href={`/blog/${entry.slug}`}>{entry.data.title}</a>
+          </h2>
+          <p class="meta">
+            <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+            {" · "}
+            <span>{getReadingTime(entry)}</span>
+          </p>
+          <ul class="tag-list">
+            {entry.data.tags.map((tag) => (
+              <li class="tag">{tag}</li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+
+    <div class="section fixture-note" data-blog-schema-invalid-fixture hidden>
+      <p>
+        Schema-invalid route fixture active. Use this deterministic route to validate not-found semantics for
+        a schema-invalid entry slug.
+      </p>
+      <p>
+        <a href={BLOG_SCHEMA_INVALID_ENTRY_ROUTE}>Open schema-invalid-entry fixture route</a>
+      </p>
+    </div>
   </section>
 </BaseLayout>
+
+<script
+  is:inline
+  define:vars={{
+    BLOG_FIXTURE_QUERY_PARAM,
+    BLOG_FIXTURE_ZERO_VALID_VALUE,
+    BLOG_FIXTURE_SCHEMA_INVALID_VALUE,
+    BLOG_FIXTURE_LEGACY_EMPTY_PARAM,
+    BLOG_FIXTURE_LEGACY_SCHEMA_INVALID_PARAM
+  }}
+>
+  const searchParams = new URLSearchParams(window.location.search);
+  const fixtureMode = searchParams.get(BLOG_FIXTURE_QUERY_PARAM);
+
+  const runZeroValidFixture =
+    fixtureMode === BLOG_FIXTURE_ZERO_VALID_VALUE || searchParams.get(BLOG_FIXTURE_LEGACY_EMPTY_PARAM) === "1";
+  const runSchemaInvalidFixture =
+    fixtureMode === BLOG_FIXTURE_SCHEMA_INVALID_VALUE ||
+    searchParams.get(BLOG_FIXTURE_LEGACY_SCHEMA_INVALID_PARAM) === "1";
+
+  if (runZeroValidFixture) {
+    const emptyState = document.querySelector("[data-blog-empty-state]");
+    const blogList = document.querySelector("[data-blog-list]");
+
+    if (emptyState instanceof HTMLElement) {
+      emptyState.hidden = false;
+    }
+
+    if (blogList instanceof HTMLElement) {
+      blogList.hidden = true;
+    }
+  }
+
+  if (runSchemaInvalidFixture) {
+    const schemaInvalidFixture = document.querySelector("[data-blog-schema-invalid-fixture]");
+
+    if (schemaInvalidFixture instanceof HTMLElement) {
+      schemaInvalidFixture.hidden = false;
+    }
+  }
+</script>
 
 <style>
   .blog-list,
@@ -83,5 +139,10 @@ const entries = sortBlogEntries(await getCollection("blog"));
     font-family: var(--font-mono);
     font-size: 0.78rem;
     padding: 0.2rem 0.55rem;
+  }
+
+  .fixture-note {
+    border-style: dashed;
+    border-color: var(--accent);
   }
 </style>

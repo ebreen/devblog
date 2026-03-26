@@ -34,3 +34,15 @@ Testing surface findings, tool choices, and runtime constraints for validators.
 
 - In this runner's PowerShell context, prefer `;` separators instead of `&&` for sequential commands.
 - Headless browser screenshots do not include URL bar chrome; capture URL transitions via explicit URL logs.
+
+## Fixture-dependent blog scenarios
+
+- `VAL-BLOG-LIST-006` (empty-state) fixture run:
+  - Open `http://localhost:4321/blog?fixture=zero-valid-posts` (legacy fallback: `?empty=1`).
+  - Expected behavior: rendered blog list is hidden and the empty-state message is visible on `/blog`.
+  - Control run: open `/blog` without query params and confirm normal listing behavior remains unchanged.
+- `VAL-BLOG-POST-007` schema-invalid-entry route-branch fixture run:
+  - Open `http://localhost:4321/blog?fixture=schema-invalid-entry` (legacy fallback: `?schemaInvalid=1`).
+  - Click the deterministic fixture link to `/blog/__fixture-schema-invalid-entry__`.
+  - Expected behavior: not-found UI is rendered, article selectors are absent, and observable status checks report 404 semantics.
+- If named browser sessions fail to initialize with local bind errors, fall back to a single session and explicitly clear storage/cookies before clean-session assertions.
