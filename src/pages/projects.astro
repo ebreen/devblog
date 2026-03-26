@@ -5,12 +5,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout title="Projects">
   <section class="page">
     <h1>Projects</h1>
-    <p>Projects content scaffolding is present and shares the common shell + responsive top navigation.</p>
-    <p class="meta">route://projects</p>
-    <div class="section">
+    <p>
+      Selected work focused on developer experience, clean UI systems, and practical delivery quality across desktop
+      and mobile screens.
+    </p>
+    <p class="meta">Each project includes a quick summary and actionable links.</p>
+
+    <article class="section" aria-labelledby="project-portfolio-blog">
+      <h2 id="project-portfolio-blog">Minimalist Portfolio + Blog</h2>
       <p>
-        Accent color token <code>--accent</code> is reused for links, key separators, and active navigation state.
+        Built an Astro-based portfolio shell with dark-theme design tokens, responsive navigation, and structured
+        content routes for resume pages and blog expansion.
       </p>
-    </div>
+      <p>
+        <a href="https://github.com/factory-ai" target="_blank" rel="noreferrer">Repository</a>
+        · <a href="/blog">Live Blog Route</a>
+      </p>
+    </article>
+
+    <article class="section" aria-labelledby="project-ui-system">
+      <h2 id="project-ui-system">Accessible UI System Starter</h2>
+      <p>
+        Created a reusable component baseline with consistent spacing, keyboard focus states, and typography rules for
+        long-form readability.
+      </p>
+      <p>
+        <a href="https://developer.mozilla.org/" target="_blank" rel="noreferrer">Reference Docs</a>
+      </p>
+    </article>
   </section>
 </BaseLayout>
