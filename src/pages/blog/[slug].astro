@@ -17,21 +17,90 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as Props;
+const { Content } = await entry.render();
 ---
 
 <BaseLayout title={entry.data.title}>
-  <article class="page">
-    <h1>{entry.data.title}</h1>
-    <p class="meta">
-      <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-      {" · "}
-      <span>{getReadingTime(entry)}</span>
-    </p>
-    <div class="section">
-      <p>This post route is available at <code>/blog/{entry.slug}</code>.</p>
-      <p>
-        Return to the <a href="/blog">blog index</a> to open another entry.
+  <article class="page post-page">
+    <header class="post-header">
+      <h1>{entry.data.title}</h1>
+      <p class="meta">
+        <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+        {" · "}
+        <span>{getReadingTime(entry)}</span>
       </p>
-    </div>
+      {
+        entry.data.tags.length > 0 && (
+          <ul class="tag-list" aria-label="Tags">
+            {entry.data.tags.map((tag) => (
+              <li class="tag">{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+    <section class="section post-content">
+      <Content />
+    </section>
   </article>
 </BaseLayout>
+
+<style>
+  .post-page {
+    max-width: min(72ch, 100%);
+  }
+
+  .post-header {
+    margin-bottom: 1rem;
+  }
+
+  .tag-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+  }
+
+  .tag {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .post-content :where(h2, h3, h4) {
+    margin-top: 1.5rem;
+    color: var(--text);
+  }
+
+  .post-content :where(ul, ol) {
+    margin: 0 0 1rem;
+    padding-left: 1.35rem;
+  }
+
+  .post-content :where(pre) {
+    margin: 1rem 0;
+    padding: 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .post-content :where(pre code) {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .post-content :where(code):not(pre code) {
+    background: rgb(255 255 255 / 6%);
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+    padding: 0.08rem 0.35rem;
+  }
+</style>
