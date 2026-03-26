@@ -1,0 +1,93 @@
+[
+  {
+    "route": "/about",
+    "url": "https://devblog-ten-brown.vercel.app/about",
+    "statusLine": "HTTP/1.1 200 OK",
+    "statusCode": 200,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/projects",
+    "url": "https://devblog-ten-brown.vercel.app/projects",
+    "statusLine": "HTTP/1.1 200 OK",
+    "statusCode": 200,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/contact",
+    "url": "https://devblog-ten-brown.vercel.app/contact",
+    "statusLine": "HTTP/1.1 200 OK",
+    "statusCode": 200,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/blog",
+    "url": "https://devblog-ten-brown.vercel.app/blog",
+    "statusLine": "HTTP/1.1 200 OK",
+    "statusCode": 200,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/blog/shipping-a-minimal-portfolio",
+    "url": "https://devblog-ten-brown.vercel.app/blog/shipping-a-minimal-portfolio",
+    "statusLine": "HTTP/1.1 200 OK",
+    "statusCode": 200,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/does-not-exist",
+    "url": "https://devblog-ten-brown.vercel.app/does-not-exist",
+    "statusLine": "HTTP/1.1 404 Not Found",
+    "statusCode": 404,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  },
+  {
+    "route": "/blog/does-not-exist",
+    "url": "https://devblog-ten-brown.vercel.app/blog/does-not-exist",
+    "statusLine": "HTTP/1.1 404 Not Found",
+    "statusCode": 404,
+    "headers": {
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "x-vercel-id": "<redacted>",
+      "x-vercel-cache": "HIT",
+      "server": "Vercel"
+    }
+  }
+]

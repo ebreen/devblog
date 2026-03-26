@@ -1,0 +1,84 @@
+{
+  "groupId": "deploy-evidence",
+  "testedAt": "2026-03-26T21:46:30Z",
+  "isolation": {
+    "deploymentUrl": "https://devblog-ten-brown.vercel.app",
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "surface": "Deployed Vercel routes validated via browser refresh checks and HTTP status/header evidence"
+  },
+  "toolsUsed": [
+    "agent-browser",
+    "curl"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-004",
+      "title": "Deployed valid-route refresh is stable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open deployed non-root routes and capture route-specific content before refresh",
+          "expected": "Route-specific content is present on each route",
+          "observed": "Each route displayed its route-specific h1/title before reload: About, Projects, Contact, Blog, and Shipping a Minimal Portfolio with Astro"
+        },
+        {
+          "action": "Reload each deployed route and capture content again",
+          "expected": "Path/content remain stable and do not rewrite to home",
+          "observed": "After reload, each route kept the same pathname and h1 content; no route rewrote to Home"
+        },
+        {
+          "action": "Collect deployed status/header evidence for each valid route",
+          "expected": "Valid deployed routes return 200 with Vercel response headers",
+          "observed": "All required valid routes returned HTTP 200 with `server: Vercel` and expected static HTML content-type"
+        }
+      ],
+      "evidence": {
+        "refreshChecks": ".factory/validation/deploy-evidence/user-testing/flows/refresh-checks.json",
+        "screenshots": [
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\about-before-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\about-after-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\projects-before-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\projects-after-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\contact-before-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\contact-after-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog-before-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog-after-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog__shipping-a-minimal-portfolio-before-refresh.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog__shipping-a-minimal-portfolio-after-refresh.png"
+        ],
+        "statusAndHeaders": ".factory/validation/deploy-evidence/user-testing/flows/route-status-headers.json (/about, /projects, /contact, /blog, /blog/shipping-a-minimal-portfolio => 200)",
+        "summary": "Deployed refresh behavior preserved route-specific content for all required valid non-root routes and one blog slug route."
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "title": "Deployed unknown routes return not-found behavior",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open unknown deployed routes `/does-not-exist` and `/blog/does-not-exist` in browser",
+          "expected": "Not-found UI renders and does not show stale article or home content",
+          "observed": "Both routes rendered Not Found title/h1; article count remained 0 and Home heading was absent"
+        },
+        {
+          "action": "Collect status/header evidence for unknown deployed routes",
+          "expected": "Unknown deployed routes return observable 404 semantics",
+          "observed": "Both unknown routes returned HTTP 404 Not Found with `server: Vercel` headers"
+        }
+      ],
+      "evidence": {
+        "unknownUiChecks": ".factory/validation/deploy-evidence/user-testing/flows/unknown-route-ui-checks.json",
+        "screenshots": [
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\unknown-routes\\does-not-exist-not-found.png",
+          "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\unknown-routes\\blog__does-not-exist-not-found.png"
+        ],
+        "statusAndHeaders": ".factory/validation/deploy-evidence/user-testing/flows/route-status-headers.json (/does-not-exist, /blog/does-not-exist => 404)",
+        "summary": "Unknown deployed routes consistently resolved to not-found UI and HTTP 404 semantics, with no home-page rewrite."
+      },
+      "issues": null
+    }
+  ],
+  "blockers": [],
+  "summary": "Validated deployed-route assertions VAL-CROSS-004 and VAL-CROSS-005 on https://devblog-ten-brown.vercel.app with browser screenshots and status/header evidence."
+}

@@ -1,0 +1,117 @@
+[
+  {
+    "route": "/about",
+    "url": "https://devblog-ten-brown.vercel.app/about",
+    "before": {
+      "path": "/about",
+      "title": "About | Portfolio",
+      "h1": "About",
+      "notFound": false
+    },
+    "after": {
+      "path": "/about",
+      "title": "About | Portfolio",
+      "h1": "About",
+      "notFound": false
+    },
+    "pathStable": true,
+    "contentStable": true,
+    "homeRewriteDetected": false,
+    "screenshots": [
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\about-before-refresh.png",
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\about-after-refresh.png"
+    ]
+  },
+  {
+    "route": "/projects",
+    "url": "https://devblog-ten-brown.vercel.app/projects",
+    "before": {
+      "path": "/projects",
+      "title": "Projects | Portfolio",
+      "h1": "Projects",
+      "notFound": false
+    },
+    "after": {
+      "path": "/projects",
+      "title": "Projects | Portfolio",
+      "h1": "Projects",
+      "notFound": false
+    },
+    "pathStable": true,
+    "contentStable": true,
+    "homeRewriteDetected": false,
+    "screenshots": [
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\projects-before-refresh.png",
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\projects-after-refresh.png"
+    ]
+  },
+  {
+    "route": "/contact",
+    "url": "https://devblog-ten-brown.vercel.app/contact",
+    "before": {
+      "path": "/contact",
+      "title": "Contact | Portfolio",
+      "h1": "Contact",
+      "notFound": false
+    },
+    "after": {
+      "path": "/contact",
+      "title": "Contact | Portfolio",
+      "h1": "Contact",
+      "notFound": false
+    },
+    "pathStable": true,
+    "contentStable": true,
+    "homeRewriteDetected": false,
+    "screenshots": [
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\contact-before-refresh.png",
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\contact-after-refresh.png"
+    ]
+  },
+  {
+    "route": "/blog",
+    "url": "https://devblog-ten-brown.vercel.app/blog",
+    "before": {
+      "path": "/blog",
+      "title": "Blog | Portfolio",
+      "h1": "Blog",
+      "notFound": false
+    },
+    "after": {
+      "path": "/blog",
+      "title": "Blog | Portfolio",
+      "h1": "Blog",
+      "notFound": false
+    },
+    "pathStable": true,
+    "contentStable": true,
+    "homeRewriteDetected": false,
+    "screenshots": [
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog-before-refresh.png",
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog-after-refresh.png"
+    ]
+  },
+  {
+    "route": "/blog/shipping-a-minimal-portfolio",
+    "url": "https://devblog-ten-brown.vercel.app/blog/shipping-a-minimal-portfolio",
+    "before": {
+      "path": "/blog/shipping-a-minimal-portfolio",
+      "title": "Shipping a Minimal Portfolio with Astro | Portfolio",
+      "h1": "Shipping a Minimal Portfolio with Astro",
+      "notFound": false
+    },
+    "after": {
+      "path": "/blog/shipping-a-minimal-portfolio",
+      "title": "Shipping a Minimal Portfolio with Astro | Portfolio",
+      "h1": "Shipping a Minimal Portfolio with Astro",
+      "notFound": false
+    },
+    "pathStable": true,
+    "contentStable": true,
+    "homeRewriteDetected": false,
+    "screenshots": [
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog__shipping-a-minimal-portfolio-before-refresh.png",
+      "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\deploy-evidence\\deployed-refresh\\blog__shipping-a-minimal-portfolio-after-refresh.png"
+    ]
+  }
+]
