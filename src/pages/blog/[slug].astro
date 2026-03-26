@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatBlogDate, getReadingTime, sortBlogEntries } from "../../lib/blog";
+
+type Props = {
+  entry: CollectionEntry<"blog">;
+};
+
+export async function getStaticPaths() {
+  const entries = sortBlogEntries(await getCollection("blog"));
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props as Props;
+---
+
+<BaseLayout title={entry.data.title}>
+  <article class="page">
+    <h1>{entry.data.title}</h1>
+    <p class="meta">
+      <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+      {" · "}
+      <span>{getReadingTime(entry)}</span>
+    </p>
+    <div class="section">
+      <p>This post route is available at <code>/blog/{entry.slug}</code>.</p>
+      <p>
+        Return to the <a href="/blog">blog index</a> to open another entry.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
