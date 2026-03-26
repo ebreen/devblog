@@ -20,8 +20,9 @@ export const formatBlogDate = (value: Date) =>
   }).format(value);
 
 export const getReadingTime = (entry: CollectionEntry<"blog">) => {
-  if (entry.data.readingTime) {
-    return entry.data.readingTime;
+  const explicitReadingTime = entry.data.readingTime?.trim();
+  if (explicitReadingTime) {
+    return explicitReadingTime;
   }
 
   const words = entry.body.trim().split(/\s+/u).filter(Boolean).length;
