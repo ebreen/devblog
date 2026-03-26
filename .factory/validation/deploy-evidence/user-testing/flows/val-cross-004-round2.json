@@ -1,0 +1,78 @@
+{
+  "groupId": "val-cross-004-round2",
+  "testedAt": "2026-03-26T22:07:36Z",
+  "isolation": {
+    "deploymentUrl": "https://devblog-ten-brown.vercel.app",
+    "missionDir": "C:/Users/babyboy/.factory/missions/fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "surface": "deployed-browser",
+    "assignedAssertion": "VAL-CROSS-004",
+    "routes": [
+      "/about",
+      "/projects",
+      "/contact",
+      "/blog",
+      "/blog/shipping-a-minimal-portfolio"
+    ]
+  },
+  "toolsUsed": [
+    "agent-browser",
+    "curl"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-004",
+      "title": "Deployed valid-route refresh is stable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open each assigned deployed non-root route before refresh",
+          "expected": "Pathname and route-specific content are correct for each route with no home-page rewrite",
+          "observed": "/about => URL stayed /about with h1 'About'; /projects => URL stayed /projects with h1 'Projects'; /contact => URL stayed /contact with h1 'Contact'; /blog => URL stayed /blog with h1 'Blog'; /blog/shipping-a-minimal-portfolio => URL stayed /blog/shipping-a-minimal-portfolio with h1 'Shipping a Minimal Portfolio with Astro'."
+        },
+        {
+          "action": "Refresh each route and re-check pathname/content",
+          "expected": "After refresh, each route remains on the same path and keeps route-specific content",
+          "observed": "All 5 routes preserved pathname and route-specific h1 content after refresh; no route rewrote to home content."
+        },
+        {
+          "action": "Capture deployed HTTP status/header evidence for each route",
+          "expected": "Each assigned route returns 200 semantics with Vercel-served HTML",
+          "observed": "All assigned routes returned HTTP 200 with text/html content-type, server=Vercel, and x-vercel-cache headers (see status/header evidence file)."
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-about-before-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-about-after-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-projects-before-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-projects-after-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-contact-before-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-contact-after-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-blog-before-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-blog-after-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-blog-shipping-before-refresh.png",
+          "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-blog-shipping-after-refresh.png"
+        ],
+        "consoleErrors": {
+          "/about": "none",
+          "/projects": "none",
+          "/contact": "none",
+          "/blog": "none",
+          "/blog/shipping-a-minimal-portfolio": "none"
+        },
+        "network": {
+          "/about": "HTTP 200",
+          "/projects": "HTTP 200",
+          "/contact": "HTTP 200",
+          "/blog": "HTTP 200",
+          "/blog/shipping-a-minimal-portfolio": "HTTP 200"
+        },
+        "statusHeaders": "deploy-evidence/val-cross-004-round2/VAL-CROSS-004-http-status-headers.txt"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "VAL-CROSS-004 passed on deployed Vercel URL: all assigned valid non-root routes retained correct route-specific content after refresh with no home-page rewrite and HTTP 200 header semantics."
+}

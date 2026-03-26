@@ -33,6 +33,7 @@ Testing surface findings, tool choices, and runtime constraints for validators.
 ## Environment Notes
 
 - In this runner's PowerShell context, prefer `;` separators instead of `&&` for sequential commands.
+- In this runner's PowerShell context, use `curl.exe` (not `curl`) when collecting raw HTTP status/header evidence because `curl` resolves to `Invoke-WebRequest`.
 - Headless browser screenshots do not include URL bar chrome; capture URL transitions via explicit URL logs.
 
 ## Fixture-dependent blog scenarios

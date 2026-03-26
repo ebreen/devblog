@@ -1,0 +1,63 @@
+﻿{
+  "groupId": "val-cross-005-round2",
+  "testedAt": "2026-03-26T22:09:00Z",
+  "isolation": {
+    "surface": "deployed browser checks only",
+    "missionDir": "C:/Users/babyboy/.factory/missions/fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "deploymentUrl": "https://devblog-ten-brown.vercel.app",
+    "assignedAssertions": [
+      "VAL-CROSS-005"
+    ]
+  },
+  "toolsUsed": [
+    "agent-browser",
+    "curl.exe",
+    "python"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-005",
+      "title": "Deployed unknown routes return not-found behavior",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open https://devblog-ten-brown.vercel.app/does-not-exist and validate route semantics",
+          "expected": "Path remains /does-not-exist, not-found UI signal is present, and stale article content is absent",
+          "observed": "URL remained https://devblog-ten-brown.vercel.app/does-not-exist; title was Not Found | Portfolio; h1 was Not Found; visible not-found text signal detected; article selector count was 0."
+        },
+        {
+          "action": "Open https://devblog-ten-brown.vercel.app/blog/does-not-exist and validate route semantics",
+          "expected": "Path remains /blog/does-not-exist, not-found UI signal is present, and stale article content is absent",
+          "observed": "URL remained https://devblog-ten-brown.vercel.app/blog/does-not-exist; title was Not Found | Portfolio; h1 was Not Found; visible not-found text signal detected; article selector count was 0."
+        },
+        {
+          "action": "Collect HTTP status/header evidence for both unknown routes",
+          "expected": "Observable 404 semantics for both responses",
+          "observed": "HEAD checks returned HTTP 404 Not Found for both routes with Vercel 404 response headers (Content-Disposition: inline; filename=404.html)."
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "deploy-evidence/val-cross-005-round2/VAL-CROSS-005-does-not-exist.png",
+          "deploy-evidence/val-cross-005-round2/VAL-CROSS-005-blog-does-not-exist.png"
+        ],
+        "consoleErrors": "none (agent-browser errors --json returned [] after each route check)",
+        "network": "deploy-evidence/val-cross-005-round2/VAL-CROSS-005-status-headers.json",
+        "uiObservations": "deploy-evidence/val-cross-005-round2/VAL-CROSS-005-ui-observations.json"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "PowerShell maps curl to Invoke-WebRequest alias, which does not support curl-style flags used for raw header capture.",
+      "resolved": true,
+      "resolution": "Used curl.exe explicitly for HTTP header checks.",
+      "affectedAssertions": [
+        "VAL-CROSS-005"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested VAL-CROSS-005 on deployed Vercel URL: pass. Both unknown routes stayed on-path, rendered consistent not-found UI, showed no article content, and returned observable HTTP 404 semantics."
+}
