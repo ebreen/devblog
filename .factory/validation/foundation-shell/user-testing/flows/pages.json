@@ -1,0 +1,325 @@
+{
+  "groupId": "pages",
+  "testedAt": "2026-03-26T17:25:54Z",
+  "isolation": {
+    "appUrl": "http://localhost:4321",
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "evidenceDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\foundation-shell\\pages",
+    "session": "pages-fee165ec",
+    "assignedAssertions": [
+      "VAL-PAGES-001",
+      "VAL-PAGES-002",
+      "VAL-PAGES-003",
+      "VAL-PAGES-004",
+      "VAL-PAGES-005"
+    ]
+  },
+  "toolsUsed": [
+    "agent-browser"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-PAGES-001",
+      "title": "About, Projects, and Contact routes render canonical page headings",
+      "status": "pass",
+      "reasoning": "Navigation through top-nav loaded /about, /projects, and /contact successfully; each page exposed exactly one visible h1 and the heading text matched required tokens.",
+      "steps": [
+        {
+          "action": "From home, click About in top navigation",
+          "expected": "URL is /about and exactly one non-empty h1 includes 'about'",
+          "observed": "URL http://localhost:4321/about, h1 query => {\"count\":1,\"texts\":[\"About\"]}"
+        },
+        {
+          "action": "Click Projects in top navigation",
+          "expected": "URL is /projects and exactly one non-empty h1 includes 'project'",
+          "observed": "URL http://localhost:4321/projects, h1 query => {\"count\":1,\"texts\":[\"Projects\"]}"
+        },
+        {
+          "action": "Click Contact in top navigation",
+          "expected": "URL is /contact and exactly one non-empty h1 includes 'contact' or 'get in touch'",
+          "observed": "URL http://localhost:4321/contact, h1 query => {\"count\":1,\"texts\":[\"Contact\"]}"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/pages/VAL-PAGES-001-about-route.png",
+          "foundation-shell/pages/VAL-PAGES-001-projects-route.png",
+          "foundation-shell/pages/VAL-PAGES-001-contact-route.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A (no API requests required)",
+        "dom": {
+          "about": {
+            "count": 1,
+            "texts": [
+              "About"
+            ]
+          },
+          "projects": {
+            "count": 1,
+            "texts": [
+              "Projects"
+            ]
+          },
+          "contact": {
+            "count": 1,
+            "texts": [
+              "Contact"
+            ]
+          }
+        }
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PAGES-002",
+      "title": "About page includes resume-style structure",
+      "status": "pass",
+      "reasoning": "About page main content contained a summary paragraph longer than 40 characters and at least two resume-style sections with heading + body items.",
+      "steps": [
+        {
+          "action": "Open /about and inspect main content structure",
+          "expected": "At least one summary paragraph (>=40 chars) plus >=2 resume-style sections with visible headings and non-empty content",
+          "observed": "summaryFound=true, summaryLength=176; sectionsWithBody=[Skills(3), Experience Highlights(3), Education & Learning(1)]"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/pages/VAL-PAGES-002-about-structure.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A (no API requests required)",
+        "dom": {
+          "summaryFound": true,
+          "summaryLength": 176,
+          "sectionsWithBody": [
+            {
+              "heading": "Skills",
+              "bodyItems": 3
+            },
+            {
+              "heading": "Experience Highlights",
+              "bodyItems": 3
+            },
+            {
+              "heading": "Education & Learning",
+              "bodyItems": 1
+            }
+          ],
+          "totalSectionHeadings": 3
+        }
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PAGES-003",
+      "title": "Projects page entries are scannable and actionable",
+      "status": "pass",
+      "reasoning": "Projects page rendered multiple entries with non-empty titles/descriptions; all visible links had valid actionable href values and were keyboard-focusable; keyboard Enter activation opened the Repository link in a new tab with no uncaught runtime errors.",
+      "steps": [
+        {
+          "action": "Open /projects and extract entry/link metadata",
+          "expected": "At least one entry with title + description; every visible link has valid href and keyboard focusability",
+          "observed": "entryCount=3; 3 visible links all valid=true and keyboardFocusable=true"
+        },
+        {
+          "action": "Focus 'Repository' link and press Enter",
+          "expected": "Link activates without uncaught runtime errors",
+          "observed": "New tab opened to https://github.com/factory-ai; errors check returned none"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/pages/VAL-PAGES-003-projects-entries.png",
+          "foundation-shell/pages/VAL-PAGES-003-link-keyboard-activation.png",
+          "foundation-shell/pages/VAL-PAGES-003-link-activated-new-tab.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Navigation opened external link target (https://github.com/factory-ai)",
+        "dom": {
+          "entryCount": 3,
+          "entries": [
+            {
+              "title": "Minimalist Portfolio + Blog",
+              "description": "Selected work focused on developer experience, clean UI systems, and practical delivery quality across desktop and mobile screens."
+            },
+            {
+              "title": "Minimalist Portfolio + Blog",
+              "description": "Built an Astro-based portfolio shell with dark-theme design tokens, responsive navigation, and structured content routes for resume pages and blog expansion."
+            },
+            {
+              "title": "Accessible UI System Starter",
+              "description": "Created a reusable component baseline with consistent spacing, keyboard focus states, and typography rules for long-form readability."
+            }
+          ],
+          "links": [
+            {
+              "text": "Repository",
+              "href": "https://github.com/factory-ai",
+              "valid": true,
+              "keyboardFocusable": true
+            },
+            {
+              "text": "Live Blog Route",
+              "href": "/blog",
+              "valid": true,
+              "keyboardFocusable": true
+            },
+            {
+              "text": "Reference Docs",
+              "href": "https://developer.mozilla.org/",
+              "valid": true,
+              "keyboardFocusable": true
+            }
+          ]
+        }
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PAGES-004",
+      "title": "Contact page provides actionable methods",
+      "status": "pass",
+      "reasoning": "Contact page exposed multiple actionable contact methods (mailto and https profile links), each keyboard-focusable; keyboard activation on LinkedIn link worked and opened target URL with no runtime errors.",
+      "steps": [
+        {
+          "action": "Open /contact and inspect available contact methods",
+          "expected": "At least one valid actionable method (`mailto:`, `https://`, or form submission path)",
+          "observed": "Found 3 valid methods: mailto:hello@example.com, https://www.linkedin.com/, https://github.com/"
+        },
+        {
+          "action": "Focus LinkedIn contact link and press Enter",
+          "expected": "Keyboard activation succeeds without uncaught runtime errors",
+          "observed": "New tab opened to https://www.linkedin.com/; errors check returned none"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/pages/VAL-PAGES-004-contact-methods.png",
+          "foundation-shell/pages/VAL-PAGES-004-contact-keyboard-activation.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Navigation opened external link target (https://www.linkedin.com/)",
+        "dom": {
+          "links": [
+            {
+              "text": "hello@example.com",
+              "href": "mailto:hello@example.com",
+              "valid": true,
+              "keyboardFocusable": true
+            },
+            {
+              "text": "linkedin.com/in/your-name",
+              "href": "https://www.linkedin.com/",
+              "valid": true,
+              "keyboardFocusable": true
+            },
+            {
+              "text": "github.com/your-name",
+              "href": "https://github.com/",
+              "valid": true,
+              "keyboardFocusable": true
+            }
+          ],
+          "forms": []
+        }
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PAGES-005",
+      "title": "Readability baseline is satisfied on desktop and mobile",
+      "status": "pass",
+      "reasoning": "Across About/Projects/Contact at desktop (1280px) and mobile (390px), all checks passed: no page-level horizontal overflow, body text >=16px, line-height ratio >=1.4, and constrained content width <=1000px or matching constrained max-width.",
+      "steps": [
+        {
+          "action": "Run desktop viewport checks (1280x900) on /about, /projects, /contact",
+          "expected": "overflow OK, font-size >=16, line-height >=1.4, constrained main/content width",
+          "observed": "All desktop checks passed on all three routes"
+        },
+        {
+          "action": "Run mobile viewport checks (390x844) on /about, /projects, /contact",
+          "expected": "overflow OK, font-size >=16, line-height >=1.4, constrained main/content width",
+          "observed": "All mobile checks passed on all three routes"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/pages/VAL-PAGES-005-desktop-about.png",
+          "foundation-shell/pages/VAL-PAGES-005-desktop-projects.png",
+          "foundation-shell/pages/VAL-PAGES-005-desktop-contact.png",
+          "foundation-shell/pages/VAL-PAGES-005-mobile-about.png",
+          "foundation-shell/pages/VAL-PAGES-005-mobile-projects.png",
+          "foundation-shell/pages/VAL-PAGES-005-mobile-contact.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A (no API requests required)",
+        "computedChecks": {
+          "desktop": {
+            "about": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 776.25
+            },
+            "projects": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 776.25
+            },
+            "contact": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 776.25
+            }
+          },
+          "mobile": {
+            "about": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 358
+            },
+            "projects": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 358
+            },
+            "contact": {
+              "overflowOk": true,
+              "fontSizePx": 16,
+              "lineHeightRatio": 1.6,
+              "mainConstraintOk": true,
+              "contentWidthPx": 358
+            }
+          }
+        }
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "PowerShell shell in this environment does not support '&&' chaining for agent-browser commands.",
+      "resolved": true,
+      "resolution": "Used ';' separators for sequential agent-browser commands in the same session.",
+      "affectedAssertions": [
+        "VAL-PAGES-001",
+        "VAL-PAGES-002",
+        "VAL-PAGES-003",
+        "VAL-PAGES-004",
+        "VAL-PAGES-005"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested 5 assertions for foundation-shell pages group: 5 passed, 0 failed, 0 blocked."
+}

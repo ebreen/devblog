@@ -1,0 +1,195 @@
+﻿{
+    "groupId":  "foundation-nav",
+    "testedAt":  "2026-03-26T18:27:36.0124259+01:00",
+    "isolation":  {
+                      "appUrl":  "http://localhost:4321",
+                      "missionDir":  "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+                      "evidenceDir":  "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\foundation-shell\\foundation-nav",
+                      "browserSession":  "foundation-nav-fee165ec",
+                      "flowValidatorGuidance":  "Flow Validator Guidance: browser"
+                  },
+    "toolsUsed":  [
+                      "agent-browser"
+                  ],
+    "assertions":  [
+                       {
+                           "id":  "VAL-FOUNDATION-001",
+                           "title":  "Shared shell renders on all primary routes",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Open /, /about, /projects, /blog, /contact",
+                                             "expected":  "Each route renders shared shell and top nav",
+                                             "observed":  "All 5 routes loaded with header+nav (navCount=5 on each route)"
+                                         },
+                                         {
+                                             "action":  "Capture route screenshots and URLs",
+                                             "expected":  "Screenshot per route with route evidence",
+                                             "observed":  "Captured screenshots for all routes and URL capture log for each canonical path"
+                                         },
+                                         {
+                                             "action":  "Check console errors after traversal",
+                                             "expected":  "No console/runtime errors",
+                                             "observed":  "No errors reported by agent-browser errors output"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-001-home.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-001-about.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-001-projects.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-001-blog.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-001-contact.png"
+                                                            ],
+                                            "consoleErrors":  "none (see foundation-shell/foundation-nav/VAL-FOUNDATION-001-console-errors.txt)",
+                                            "network":  "N/A (no API calls required for this assertion)",
+                                            "artifacts":  [
+                                                              "foundation-shell/foundation-nav/VAL-FOUNDATION-001-urls.txt",
+                                                              "foundation-shell/foundation-nav/VAL-FOUNDATION-001-shell-check.json"
+                                                          ]
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-FOUNDATION-002",
+                           "title":  "Navigation labels are exact and ordered",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Capture top nav DOM text on /",
+                                             "expected":  "Labels exactly Home, About, Projects, Blog, Contact in order",
+                                             "observed":  "DOM capture returned exact ordered labels and hrefs"
+                                         },
+                                         {
+                                             "action":  "Capture header screenshot",
+                                             "expected":  "Header/nav visual evidence",
+                                             "observed":  "Annotated header screenshot captured"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-002-header-annotated.png"
+                                                            ],
+                                            "consoleErrors":  "none (see foundation-shell/foundation-nav/VAL-FOUNDATION-002-console-errors.txt)",
+                                            "network":  "N/A",
+                                            "domCapture":  "foundation-shell/foundation-nav/VAL-FOUNDATION-002-nav-items.json"
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-FOUNDATION-003",
+                           "title":  "Navigation targets and active state are correct",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Click each nav item in sequence (Home→About→Projects→Blog→Contact)",
+                                             "expected":  "URL resolves to canonical routes",
+                                             "observed":  "Observed URLs matched /, /about, /projects, /blog, /contact exactly"
+                                         },
+                                         {
+                                             "action":  "Validate active nav state on each route",
+                                             "expected":  "Exactly one active nav item matching current route",
+                                             "observed":  "activeCount=1 on each route and active label matched route via aria-current=page"
+                                         },
+                                         {
+                                             "action":  "Capture per-route active-state screenshots",
+                                             "expected":  "Visual proof per route",
+                                             "observed":  "Captured screenshots for all five routes with active state visible"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-003-home-active.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-003-about-active.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-003-projects-active.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-003-blog-active.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-003-contact-active.png"
+                                                            ],
+                                            "consoleErrors":  "none (see foundation-shell/foundation-nav/VAL-FOUNDATION-003-console-errors.txt)",
+                                            "network":  "No additional network requests captured during click-trace collection (see foundation-shell/foundation-nav/VAL-FOUNDATION-003-network-requests.txt)",
+                                            "clickTrace":  "foundation-shell/foundation-nav/VAL-FOUNDATION-003-click-trace.json",
+                                            "activeStateFiles":  [
+                                                                     "foundation-shell/foundation-nav/VAL-FOUNDATION-003-home-active-state.json",
+                                                                     "foundation-shell/foundation-nav/VAL-FOUNDATION-003-about-active-state.json",
+                                                                     "foundation-shell/foundation-nav/VAL-FOUNDATION-003-projects-active-state.json",
+                                                                     "foundation-shell/foundation-nav/VAL-FOUNDATION-003-blog-active-state.json",
+                                                                     "foundation-shell/foundation-nav/VAL-FOUNDATION-003-contact-active-state.json"
+                                                                 ]
+                                        },
+                           "issues":  null
+                       },
+                       {
+                           "id":  "VAL-FOUNDATION-004",
+                           "title":  "Keyboard navigation is usable and visible",
+                           "status":  "pass",
+                           "steps":  [
+                                         {
+                                             "action":  "Desktop keyboard flow: Tab to nav links and press Enter",
+                                             "expected":  "Nav links reachable by Tab with visible focus and Enter activation",
+                                             "observed":  "Focus moved Portfolio→Home→About with visible red 2px outline; Enter on About navigated / to /about"
+                                         },
+                                         {
+                                             "action":  "Mobile keyboard flow for non-link control",
+                                             "expected":  "Mobile menu toggle reachable and activatable with Enter/Space",
+                                             "observed":  "Tab focused Menu button; Enter toggled aria-expanded/data-open false→true; Space toggled true→false"
+                                         },
+                                         {
+                                             "action":  "Capture recording and focused-state screenshots",
+                                             "expected":  "Keyboard interaction evidence artifacts",
+                                             "observed":  "Captured desktop recording and desktop/mobile focus/toggle screenshots and JSON state traces"
+                                         }
+                                     ],
+                           "evidence":  {
+                                            "screenshots":  [
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-focus-step-1.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-focus-step-2.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-focus-step-3.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-after-enter.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-focus-tab-1.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-focus-tab-2-menu.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-after-enter.png",
+                                                                "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-after-space.png"
+                                                            ],
+                                            "consoleErrors":  "none (see foundation-shell/foundation-nav/VAL-FOUNDATION-004-console-errors.txt)",
+                                            "network":  "GET document/script requests for / and /about observed during keyboard flows (see foundation-shell/foundation-nav/VAL-FOUNDATION-004-network-requests.txt)",
+                                            "recording":  "foundation-shell/foundation-nav/VAL-FOUNDATION-004-keyboard-flow-v2.webm",
+                                            "focusSequence":  "foundation-shell/foundation-nav/VAL-FOUNDATION-004-focus-sequence.json",
+                                            "urlTransition":  "foundation-shell/foundation-nav/VAL-FOUNDATION-004-url-transition.txt",
+                                            "mobileKeyboardState":  "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-menu-keyboard.json",
+                                            "mobileSnapshot":  "foundation-shell/foundation-nav/VAL-FOUNDATION-004-mobile-snapshot-interactive.txt"
+                                        },
+                           "issues":  null
+                       }
+                   ],
+    "frictions":  [
+                      {
+                          "description":  "Headless screenshots do not include browser chrome/URL bar required verbatim by contract wording.",
+                          "resolved":  true,
+                          "resolution":  "Captured canonical URL transitions via agent-browser get url in VAL-FOUNDATION-001-urls.txt and click trace artifacts.",
+                          "affectedAssertions":  [
+                                                     "VAL-FOUNDATION-001",
+                                                     "VAL-FOUNDATION-003"
+                                                 ]
+                      },
+                      {
+                          "description":  "Astro dev toolbar appears in tab order during local dev, extending keyboard tab sequence.",
+                          "resolved":  true,
+                          "resolution":  "Scoped validation to required nav elements and captured deterministic focus/activation evidence before toolbar focus.",
+                          "affectedAssertions":  [
+                                                     "VAL-FOUNDATION-004"
+                                                 ]
+                      },
+                      {
+                          "description":  "agent-browser record start cannot overwrite an existing output file.",
+                          "resolved":  true,
+                          "resolution":  "Recorded to a new filename VAL-FOUNDATION-004-keyboard-flow-v2.webm.",
+                          "affectedAssertions":  [
+                                                     "VAL-FOUNDATION-004"
+                                                 ]
+                      }
+                  ],
+    "blockers":  [
+
+                 ],
+    "summary":  "Tested 4 assertions (VAL-FOUNDATION-001..004): all 4 passed with required screenshots, keyboard evidence, URL/DOM captures, and clean console-error checks."
+}

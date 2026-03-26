@@ -1,0 +1,197 @@
+{
+  "groupId": "foundation-theme",
+  "testedAt": "2026-03-26T17:30:55Z",
+  "isolation": {
+    "appUrl": "http://localhost:4321",
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "evidenceDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6\\evidence\\foundation-shell\\foundation-theme",
+    "session": "foundation-theme-fee165ec",
+    "assignedAssertions": [
+      "VAL-FOUNDATION-005",
+      "VAL-FOUNDATION-006",
+      "VAL-FOUNDATION-007",
+      "VAL-FOUNDATION-008",
+      "VAL-FOUNDATION-009"
+    ]
+  },
+  "toolsUsed": [
+    "agent-browser"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-FOUNDATION-005",
+      "title": "Dark mode is default with no light flash",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open / in a fresh browser session, clear cookies/localStorage, reload, and capture initial screenshot",
+          "expected": "Initial paint is dark theme",
+          "observed": "Initial screenshot remained dark (charcoal background, light text)"
+        },
+        {
+          "action": "Wait for settled state and capture second screenshot",
+          "expected": "Settled UI remains dark with no intermediate light state",
+          "observed": "Settled screenshot matches dark theme tokens"
+        },
+        {
+          "action": "Capture computed theme colors",
+          "expected": "Dark background and light foreground token values",
+          "observed": "body background rgb(17, 19, 22), body color rgb(243, 244, 246), colorScheme dark"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-005-cold-initial.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-005-cold-settled.png"
+        ],
+        "consoleErrors": "none (agent-browser errors returned no entries)",
+        "network": "Route navigation to GET / on localhost completed; request-level status codes not exposed by agent-browser in this run"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-FOUNDATION-006",
+      "title": "Responsive navigation stays operable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Desktop viewport (1440x900): traverse Home→About→Projects→Blog→Contact using nav links",
+          "expected": "All primary routes reachable with visible, accessible controls",
+          "observed": "All routes reachable via nav; screenshots captured per route"
+        },
+        {
+          "action": "Mobile viewport (390x844): open menu toggle and navigate to primary routes",
+          "expected": "Mobile controls usable and routes reachable",
+          "observed": "Toggle exposed menu items Home/About/Projects/Blog/Contact and routes were reachable"
+        },
+        {
+          "action": "Measure nav clipping/overlap via bounding checks",
+          "expected": "No clipping or overflow for nav controls",
+          "observed": "clippedLinks=[] on desktop and mobile; nav scrollWidth equals clientWidth in both checks"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-desktop-home.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-desktop-about.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-desktop-projects.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-desktop-blog.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-desktop-contact.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-home.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-menu-expanded.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-about.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-projects.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-blog.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-006-mobile-contact.png"
+        ],
+        "consoleErrors": "none (agent-browser errors returned no entries)",
+        "network": "Navigation across /, /about, /projects, /blog, /contact on localhost completed in desktop and mobile viewports"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-FOUNDATION-007",
+      "title": "Typography system is consistently applied",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Sample representative body text styles on About and Blog routes",
+          "expected": "Body text uses configured sans-serif stack",
+          "observed": "Body headings/text use Inter, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        },
+        {
+          "action": "Sample metadata styles",
+          "expected": "Metadata uses monospace styling",
+          "observed": "Metadata uses JetBrains Mono, Fira Code, Consolas, Courier New, monospace"
+        },
+        {
+          "action": "Sample code element styles on Blog route",
+          "expected": "Code uses monospace styling",
+          "observed": "Code sample (/blog inline code) uses JetBrains Mono/Fira Code monospace stack"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-007-about-typography.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-007-blog-typography.png"
+        ],
+        "consoleErrors": "none (agent-browser errors returned no entries)",
+        "network": "Typography checks executed on /about and /blog via local route loads"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-FOUNDATION-008",
+      "title": "Accent color token is consistently applied",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Capture accent token and representative accent element colors on multiple primary routes",
+          "expected": "Consistent red accent token across links/borders/headings",
+          "observed": "cssAccent consistently #e11d48 on /, /about, /projects, /blog, /contact"
+        },
+        {
+          "action": "Compare active nav and heading accent styles",
+          "expected": "Same red token applied to active nav and heading accent border",
+          "observed": "activeNavColor rgb(225, 29, 72) and heading accent border include rgb(225, 29, 72) across sampled routes"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-008-about-accent.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-008-blog-accent.png"
+        ],
+        "consoleErrors": "none (agent-browser errors returned no entries)",
+        "network": "Route loads for /, /about, /projects, /blog, /contact completed while sampling computed colors"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-FOUNDATION-009",
+      "title": "Direct-load and traversal are stable",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Direct-open /about, /projects, /blog, /contact",
+          "expected": "Each route renders route-specific content and shared shell",
+          "observed": "Each direct-load had header nav present and route-specific h1 (About/Projects/Blog/Contact)"
+        },
+        {
+          "action": "Traverse nav Home→About→Projects→Blog→Contact→Home",
+          "expected": "Deterministic traversal with no runtime errors",
+          "observed": "Traversal succeeded with expected URLs at each step"
+        },
+        {
+          "action": "Collect full console and uncaught error logs after traversal",
+          "expected": "No uncaught runtime errors",
+          "observed": "Console contained only Vite debug connect logs; agent-browser errors returned no entries"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-009-direct-about.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-009-direct-projects.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-009-direct-blog.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-009-direct-contact.png",
+          "foundation-shell/foundation-theme/VAL-FOUNDATION-009-traversal-home-end.png"
+        ],
+        "consoleErrors": "none (uncaught errors). Console log only showed repeated '[debug] [vite] connecting...' and '[debug] [vite] connected.' entries during local dev navigation.",
+        "network": "Direct route opens and nav traversal completed for /about, /projects, /blog, /contact, /"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "On /projects, semantic locator find role link click --name \"Blog\" matched both nav Blog and a content link (Live Blog Route), causing strict-mode ambiguity.",
+      "resolved": true,
+      "resolution": "Switched to snapshot refs and clicked the nav Blog element by reference to continue validation deterministically.",
+      "affectedAssertions": [
+        "VAL-FOUNDATION-006",
+        "VAL-FOUNDATION-009"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested 5 assertions: 5 passed, 0 failed, 0 blocked."
+}

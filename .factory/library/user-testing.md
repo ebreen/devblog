@@ -21,3 +21,16 @@ Testing surface findings, tool choices, and runtime constraints for validators.
   - Dry-run machine profile: 16 logical cores, ~47.93 GiB total RAM, ~28.3 GiB free RAM.
   - Conservative 70% headroom target supports 5 concurrent browser validations while preserving margin for dev tooling and system overhead.
 - **Operational guidance:** if resource pressure is observed during validation, reduce concurrency to 3 before retrying.
+
+## Flow Validator Guidance: browser
+
+- Use the shared app URL: `http://localhost:4321`.
+- Stay within assigned assertion scope and do not mutate repository files outside the flow report path.
+- Keep browser sessions isolated (incognito/new context) per validator run.
+- Save screenshots/log evidence only under the assigned mission evidence directory.
+- Do not restart or reconfigure shared services unless explicitly assigned in isolation context.
+
+## Environment Notes
+
+- In this runner's PowerShell context, prefer `;` separators instead of `&&` for sequential commands.
+- Headless browser screenshots do not include URL bar chrome; capture URL transitions via explicit URL logs.
