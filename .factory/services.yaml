@@ -1,0 +1,14 @@
+commands:
+  install: npm install
+  typecheck: npm run astro check
+  build: npm run build
+  test: npm run astro check
+  lint: npm run astro check
+
+services:
+  web:
+    start: npm run dev -- --host 0.0.0.0 --port 4321
+    stop: powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 4321 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+    healthcheck: curl -sf http://localhost:4321
+    port: 4321
+    depends_on: []
