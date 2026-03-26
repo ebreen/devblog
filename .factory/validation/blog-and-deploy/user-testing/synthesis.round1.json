@@ -1,0 +1,48 @@
+{
+  "milestone": "blog-and-deploy",
+  "round": 1,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 18,
+    "passed": 16,
+    "failed": 0,
+    "blocked": 2
+  },
+  "passedAssertions": [
+    "VAL-BLOG-LIST-001",
+    "VAL-BLOG-LIST-002",
+    "VAL-BLOG-LIST-003",
+    "VAL-BLOG-LIST-004",
+    "VAL-BLOG-LIST-005",
+    "VAL-BLOG-LIST-007",
+    "VAL-BLOG-POST-001",
+    "VAL-BLOG-POST-002",
+    "VAL-BLOG-POST-003",
+    "VAL-BLOG-POST-004",
+    "VAL-BLOG-POST-005",
+    "VAL-BLOG-POST-006",
+    "VAL-CROSS-001",
+    "VAL-CROSS-002",
+    "VAL-CROSS-003",
+    "VAL-CROSS-006"
+  ],
+  "failedAssertions": [],
+  "blockedAssertions": [
+    {
+      "id": "VAL-BLOG-LIST-006",
+      "blockedBy": "Zero-valid-post fixture scenario was not available in this browser-only run; requires isolated fixture setup."
+    },
+    {
+      "id": "VAL-BLOG-POST-007",
+      "blockedBy": "Schema-invalid-entry route scenario was not available; unknown-slug 404 semantics were verified."
+    }
+  ],
+  "appliedUpdates": [
+    {
+      "target": "user-testing.md",
+      "description": "Documented fixture-dependent setup guidance for empty-state and schema-invalid blog route assertions, plus session fallback note.",
+      "source": "flow-report"
+    }
+  ],
+  "previousRound": null
+}

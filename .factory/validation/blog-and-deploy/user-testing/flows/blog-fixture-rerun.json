@@ -1,0 +1,86 @@
+{
+  "groupId": "blog-fixture-rerun",
+  "testedAt": "2026-03-26T21:00:15.618960+00:00",
+  "isolation": {
+    "missionDir": "C:\\Users\\babyboy\\.factory\\missions\\fee165ec-56d6-44ff-92fa-af07a6004ff6",
+    "appUrl": "http://localhost:4321",
+    "scope": "Browser-only fixture rerun for VAL-BLOG-LIST-006 and VAL-BLOG-POST-007"
+  },
+  "toolsUsed": [
+    "agent-browser",
+    "python3"
+  ],
+  "assertions": [
+    {
+      "id": "VAL-BLOG-LIST-006",
+      "title": "Empty-state is rendered when there are no valid posts",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open /blog?fixture=zero-valid-posts",
+          "expected": "Clear empty-state message is visible and list is not rendered as visible entries",
+          "observed": "URL stayed on /blog?fixture=zero-valid-posts; visible blog item count was 0 and visible empty-state count was 1."
+        },
+        {
+          "action": "Control check on /blog without fixture",
+          "expected": "Normal listing still appears and page remains functional",
+          "observed": "URL transitioned to /blog; visible blog item count was 3 and empty-state count was 0."
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-LIST-006-fixture-zero-valid-posts.png",
+          "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-LIST-006-control-listing.png"
+        ],
+        "domAndUrlChecks": "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-LIST-006-dom-url-checks.json",
+        "consoleErrors": "none",
+        "network": "blog-and-deploy/blog-fixture-rerun/route-status-evidence.json (/blog?fixture=zero-valid-posts -> 200, /blog -> 200)"
+      },
+      "reasoning": "Matches contract language: empty-state rendered under zero-valid fixture, list entries absent in fixture mode, and non-fixture route remains functional with normal listing.",
+      "issues": null
+    },
+    {
+      "id": "VAL-BLOG-POST-007",
+      "title": "Invalid post routes show not-found semantics",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Open /blog?fixture=schema-invalid-entry",
+          "expected": "Fixture note and deterministic invalid-entry route link are exposed",
+          "observed": "Fixture note visible count was 1 and deterministic link to /blog/__fixture-schema-invalid-entry__ was present."
+        },
+        {
+          "action": "Navigate via fixture link to /blog/__fixture-schema-invalid-entry__",
+          "expected": "Not-found UI appears, article selectors/content are absent, and 404 semantics are observable",
+          "observed": "Title became 'Not Found | Portfolio'; main article count was 0; not-found page content was shown."
+        },
+        {
+          "action": "Open /blog/does-not-exist",
+          "expected": "Consistent not-found behavior with schema-invalid route",
+          "observed": "Rendered same not-found UI with title 'Not Found | Portfolio' and main article count 0."
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-POST-007-fixture-entry-link.png",
+          "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-POST-007-fixture-route-not-found.png",
+          "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-POST-007-unknown-slug-not-found.png"
+        ],
+        "domAndUrlChecks": "blog-and-deploy/blog-fixture-rerun/VAL-BLOG-POST-007-dom-url-checks.json",
+        "consoleErrors": "none",
+        "network": "blog-and-deploy/blog-fixture-rerun/route-status-evidence.json (/blog/__fixture-schema-invalid-entry__ -> 404, /blog/does-not-exist -> 404)"
+      },
+      "reasoning": "Matches contract language: unknown and schema-invalid slugs both resolve to not-found UI, do not render stale article selectors, and expose 404 semantics.",
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "Interactive snapshots can still list hidden blog links, so visibility-sensitive checks required selector filters using :not([hidden]).",
+      "resolved": true,
+      "resolution": "Used explicit DOM count checks on visible-only selectors to confirm fixture behavior."
+    }
+  ],
+  "blockers": [],
+  "summary": "Revalidated 2 previously blocked assertions. VAL-BLOG-LIST-006 and VAL-BLOG-POST-007 both passed with fixture evidence, DOM checks, console checks, URL transitions, and observable status semantics."
+}

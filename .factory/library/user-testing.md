@@ -45,4 +45,6 @@ Testing surface findings, tool choices, and runtime constraints for validators.
   - Open `http://localhost:4321/blog?fixture=schema-invalid-entry` (legacy fallback: `?schemaInvalid=1`).
   - Click the deterministic fixture link to `/blog/__fixture-schema-invalid-entry__`.
   - Expected behavior: not-found UI is rendered, article selectors are absent, and observable status checks report 404 semantics.
+- Visibility-sensitive DOM checks:
+  - Fixture pages can contain hidden fallback links; when counting rendered entries, use visible-only selectors (for example, `:not([hidden])`) to avoid false positives.
 - If named browser sessions fail to initialize with local bind errors, fall back to a single session and explicitly clear storage/cookies before clean-session assertions.
