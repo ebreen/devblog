@@ -1,0 +1,106 @@
+---
+import "../styles/global.css";
+
+type NavItem = {
+  label: "Home" | "About" | "Projects" | "Blog" | "Contact";
+  href: "/" | "/about" | "/projects" | "/blog" | "/contact";
+};
+
+const navItems: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" }
+];
+
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const title = Astro.props.title ? `${Astro.props.title} | Portfolio` : "Portfolio";
+
+const isActive = (href: NavItem["href"]) =>
+  href === "/" ? normalizedPath === "/" : normalizedPath === href || normalizedPath.startsWith(`${href}/`);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>{title}</title>
+    <style is:global>
+      html,
+      body {
+        background: #111316;
+        color: #f3f4f6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <header class="site-header">
+        <div class="container header-inner">
+          <a class="brand" href="/">Portfolio</a>
+
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Toggle navigation menu"
+          >
+            Menu
+          </button>
+
+          <nav id="site-nav" class="site-nav" data-open="false" aria-label="Primary">
+            <ul class="nav-list">
+              {
+                navItems.map(({ label, href }) => (
+                  <li>
+                    <a class="nav-link" href={href} aria-current={isActive(href) ? "page" : undefined}>
+                      {label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <main class="container">
+        <slot />
+      </main>
+    </div>
+
+    <script is:inline>
+      const menuButton = document.querySelector(".menu-toggle");
+      const siteNav = document.getElementById("site-nav");
+      const mobileQuery = window.matchMedia("(max-width: 48rem)");
+
+      if (menuButton instanceof HTMLButtonElement && siteNav) {
+        const setOpen = (open) => {
+          siteNav.setAttribute("data-open", String(open));
+          menuButton.setAttribute("aria-expanded", String(open));
+        };
+
+        menuButton.addEventListener("click", () => {
+          const isOpen = siteNav.getAttribute("data-open") === "true";
+          setOpen(!isOpen);
+        });
+
+        siteNav.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            if (mobileQuery.matches) {
+              setOpen(false);
+            }
+          });
+        });
+
+        if (!mobileQuery.matches) {
+          setOpen(false);
+        }
+      }
+    </script>
+  </body>
+</html>
