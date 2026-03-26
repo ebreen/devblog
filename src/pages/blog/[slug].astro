@@ -72,17 +72,20 @@ const { Content } = await entry.render();
     padding: 0.2rem 0.55rem;
   }
 
-  .post-content :where(h2, h3, h4) {
+  .post-content :global(h2),
+  .post-content :global(h3),
+  .post-content :global(h4) {
     margin-top: 1.5rem;
     color: var(--text);
   }
 
-  .post-content :where(ul, ol) {
+  .post-content :global(ul),
+  .post-content :global(ol) {
     margin: 0 0 1rem;
     padding-left: 1.35rem;
   }
 
-  .post-content :where(pre) {
+  .post-content :global(pre) {
     margin: 1rem 0;
     padding: 0.9rem;
     border: 1px solid var(--border);
@@ -91,16 +94,20 @@ const { Content } = await entry.render();
     overflow-x: auto;
   }
 
-  .post-content :where(pre code) {
-    display: block;
-    width: max-content;
-    min-width: 100%;
-  }
-
-  .post-content :where(code):not(pre code) {
+  .post-content :global(code) {
     background: rgb(255 255 255 / 6%);
     border: 1px solid var(--border);
     border-radius: 0.35rem;
     padding: 0.08rem 0.35rem;
+  }
+
+  .post-content :global(pre code) {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
   }
 </style>
