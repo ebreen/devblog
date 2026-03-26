@@ -1,0 +1,40 @@
+{
+  "milestone": "deploy-evidence",
+  "round": 1,
+  "status": "pass",
+  "validatorsRun": {
+    "test": {
+      "passed": true,
+      "command": "npm --prefix \"C:\\Users\\babyboy\\Documents\\git\\portfolio-blog\" run astro check",
+      "exitCode": 0
+    },
+    "typecheck": {
+      "passed": true,
+      "command": "npm --prefix \"C:\\Users\\babyboy\\Documents\\git\\portfolio-blog\" run astro check",
+      "exitCode": 0
+    },
+    "lint": {
+      "passed": true,
+      "command": "npm --prefix \"C:\\Users\\babyboy\\Documents\\git\\portfolio-blog\" run astro check",
+      "exitCode": 0
+    }
+  },
+  "reviewsSummary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "failedFeatures": []
+  },
+  "blockingIssues": [],
+  "appliedUpdates": [],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Define a canonical evidence-path convention for validation artifacts (prefer repo-relative paths over machine-specific absolute paths) to keep reports portable across machines and workers.",
+      "evidence": "Deploy-evidence flow artifacts use absolute Windows screenshot paths in `.factory/validation/deploy-evidence/user-testing/flows/deployed-cross-routes.json`, while prior milestone flow artifacts use relative paths in `.factory/validation/blog-and-deploy/user-testing/flows/cross-area.json`.",
+      "isSystemic": true
+    }
+  ],
+  "rejectedObservations": [],
+  "previousRound": null
+}

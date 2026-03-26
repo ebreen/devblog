@@ -1,0 +1,28 @@
+{
+  "featureId": "deployed-vercel-route-evidence",
+  "reviewedAt": "2026-03-26T22:53:02.4681095+01:00",
+  "commitId": "ccce5bf72fc6afb4798fac1159f50e29db154e56",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "The feature commit correctly adds deployed-environment validation evidence for both required assertions (VAL-CROSS-004 and VAL-CROSS-005) on the actual Vercel URL, including route refresh checks for all required valid non-root routes and HTTP 404 evidence for unknown routes. No blocking correctness, security, or reliability defects were found for feature scope.",
+    "issues": [
+      {
+        "file": ".factory/validation/deploy-evidence/user-testing/flows/unknown-route-ui-checks.json",
+        "line": 9,
+        "severity": "non_blocking",
+        "description": "Both unknown-route evidence entries record `notFoundMain: false` (lines 9 and 22), so the custom not-found-container signal did not validate positively even though the assertion is marked pass. The pass is still supported by title/h1/articleCount and 404 status evidence, but this field currently weakens validation clarity."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "Deploy-evidence flow artifacts embed machine-specific absolute Windows screenshot paths, while earlier flow artifacts use portable relative evidence paths; shared guidance does not define a canonical evidence-path format.",
+      "evidence": "Absolute paths appear in `.factory/validation/deploy-evidence/user-testing/flows/deployed-cross-routes.json` lines 38-47 and 73-74; existing relative-path convention appears in `.factory/validation/blog-and-deploy/user-testing/flows/cross-area.json` lines 55-56, 116, and 152-153."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Pass with one non-blocking validation-quality issue. The deployed Vercel evidence coverage matches the feature requirements, but unknown-route UI evidence includes a contradictory `notFoundMain: false` signal and path-format consistency should be standardized."
+}
