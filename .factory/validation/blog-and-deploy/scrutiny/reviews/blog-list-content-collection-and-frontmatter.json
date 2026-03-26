@@ -1,0 +1,28 @@
+{
+  "featureId": "blog-list-content-collection-and-frontmatter",
+  "reviewedAt": "2026-03-26T20:11:37.260647Z",
+  "commitId": "efcef93",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Implementation covers the feature scope: typed content schema, deterministic newest-first sorting with slug tie-breaker, metadata rendering on /blog, explicit-vs-fallback reading-time behavior, empty-state handling, and list-to-slug navigation scaffolding. One non-blocking edge case was identified in schema validation.",
+    "issues": [
+      {
+        "file": "src/content.config.ts",
+        "line": 9,
+        "severity": "non_blocking",
+        "description": "`readingTime` is validated with `z.string().min(1).optional()` but not trimmed. A whitespace-only frontmatter value (e.g., \"   \") passes schema, then `getReadingTime` returns it verbatim, which can render visually blank reading-time metadata and conflict with VAL-BLOG-LIST-003's non-blank metadata intent. Prefer `z.string().trim().min(1).optional()`."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "knowledge",
+      "observation": "Windows/WSL path translation for invoking `.factory/init.sh` via bash is not documented in shared guidance; the worker spent retries on failing path forms before using the working `/mnt/c/...` path.",
+      "evidence": "Transcript skeleton for session adfcb24f-1d64-46a4-8a2a-bccfed5f28dc shows failed executes: `bash \"C:\\\\Users\\\\...\\\\.factory\\\\init.sh\"` and `bash /c/Users/.../.factory/init.sh` (No such file), followed by successful `bash /mnt/c/Users/.../.factory/init.sh`."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Pass with one non-blocking issue: feature behavior aligns with blog list/content-model assertions, but readingTime schema should trim whitespace-only values to avoid blank metadata rendering."
+}

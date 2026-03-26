@@ -22,3 +22,4 @@ Architecture and implementation decisions for workers.
   - Consistent red accent token
   - Sans-serif body text, monospace for metadata/code
   - Single-column readability for blog content
+- Astro style scoping note: selectors targeting rendered Markdown/MDX descendants inside `<Content />` should use `:global(...)` (or an equivalent global strategy), because scoped descendant selectors may not match generated content nodes.

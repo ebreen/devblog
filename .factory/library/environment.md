@@ -12,3 +12,4 @@ Environment variables, external dependencies, and setup notes for this mission.
 - Content source: local Markdown/MDX files committed in-repo.
 - External runtime dependencies: none (no DB/cache/backend service).
 - Deployment target: GitHub-integrated Vercel project with custom domains.
+- On Windows shells, invoking `.factory/init.sh` through `bash` should use WSL-style paths (for example, `/mnt/c/Users/.../.factory/init.sh`) rather than `C:\...` or `/c/...` path forms.

@@ -1,0 +1,28 @@
+{
+  "featureId": "blog-post-rendering-and-code-highlighting",
+  "reviewedAt": "2026-03-26T20:12:09.318864+00:00",
+  "commitId": "6691b85ec1bb1e2c648e88baf829474120d529c1",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Feature behavior aligns with VAL-BLOG-POST-001..007: valid blog routes render Markdown/MDX content and metadata, reading-time fallback is wired through shared logic, syntax highlighting is configured with Shiki, and invalid slugs resolve to explicit not-found UI. One non-blocking styling issue was found in post-content selector scoping.",
+    "issues": [
+      {
+        "file": "src/pages/blog/[slug].astro",
+        "line": 75,
+        "severity": "non_blocking",
+        "description": "The post-body selectors are scoped as `.post-content :where(...)`, which Astro compiles to descendants requiring the component scope attribute. Rendered Markdown/MDX nodes from `<Content />` do not carry that attribute, so these rules do not apply as intended (see compiled selector in `dist/blog/shipping-a-minimal-portfolio/index.html:2` versus rendered nodes like `<h2>`/`<ul>`/`<pre>` at lines 8/10/17). Consider using `:global(...)` for post-content descendants."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "Mission guidance does not currently document Astro scoped-style behavior for rendered Markdown/MDX (`<Content />`) descendants, which can silently bypass intended post-body styling unless `:global` is used.",
+      "evidence": "Worker implemented scoped selectors in `src/pages/blog/[slug].astro:75-100`; compiled output shows scope-qualified descendant selectors (`dist/blog/shipping-a-minimal-portfolio/index.html:2`) while rendered Markdown nodes lack scope attributes (`.../index.html:8,10,17`)."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Pass. Core user-visible requirements for post rendering, metadata, fallback reading time, syntax highlighting, overflow behavior, and invalid-slug not-found semantics are implemented. One non-blocking CSS scoping issue affects intended post-body styling coverage."
+}
