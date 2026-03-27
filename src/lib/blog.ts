@@ -13,9 +13,9 @@ export const sortBlogEntries = (entries: CollectionEntry<"blog">[]) =>
   });
 
 export const formatBlogDate = (value: Date) =>
-  new Intl.DateTimeFormat("en-US", {
+  new Intl.DateTimeFormat("en-GB", {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric"
   }).format(value);
 
