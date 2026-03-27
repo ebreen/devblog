@@ -1,10 +1,10 @@
 :root {
-  --bg: #111316;
-  --surface: #171a1f;
-  --text: #f3f4f6;
-  --muted: #a1a1aa;
-  --accent: #e11d48;
-  --border: #2b2f36;
+  --bg: #111111;
+  --surface: #1a1a1a;
+  --text: #ffffff;
+  --muted: #888888;
+  --accent: #ff3e3e;
+  --border: #333333;
   --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
   color-scheme: dark;
@@ -26,9 +26,15 @@ body {
 }
 
 body {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #cccccc;
+}
+
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  color: var(--text);
 }
 
 code,
@@ -65,9 +71,7 @@ summary:focus-visible {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid var(--border);
-  background: rgb(17 19 22 / 92%);
-  backdrop-filter: blur(10px);
+  background: var(--bg);
 }
 
 .header-inner {
@@ -75,26 +79,33 @@ summary:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-block: 0.9rem;
+  padding-block: 1.5rem;
 }
 
 .brand {
   color: var(--text);
-  font-size: 1.05rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.home-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 1.5;
 }
 
 .menu-toggle {
   display: none;
-  border: 1px solid var(--accent);
-  border-radius: 0.5rem;
+  border: 0;
   background: transparent;
   color: var(--text);
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem;
   font: inherit;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 
 .site-nav {
@@ -103,7 +114,7 @@ summary:focus-visible {
 
 .nav-list {
   display: flex;
-  gap: 0.65rem;
+  gap: 1.5rem;
   align-items: center;
   list-style: none;
   margin: 0;
@@ -114,53 +125,55 @@ summary:focus-visible {
   display: inline-block;
   color: var(--text);
   text-decoration: none;
-  padding: 0.36rem 0.66rem;
-  border: 1px solid transparent;
-  border-radius: 0.45rem;
-  transition: border-color 160ms ease, color 160ms ease;
+  font-size: 0.95rem;
+  transition: color 160ms ease;
 }
 
 .nav-link:hover {
-  border-color: var(--accent);
+  color: var(--muted);
 }
 
 .nav-link[aria-current="page"] {
-  border-color: var(--accent);
-  color: var(--accent);
+  color: var(--muted);
 }
 
 main {
-  padding-block: 2rem 3rem;
+  padding-block: 3rem 5rem;
 }
 
 .page {
-  max-width: min(90ch, 1000px);
+  max-width: 800px;
+  margin-inline: auto;
 }
 
 h1 {
-  margin: 0 0 1rem;
-  padding-left: 0.75rem;
-  border-left: 0.22rem solid var(--accent);
-  font-size: clamp(1.8rem, 3vw, 2.45rem);
-  line-height: 1.2;
+  margin: 0 0 1.5rem;
+  padding-left: 0;
+  border-left: 0;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 h2 {
-  margin-top: 1.7rem;
-  margin-bottom: 0.75rem;
-  color: var(--accent);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+  font-size: 1.8rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 p {
-  margin: 0 0 1rem;
+  margin: 0 0 1.5rem;
+  color: #cccccc;
+  font-size: 1.15rem;
 }
 
 .section {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding-block: 1rem;
+  margin-bottom: 2rem;
 }
 
 .meta {

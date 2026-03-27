@@ -2,12 +2,11 @@
 import "../styles/global.css";
 
 type NavItem = {
-  label: "Home" | "About" | "Projects" | "Blog" | "Contact";
-  href: "/" | "/about" | "/projects" | "/blog" | "/contact";
+  label: "About" | "Projects" | "Blog" | "Contact";
+  href: "/about" | "/projects" | "/blog" | "/contact";
 };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Projects", href: "/projects" },
   { label: "Blog", href: "/blog" },
@@ -40,17 +39,9 @@ const isActive = (href: NavItem["href"]) =>
     <div class="layout">
       <header class="site-header">
         <div class="container header-inner">
-          <a class="brand" href="/">Portfolio</a>
-
-          <button
-            class="menu-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="site-nav"
-            aria-label="Toggle navigation menu"
-          >
-            Menu
-          </button>
+          <a class="brand" href="/" aria-label="Go to homepage">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="home-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </a>
 
           <nav id="site-nav" class="site-nav" data-open="false" aria-label="Primary">
             <ul class="nav-list">
