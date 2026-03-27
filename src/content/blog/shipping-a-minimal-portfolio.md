@@ -1,6 +1,6 @@
 ---
 title: "Shipping a Minimal Portfolio with Astro"
-date: "2026-03-22"
+date: "2026-01-21"
 tags:
   - astro
   - portfolio
