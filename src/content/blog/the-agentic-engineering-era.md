@@ -100,6 +100,8 @@ I genuinely would not have started learning about all of this since December 202
 
 We're living through something weird. The gap between "AI can technically do this" and "AI can reliably do this in production" is closing faster than anyone expected. Three months ago I was skeptical. Today I'm restructuring my side projects around agentic workflows. I don't know what the next three months will bring, but if it's anything like the last three — I should probably start writing these posts more often.
 
-**Coming up next:** I'll be writing about my Openclaw adventures — Yes i was on clawdbot -> Moltclaw -> Openclaw hype train. Sneak peek: one of my openclaw bots entered a SuperTeam Earn Coding Bounty and submitted a project entirely on its own (with a little push from me). And another one? I was kinda mean to it. I gave it the sole purpose of making money — or die in 30 days. More on both of those soon.
+Next up: the OpenClaw series. It started as Clawdbot, became MoltClaw, and now it's just OpenClaw. The name changes alone are worth a separate post at this point. 
+
+Spoiler: I played around with OpenClaw during January and February, one of my bots entered a SuperTeam Earn Coding Bounty solo — barely any push needed from me. Another bot? Made its only job earn money or die within 30 days. More soon.
 
 *— Eirik*
