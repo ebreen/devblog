@@ -23,23 +23,14 @@ const { Content } = await entry.render();
 <BaseLayout title={entry.data.title}>
   <article class="page post-page">
     <header class="post-header">
-      <h1>{entry.data.title}</h1>
-      <p class="meta">
+      <div class="meta-top">
         <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-        {" · "}
-        <span>{getReadingTime(entry)}</span>
-      </p>
-      {
-        entry.data.tags.length > 0 && (
-          <ul class="tag-list" aria-label="Tags">
-            {entry.data.tags.map((tag) => (
-              <li class="tag">{tag}</li>
-            ))}
-          </ul>
-        )
-      }
+        <span class="reading-time">{getReadingTime(entry)}</span>
+      </div>
+      <h1>{entry.data.title}</h1>
+      <hr class="title-divider" />
     </header>
-    <section class="section post-content">
+    <section class="post-content">
       <Content />
     </section>
   </article>
@@ -47,50 +38,47 @@ const { Content } = await entry.render();
 
 <style>
   .post-page {
-    max-width: min(72ch, 100%);
+    max-width: 800px;
+    margin-inline: auto;
   }
 
   .post-header {
-    margin-bottom: 1rem;
+    margin-bottom: 2.5rem;
   }
 
-  .tag-list {
-    list-style: none;
+  .meta-top {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin: 0.75rem 0 0;
-    padding: 0;
-  }
-
-  .tag {
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--muted);
+    justify-content: space-between;
+    align-items: center;
+    color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    padding: 0.2rem 0.55rem;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .post-content :global(h2),
-  .post-content :global(h3),
-  .post-content :global(h4) {
-    margin-top: 1.5rem;
+  .title-divider {
+    border: 0;
+    height: 2px;
+    background: var(--accent);
+    margin: 1.5rem 0 2rem;
+    width: 100%;
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.8rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
     color: var(--text);
   }
 
-  .post-content :global(ul),
-  .post-content :global(ol) {
-    margin: 0 0 1rem;
-    padding-left: 1.35rem;
-  }
-
   .post-content :global(pre) {
-    margin: 1rem 0;
-    padding: 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 0.65rem;
-    max-width: 100%;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #1a1a1a;
+    border: 0;
+    border-radius: 4px;
     overflow-x: auto;
   }
 
