@@ -1,11 +1,11 @@
 ---
 title: "Shipping a Minimal Portfolio with Astro"
-date: "2026-01-21"
+date: "2026-01-12"
 tags:
   - astro
   - portfolio
   - design
-readingTime: "6 min read"
+readingTime: "1 min read"
 ---
 
 This post captures the shape of my minimalist portfolio stack and why I kept the implementation intentionally small.
