@@ -11,10 +11,14 @@
             "id": "3d7bfd7d91091c24",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "2026/02-february/the-agentic-engineering-era.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "the-agentic-engineering-era"
             }
           }
         ]
@@ -177,5 +181,12 @@
     }
   },
   "active": "3d7bfd7d91091c24",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "2026/02-february/images/opencode_models.png",
+    "2026/02-february/images/claudecode.png",
+    "2026/02-february/images/opencode.png",
+    "2026/02-february/images/opus45.png",
+    "2026/01-january/shipping-a-minimal-portfolio.md",
+    "the-agentic-engineering-era.md"
+  ]
 }
