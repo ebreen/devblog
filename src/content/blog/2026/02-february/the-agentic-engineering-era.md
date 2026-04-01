@@ -15,6 +15,7 @@ I need to get these thoughts down before the next wave hits and I forget what it
 
 ## The Moment It Changed: Claude Opus 4.5
 
+[![Anthropic Claude Opus 4.5 announcement video](./images/opus45.png)](https://www.youtube.com/watch?v=56kq0VTkU4k)
 I'd been poking at AI coding tools on and off for most of 2025. They were cool, sometimes useful, often frustrating. The models could write code, sure, but getting them to actually *do work* — as in, plan a multi-step task, call the right tools, and not lose the plot halfway through — was painful. Agentic AI, as people were calling it, sounded great in theory. In practice? Not really usable. Not for me, anyway.
 
 Then on November 24, 2025, Anthropic dropped Claude Opus 4.5, and something genuinely shifted.
@@ -25,25 +26,26 @@ That was the unlock. That was the moment I went from "AI is a neat toy" to "okay
 
 ## Agent Harnesses: Where the Real Magic Happens
 
+[![OpenCode model switcher](./images/claudecode.png)](https://code.claude.com/docs/en/overview)
 Claude Code was my first real agent harness. Terminal-based, tightly integrated with Anthropic's models, and genuinely good at sustained coding sessions. If you're on an Anthropic subscription and you haven't tried it, you're sleeping on it.
 
-But here's the thing — I'm a tinkerer. I wanted to try other models. The open-source space was exploding with capable models, and I wanted to run them through the same kind of agentic workflows. So I started exploring alternatives.
+But here's the thing — I wanted to try other models. The open-source space was exploding with capable models, and I wanted to run them through the same kind of agentic workflows. So I started exploring alternatives.
 
-**OpenCode** became my go-to for model flexibility. It's an open-source agent that supports 75+ models from every major provider. I could swap between Claude, Kimi K2 Thinking, MiniMax M2.5, GLM models — whatever I wanted to throw at a problem. The freedom to BYOK (bring your own key) without switching tools entirely was a game-changer.
-
-**Factory Droid** impressed me with its enterprise-grade approach, and honestly, I've been finding myself using it more and more. It runs in your terminal like Claude Code, but supports both Anthropic and OpenAI models in one place. The subscription is genuinely generous with the amount of tokens you get, and they have this "multiplier" system where different models cost different amounts from your token pool — some cheaper, some more expensive — so you can easily switch between a heavy-hitter like Opus for planning and a faster model for execution without doing mental math on API bills. Not being locked to a single company's models is a huge deal. Their approach to specialized "Droids" for different tasks (coding, debugging, reviewing) maps well to how I think about breaking down work.
+**OpenCode** became my go-to for model flexibility. It's an open-source agent that supports 75+ models from every major provider. Over 100k stars on Github. I could swap between Claude, Kimi K2 Thinking, MiniMax M2.5, GLM models — whatever I wanted to throw at a problem. The freedom to BYOK (bring your own key) without switching tools entirely was a game-changer.
+[![OpenCode model switcher](./images/opencode.png)](https://github.com/anomalyco/opencode)
+**Factory Droid** impressed me with its enterprise-grade approach, and honestly, I've been finding myself using it more and more. It runs in your terminal like Claude Code, but supports both Anthropic, OpenAI models and some opensource models they offer through their "Droid Core" offering, or you can install custom models with "BYOK" concept. The subscription is genuinely generous with the amount of tokens you get, and they have this "multiplier" system where different models cost different amounts from your token pool — some cheaper, some more expensive — so you can easily switch between a heavy-hitter like Opus for planning and a faster model for execution without doing mental math on API bills. Not being locked to a single company's models is a huge deal. Their approach to specialized "Droids" for different tasks (coding, debugging, reviewing) maps well to how I think about breaking down work.
 
 ## Open-Source Models Caught Up (Kind of)
 
 Here's where it gets really interesting. Starting in November, the open-source model releases came fast and furious, and the quality jump was dramatic.
 
-**Kimi K2 Thinking** (November 6, 2025) from Moonshot AI was early in this wave. A trillion-parameter MoE model with solid reasoning capabilities — it was one of the first open-weight models that felt genuinely competitive on coding tasks. Then on January 27 they followed up with **Kimi K2.5**, which added native multimodal capabilities and an "Agent Swarm" feature that could coordinate up to 100 sub-agents in parallel. Wild stuff.
+**Kimi K2 Thinking** (November 6, 2025) from Moonshot AI was early in this wave. A trillion-parameter MoE model with solid reasoning capabilities — it was one of the first open-weight models that felt genuinely competitive on coding tasks. Then on January 27 they followed up with **Kimi K2.5**, which added native multimodal capabilities and was a big jump in intelligence, coming close to a Sonnet 4.5 for a fraction of the price. Wild stuff.
 
 **Z.ai** (formerly Zhipu AI) had an incredible run. It started back in July 2025 with **GLM-4.5**, their native agentic LLM that offered one-click compatibility with the Claude Code framework — that was an early signal that open-source models were taking agentic workflows seriously. Then they dropped **GLM-4.7** on December 22, which was the first open-source model I used that could reliably do "think-then-act" execution in agent frameworks like Claude Code and OpenCode. It ranked #1 among open-source models on agentic coding benchmarks at the time. Then, just two weeks ago on February 11, they released **GLM-5** — a 744B parameter beast that topped open-source leaderboards across reasoning, coding, and agentic tasks. Their paper was literally titled "From Vibe Coding to Agentic Engineering," which captures the shift perfectly.
 
 **MiniMax M2.5** dropped February 12, scoring 80.2% on SWE-bench Verified — within striking distance of Opus 4.5's 80.9% — while costing roughly a tenth to a twentieth of the price. The efficiency is absurd.
 
-Now, here's the honest take: these open-source models are *incredible* at raw coding. On benchmarks, they're neck and neck with the closed models from Anthropic and OpenAI. But where they still struggled — and this is the key insight that drove most of my tooling choices — was in **following tool calls and instructions reliably**. They could write the code, but they'd stumble when asked to use tools in sequence, maintain context across long agent sessions, or follow complex multi-step plans without going off the rails.
+Now, here's my take: these open-source models are *incredible* at raw coding. On benchmarks, they're neck and neck with the closed models from Anthropic and OpenAI. But where they still struggled — and this is the key insight that drove most of my tooling choices — was in **following tool calls and instructions reliably**. They could write the code, but they'd stumble when asked to use tools in sequence, maintain context across long agent sessions, or follow complex multi-step plans without going off the rails.
 
 This is exactly the gap that frameworks like GSD and Superpowers exist to fill.
 
@@ -61,7 +63,7 @@ Together, these frameworks let me take a model like Kimi K2.5 or GLM-5 — which
 
 The other piece of the puzzle is MCP (Model Context Protocol) servers. These are standardized interfaces that let your AI agent interact with external tools and services. And they've gotten *really* good.
 
-Here's a screenshot from my personal setup while I was experimenting with iOS development:
+Here's a screenshot from my personal setup in OpenCode while I was experimenting with iOS development:
 
 ![MCP Servers Connected](./images/mcp-servers.png)
 
@@ -92,7 +94,7 @@ It's getting increasingly hard to keep up with the latest news and drops. But I'
 
 **Reddit's r/LocalLLaMA** subreddit is, hands down, the best single source for staying on top of open-source model releases, quantization experiments, deployment guides, and community benchmarks. The discussion quality is high and the community is incredibly fast at evaluating new drops.
 
-**X.com** (and yes, I despise Twitter — but it is what it is) has been the other essential source. The AI engineering community on X is where news breaks first. Model announcements, framework launches, benchmark results, hot takes — it's all there in real-time, often hours or days before it hits blogs or YouTube.
+**X.com** (and yes, I despise Twitter — but it is what it is) has been the other essential source. The AI engineering community on X is where news breaks first. Model announcements, framework launches, benchmark results, hot takes — it's all there in real-time, often hours or days before it hits blogs or YouTube. The algorithm is insane in that the more you read and interact with these posts, the more you will be caught up on the latest drops, news and breakthroughs.
 
 I genuinely would not have started learning about all of this since December 2025 were it not for these sources. They've been the difference between being caught off guard by these changes and being able to ride the wave.
 
@@ -100,6 +102,6 @@ I genuinely would not have started learning about all of this since December 202
 
 We're living through something weird. The gap between "AI can technically do this" and "AI can reliably do this in production" is closing faster than anyone expected. Three months ago I was skeptical. Today I'm restructuring my side projects around agentic workflows. I don't know what the next three months will bring, but if it's anything like the last three — I should probably start writing these posts more often.
 
-**Coming up next:** I'll be writing about my Openclaw adventures — Yes i was on clawdbot -> Moltclaw -> Openclaw hype train. Sneak peek: one of my openclaw bots entered a SuperTeam Earn Coding Bounty and submitted a project entirely on its own (with a little push from me). And another one? I was kinda mean to it. I gave it the sole purpose of making money — or die in 30 days. More on both of those soon.
+**Coming up next:** I'll be writing about my Openclaw adventures — Yes i was on the Clawdbot -> Moltclaw -> Openclaw hype train. Sneak peek: one of my Openclaw bots entered a SuperTeam Earn Coding Bounty and submitted a project entirely on its own (with a little push from me). And another one? I was kinda mean to it. I gave it the sole purpose of making money — or die in 30 days. More on both of those soon.
 
 *— Eirik*
