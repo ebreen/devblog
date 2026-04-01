@@ -1,9 +1,13 @@
 :root {
-  --bg: #111111;
-  --surface: #1a1a1a;
-  --text: #ffffff;
-  --muted: #888888;
-  --accent: #ff3e3e;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface-hover: #232323;
+  --surface-raised: #2d2d2d;
+  --text: #e8e8e8;
+  --text-secondary: #9e9e9e;
+  --muted: #757575;
+  --accent: #f28482;
+  --accent-hover: #f89c9a;
   --border: #333333;
   --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
@@ -26,10 +30,12 @@ body {
 }
 
 body {
-  font-family: var(--font-mono);
-  font-size: 1.15rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
   line-height: 1.7;
-  color: #cccccc;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -46,8 +52,12 @@ pre,
 
 a {
   color: var(--accent);
-  text-underline-offset: 0.18em;
-  text-decoration-thickness: 0.08em;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
 }
 
 a:focus-visible,
@@ -71,7 +81,9 @@ summary:focus-visible {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--bg);
+  background: rgba(12, 12, 14, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .header-inner {
@@ -138,7 +150,7 @@ summary:focus-visible {
 }
 
 main {
-  padding-block: 3rem 5rem;
+  padding-block: 2rem 6rem;
 }
 
 .page {
@@ -146,29 +158,26 @@ main {
   margin-inline: auto;
 }
 
-h1 {
+.page h1 {
   margin: 0 0 1.5rem;
-  padding-left: 0;
-  border-left: 0;
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-size: clamp(2rem, 5vw, 2.8rem);
   font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
-h2 {
+.page h2 {
   margin-top: 2.5rem;
   margin-bottom: 1rem;
-  color: var(--text);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 
-p {
+.page p {
   margin: 0 0 1.5rem;
-  color: #cccccc;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  color: var(--muted);
 }
 
 .section {
