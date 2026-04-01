@@ -3,37 +3,719 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="About">
-  <section class="page">
-    <h1>About</h1>
-    <p>
-      I am a frontend-focused software engineer who builds fast, accessible web experiences with clear structure,
-      strong visual hierarchy, and production-ready delivery habits.
-    </p>
+  <style>
+    /* ── Windows 2000 / Office XP reset for this page ── */
+    .win2k-page {
+      font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+      font-size: 11px;
+      color: #000000;
+      position: relative;
+    }
 
-    <div class="section" aria-labelledby="about-skills">
-      <h2 id="about-skills">Skills</h2>
-      <ul>
-        <li><strong>Frontend:</strong> Astro, React, TypeScript, semantic HTML, modern CSS.</li>
-        <li><strong>Engineering quality:</strong> accessibility checks, reusable components, and clear code reviews.</li>
-        <li><strong>Tooling:</strong> npm workflows, static-site delivery, and Git-based collaboration.</li>
-      </ul>
+    /* Desktop wallpaper */
+    .win2k-desktop {
+      background: #008080;
+      min-height: calc(100vh - 120px);
+      padding: 16px;
+      position: relative;
+    }
+
+    /* Window chrome */
+    .win2k-window {
+      background: #d4d0c8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      box-shadow: 2px 2px 0 #000000;
+      margin-bottom: 12px;
+    }
+
+    .win2k-titlebar {
+      background: linear-gradient(to right, #000080, #1084d0);
+      color: #ffffff;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .win2k-titlebar-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .win2k-titlebar-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .win2k-titlebar-buttons {
+      display: flex;
+      gap: 2px;
+    }
+
+    .win2k-btn-chrome {
+      width: 16px;
+      height: 14px;
+      background: #d4d0c8;
+      border: 1px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      font-size: 9px;
+      font-weight: bold;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000000;
+      padding: 0;
+    }
+
+    .win2k-btn-chrome:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .win2k-menubar {
+      background: #d4d0c8;
+      border-bottom: 1px solid #808080;
+      padding: 2px 4px;
+      display: flex;
+      gap: 0;
+    }
+
+    .win2k-menu-item {
+      padding: 2px 8px;
+      font-size: 11px;
+      font-family: "Tahoma", Arial, sans-serif;
+      cursor: default;
+      color: #000000;
+    }
+
+    .win2k-menu-item:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    .win2k-toolbar {
+      background: #d4d0c8;
+      border-bottom: 1px solid #808080;
+      padding: 3px 4px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .win2k-toolbar-btn {
+      width: 24px;
+      height: 22px;
+      background: #d4d0c8;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .win2k-toolbar-btn:hover {
+      border-color: #ffffff #808080 #808080 #ffffff;
+    }
+
+    .win2k-toolbar-btn:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .win2k-toolbar-sep {
+      width: 1px;
+      height: 20px;
+      background: #808080;
+      margin: 0 3px;
+    }
+
+    .win2k-content {
+      padding: 12px 14px;
+      background: #ffffff;
+      margin: 6px;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      min-height: 80px;
+    }
+
+    /* Inner content typography */
+    .win2k-content h1 {
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000080;
+      margin: 0 0 10px 0;
+      padding: 0;
+      border: none;
+      letter-spacing: 0;
+      line-height: 1.3;
+    }
+
+    .win2k-content h2 {
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      color: #000000;
+      margin: 12px 0 6px 0;
+      padding: 3px 6px;
+      background: #d4d0c8;
+      border: 1px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      letter-spacing: 0;
+      line-height: 1.4;
+    }
+
+    .win2k-content p {
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      color: #000000;
+      margin: 0 0 8px 0;
+      line-height: 1.5;
+    }
+
+    .win2k-content ul {
+      margin: 0 0 8px 0;
+      padding-left: 20px;
+    }
+
+    .win2k-content li {
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      color: #000000;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    .win2k-content strong {
+      color: #000080;
+    }
+
+    /* Status bar */
+    .win2k-statusbar {
+      background: #d4d0c8;
+      border-top: 1px solid #808080;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-family: "Tahoma", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #000000;
+    }
+
+    .win2k-statusbar-panel {
+      border: 1px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      padding: 1px 6px;
+      font-size: 10px;
+    }
+
+    /* Desktop icons */
+    .desktop-icon {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      cursor: pointer;
+      color: #ffffff;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      text-shadow: 1px 1px 2px #000000;
+      width: 70px;
+      text-align: center;
+    }
+
+    .desktop-icon:hover .icon-img {
+      outline: 1px dotted #ffffff;
+    }
+
+    .desktop-icon:focus .icon-img {
+      background: rgba(0, 0, 128, 0.5);
+    }
+
+    .icon-img {
+      width: 32px;
+      height: 32px;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Taskbar */
+    .win2k-taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: #d4d0c8;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 100;
+    }
+
+    .win2k-start-btn {
+      height: 22px;
+      background: #d4d0c8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 6px;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000000;
+    }
+
+    .win2k-start-btn:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .taskbar-sep {
+      width: 1px;
+      height: 20px;
+      background: #808080;
+      margin: 0 2px;
+    }
+
+    .taskbar-window-btn {
+      height: 22px;
+      background: #d4d0c8;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      padding: 0 8px;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      cursor: pointer;
+      color: #000000;
+      min-width: 100px;
+    }
+
+    .taskbar-clock {
+      margin-left: auto;
+      height: 22px;
+      background: #d4d0c8;
+      border: 1px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      padding: 0 8px;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Clippy ── */
+    .clippy-container {
+      position: fixed;
+      bottom: 40px;
+      right: 20px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .clippy-bubble {
+      background: #ffffc0;
+      border: 1px solid #808080;
+      border-radius: 8px 8px 0 8px;
+      padding: 8px 12px;
+      font-family: "Tahoma", Arial, sans-serif;
+      font-size: 11px;
+      color: #000000;
+      max-width: 200px;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      animation: bubbleFade 0.4s ease;
+    }
+
+    .clippy-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      right: 12px;
+      border: 8px solid transparent;
+      border-top-color: #808080;
+      border-bottom: 0;
+      margin-left: -8px;
+    }
+
+    .clippy-bubble::before {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      right: 13px;
+      border: 7px solid transparent;
+      border-top-color: #ffffc0;
+      border-bottom: 0;
+      z-index: 1;
+    }
+
+    .clippy-close {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      background: none;
+      border: none;
+      font-size: 10px;
+      cursor: pointer;
+      color: #666;
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    /* SVG Clippy figure */
+    .clippy-figure {
+      width: 80px;
+      height: 100px;
+      cursor: pointer;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+    }
+
+    /* Clippy body animations */
+    .clippy-eyes {
+      animation: blink 4s infinite;
+    }
+
+    .clippy-arm-right {
+      transform-origin: 68px 55px;
+      animation: wave 3s ease-in-out infinite;
+    }
+
+    .clippy-body {
+      animation: bodyBob 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      94%, 98% { transform: scaleY(0.05); }
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-18deg); }
+      75% { transform: rotate(12deg); }
+    }
+
+    @keyframes bodyBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    @keyframes bubbleFade {
+      from { opacity: 0; transform: scale(0.8) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Window layout */
+    .windows-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .windows-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Scrollbar (WebKit) */
+    .win2k-content::-webkit-scrollbar {
+      width: 16px;
+    }
+    .win2k-content::-webkit-scrollbar-track {
+      background: #d4d0c8;
+    }
+    .win2k-content::-webkit-scrollbar-thumb {
+      background: #d4d0c8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+    }
+
+    /* Selection */
+    .win2k-content ::selection {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    /* IE-style progress bar */
+    .ie-progress {
+      height: 6px;
+      background: #d4d0c8;
+      border: 1px solid #808080;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .ie-progress-fill {
+      height: 100%;
+      background: #000080;
+      animation: progressPulse 2s ease-in-out infinite;
+    }
+    @keyframes progressPulse {
+      0%, 100% { width: 100%; opacity: 1; }
+      50% { width: 70%; opacity: 0.7; }
+    }
+
+    /* horizontal rule win2k style */
+    .win2k-hr {
+      border: none;
+      border-top: 1px solid #808080;
+      border-bottom: 1px solid #ffffff;
+      margin: 10px 0;
+    }
+  </style>
+
+  <div class="win2k-page">
+    <div class="win2k-desktop">
+
+      <!-- Main About Window -->
+      <div class="win2k-window" style="max-width: 720px; margin: 0 auto 12px;">
+        <div class="win2k-titlebar">
+          <div class="win2k-titlebar-title">
+            <!-- user icon -->
+            <svg class="win2k-titlebar-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="0" width="12" height="9" rx="1" fill="#ffffc0" stroke="#808080" stroke-width="0.5"/>
+              <rect x="4" y="10" width="8" height="6" rx="1" fill="#c0c0ff" stroke="#808080" stroke-width="0.5"/>
+              <circle cx="8" cy="4.5" r="2.5" fill="#ffcc88"/>
+            </svg>
+            About.exe — User Profile
+          </div>
+          <div class="win2k-titlebar-buttons">
+            <button class="win2k-btn-chrome" aria-label="Minimize">_</button>
+            <button class="win2k-btn-chrome" aria-label="Maximize">□</button>
+            <button class="win2k-btn-chrome" style="background:#d4d0c8;" aria-label="Close">✕</button>
+          </div>
+        </div>
+
+        <div class="win2k-menubar">
+          <div class="win2k-menu-item">File</div>
+          <div class="win2k-menu-item">Edit</div>
+          <div class="win2k-menu-item">View</div>
+          <div class="win2k-menu-item">Favorites</div>
+          <div class="win2k-menu-item">Tools</div>
+          <div class="win2k-menu-item">Help</div>
+        </div>
+
+        <div class="win2k-toolbar">
+          <button class="win2k-toolbar-btn" title="Back" aria-label="Back">◀</button>
+          <button class="win2k-toolbar-btn" title="Forward" aria-label="Forward" style="opacity:0.4">▶</button>
+          <button class="win2k-toolbar-btn" title="Stop" aria-label="Stop" style="opacity:0.4">✕</button>
+          <button class="win2k-toolbar-btn" title="Refresh" aria-label="Refresh">↺</button>
+          <div class="win2k-toolbar-sep"></div>
+          <button class="win2k-toolbar-btn" title="Home" aria-label="Home">🏠</button>
+          <div class="win2k-toolbar-sep"></div>
+          <button class="win2k-toolbar-btn" title="Print" aria-label="Print">🖨</button>
+        </div>
+
+        <div class="win2k-content">
+          <h1>About Me</h1>
+          <div class="ie-progress"><div class="ie-progress-fill"></div></div>
+          <p>
+            I am a frontend-focused software engineer who builds fast, accessible web experiences with clear
+            structure, strong visual hierarchy, and production-ready delivery habits.
+          </p>
+          <div class="win2k-hr"></div>
+
+          <div class="windows-grid">
+            <!-- Skills window -->
+            <div>
+              <h2 id="about-skills">🖥 Skills</h2>
+              <div class="win2k-content" style="margin:0; padding:8px;">
+                <ul class="win2k-list" aria-labelledby="about-skills">
+                  <li><strong>Frontend:</strong> Astro, React, TypeScript, semantic HTML, modern CSS.</li>
+                  <li><strong>Engineering quality:</strong> accessibility checks, reusable components, and clear code reviews.</li>
+                  <li><strong>Tooling:</strong> npm workflows, static-site delivery, and Git-based collaboration.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Experience window -->
+            <div>
+              <h2 id="about-experience">📁 Experience Highlights</h2>
+              <div class="win2k-content" style="margin:0; padding:8px;">
+                <ul aria-labelledby="about-experience">
+                  <li>Shipped portfolio and content-focused web interfaces with mobile-first layout constraints.</li>
+                  <li>Improved readability through typography, spacing, and focus-state refinements.</li>
+                  <li>Worked in iterative delivery loops with validation gates for type safety and build stability.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Education section -->
+          <h2 id="about-education">🎓 Education &amp; Learning</h2>
+          <div class="win2k-content" style="margin:0; padding:8px;" aria-labelledby="about-education">
+            <p>
+              Continuous learner focused on modern frontend architecture, inclusive interaction design,
+              and practical product development fundamentals.
+            </p>
+          </div>
+        </div>
+
+        <div class="win2k-statusbar">
+          <div class="win2k-statusbar-panel">Done</div>
+          <div class="win2k-statusbar-panel">🌐 Local intranet</div>
+        </div>
+      </div>
+
+    </div><!-- /.win2k-desktop -->
+
+    <!-- Taskbar -->
+    <div class="win2k-taskbar" role="toolbar" aria-label="Taskbar">
+      <button class="win2k-start-btn" aria-label="Start menu">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <rect x="0" y="0" width="6" height="6" fill="#ff0000"/>
+          <rect x="8" y="0" width="6" height="6" fill="#00aa00"/>
+          <rect x="0" y="8" width="6" height="6" fill="#0000cc"/>
+          <rect x="8" y="8" width="6" height="6" fill="#ffcc00"/>
+        </svg>
+        Start
+      </button>
+      <div class="taskbar-sep"></div>
+      <button class="taskbar-window-btn" aria-label="About.exe">🖥 About.exe</button>
+      <div class="taskbar-clock" aria-label="System clock" id="taskbar-clock">
+        <span id="clock-time">12:00 PM</span>
+      </div>
     </div>
 
-    <div class="section" aria-labelledby="about-experience">
-      <h2 id="about-experience">Experience Highlights</h2>
-      <ul>
-        <li>Shipped portfolio and content-focused web interfaces with mobile-first layout constraints.</li>
-        <li>Improved readability and interaction quality through typography, spacing, and focus-state refinements.</li>
-        <li>Worked in iterative delivery loops with validation gates for type safety and build stability.</li>
-      </ul>
+    <!-- Clippy -->
+    <div class="clippy-container" id="clippy-container" aria-live="polite" aria-label="Clippy assistant">
+      <div class="clippy-bubble" id="clippy-bubble" role="status">
+        <button class="clippy-close" id="clippy-close" aria-label="Dismiss Clippy message">✕</button>
+        <span id="clippy-text">It looks like you&apos;re reading an About page. Would you like help with that?</span>
+      </div>
+
+      <!-- Clippy SVG figure -->
+      <svg class="clippy-figure" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clippy" id="clippy-svg" style="cursor:pointer">
+        <!-- shadow -->
+        <ellipse cx="40" cy="97" rx="20" ry="3" fill="rgba(0,0,0,0.2)"/>
+
+        <!-- body group (bobs up/down) -->
+        <g class="clippy-body">
+          <!-- clip body -->
+          <rect x="22" y="30" width="36" height="50" rx="4" fill="#c8c8c8" stroke="#888" stroke-width="1"/>
+          <!-- clip spine/ridge -->
+          <rect x="28" y="25" width="24" height="8" rx="3" fill="#a0a0a0" stroke="#888" stroke-width="1"/>
+          <rect x="30" y="20" width="20" height="12" rx="3" fill="#b8b8b8" stroke="#888" stroke-width="1"/>
+          <!-- clip top curl -->
+          <path d="M30 20 Q40 10 50 20" stroke="#888" stroke-width="1.5" fill="none"/>
+
+          <!-- paper lines on body -->
+          <line x1="28" y1="44" x2="52" y2="44" stroke="#aaa" stroke-width="0.8"/>
+          <line x1="28" y1="50" x2="52" y2="50" stroke="#aaa" stroke-width="0.8"/>
+          <line x1="28" y1="56" x2="52" y2="56" stroke="#aaa" stroke-width="0.8"/>
+          <line x1="28" y1="62" x2="52" y2="62" stroke="#aaa" stroke-width="0.8"/>
+
+          <!-- face area -->
+          <ellipse cx="40" cy="36" rx="10" ry="8" fill="#e8e8e8" stroke="#888" stroke-width="0.8"/>
+
+          <!-- eyes container (animates blink) -->
+          <g class="clippy-eyes" style="transform-origin: 40px 35px">
+            <!-- left eye -->
+            <ellipse cx="36" cy="35" rx="2" ry="2.5" fill="#222"/>
+            <circle cx="36.6" cy="34.2" r="0.6" fill="#fff"/>
+            <!-- right eye -->
+            <ellipse cx="44" cy="35" rx="2" ry="2.5" fill="#222"/>
+            <circle cx="44.6" cy="34.2" r="0.6" fill="#fff"/>
+          </g>
+
+          <!-- mouth -->
+          <path d="M37 40 Q40 43 43 40" stroke="#666" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+          <!-- eyebrows (raised = friendly) -->
+          <path d="M34 32 Q36 30.5 38 32" stroke="#555" stroke-width="1" fill="none"/>
+          <path d="M42 32 Q44 30.5 46 32" stroke="#555" stroke-width="1" fill="none"/>
+
+          <!-- left arm -->
+          <path d="M22 55 Q10 60 12 70" stroke="#b0b0b0" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- hand left -->
+          <circle cx="12" cy="71" r="4" fill="#c8c8c8" stroke="#888" stroke-width="1"/>
+
+          <!-- right arm (waves) -->
+          <g class="clippy-arm-right">
+            <path d="M58 55 Q70 48 72 40" stroke="#b0b0b0" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <!-- hand right -->
+            <circle cx="72" cy="39" r="4" fill="#c8c8c8" stroke="#888" stroke-width="1"/>
+          </g>
+
+          <!-- feet -->
+          <ellipse cx="34" cy="81" rx="6" ry="4" fill="#a0a0a0" stroke="#888" stroke-width="1"/>
+          <ellipse cx="46" cy="81" rx="6" ry="4" fill="#a0a0a0" stroke="#888" stroke-width="1"/>
+        </g>
+      </svg>
     </div>
 
-    <div class="section" aria-labelledby="about-education">
-      <h2 id="about-education">Education & Learning</h2>
-      <p>
-        Continuous learner focused on modern frontend architecture, inclusive interaction design, and practical
-        product development fundamentals.
-      </p>
-    </div>
-  </section>
+  </div><!-- /.win2k-page -->
+
+  <script is:inline>
+    // Clock
+    function updateClock() {
+      const el = document.getElementById("clock-time");
+      if (!el) return;
+      const now = new Date();
+      let h = now.getHours();
+      const m = String(now.getMinutes()).padStart(2, "0");
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      el.textContent = h + ":" + m + " " + ampm;
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    // Clippy messages
+    const clippyMessages = [
+      "It looks like you're reading an About page. Would you like help with that?",
+      "Did you know? You can press F1 for help at any time!",
+      "It looks like you're exploring skills. Need a résumé template?",
+      "Windows 2000 Professional — 5 years of free support remaining.",
+      "Hi! I noticed you scrolling. Would you like me to format that for you?",
+      "Tip: Press CTRL+S to save your progress!",
+    ];
+    let msgIndex = 0;
+    const clippyText = document.getElementById("clippy-text");
+    const clippySvg = document.getElementById("clippy-svg");
+    const clippyBubble = document.getElementById("clippy-bubble");
+    const clippyClose = document.getElementById("clippy-close");
+
+    function nextMessage() {
+      msgIndex = (msgIndex + 1) % clippyMessages.length;
+      if (clippyText) clippyText.textContent = clippyMessages[msgIndex];
+      if (clippyBubble) {
+        clippyBubble.style.display = "block";
+        clippyBubble.style.animation = "none";
+        void clippyBubble.offsetWidth; // reflow
+        clippyBubble.style.animation = "bubbleFade 0.4s ease";
+      }
+    }
+
+    if (clippySvg) {
+      clippySvg.addEventListener("click", nextMessage);
+    }
+
+    if (clippyClose) {
+      clippyClose.addEventListener("click", function() {
+        if (clippyBubble) clippyBubble.style.display = "none";
+      });
+    }
+
+    // rotate messages every 7s
+    setInterval(nextMessage, 7000);
+  </script>
 </BaseLayout>
