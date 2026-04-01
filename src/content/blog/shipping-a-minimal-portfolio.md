@@ -5,7 +5,7 @@ tags:
   - astro
   - portfolio
   - design
-readingTime: "6 min read"
+readingTime: "1 min read"
 ---
 
 This post captures the shape of my minimalist portfolio stack and why I kept the implementation intentionally small.
