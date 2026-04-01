@@ -63,7 +63,7 @@ The other piece of the puzzle is MCP (Model Context Protocol) servers. These are
 
 Here's a screenshot from my personal setup while I was experimenting with iOS development:
 
-![MCP Servers Connected](/images/mcp-servers.png)
+![MCP Servers Connected](./images/mcp-servers.png)
 
 That's seven MCP servers connected to my agent: app-insight-mcp, apple-docs, claude-teams, context7, figma, supabase, and **xcodebuildmcp**. That last one deserves special mention.
 
