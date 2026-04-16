@@ -31,7 +31,7 @@ Claude Code was my first real agent harness. Terminal-based, tightly integrated 
 
 But I wanted to try other models. The open-source space was heating up, and I wanted to run capable models through the same kind of agentic workflows. So I started looking around.
 
-**OpenCode** became my go-to for model flexibility. It's an open-source agent that supports 75+ models from every major provider, over 100k stars on GitHub. I could swap between Claude, Kimi K2 Thinking, MiniMax M2.2, GLM models — whatever fit the problem. The ability to Bring Your Own Key (BYOK) without switching tools was useful.
+**OpenCode** became my go-to for model flexibility. It's an open-source agent that supports 75+ models from every major provider, over 100k stars on GitHub. I could swap between Claude, Kimi K2 Thinking, MiniMax M2.5, GLM models — whatever fit the problem. The ability to Bring Your Own Key (BYOK) without switching tools was useful.
 
 [![OpenCode model switcher](./images/opencode.png)](https://github.com/anomalyco/opencode)
 **Factory Droid** impressed me with its enterprise approach, and I've been reaching for it more often. It runs in your terminal like Claude Code but supports Anthropic, OpenAI models and open-source options through their "Droid Core" offering, or you can BYOK. The subscription gives you a decent token allowance, and different models pull different amounts from your pool — some cheaper, some pricier — so you can use a heavy-hitter like Opus for planning and a faster model for execution without doing mental math on API bills. Not being locked to one company's models is a big deal. Their approach to specialized "Droids" for different tasks (coding, debugging, reviewing) maps well to how I break down work.
@@ -44,7 +44,7 @@ Here's where it gets interesting. Starting in November, the open-source model re
 
 **Z.ai** (formerly Zhipu AI) had a good run. It started back in July 2025 with **GLM-4.5**, their native agentic LLM with one-click compatibility with the Claude Code framework — an early signal that open-source models were taking agentic workflows seriously. Then they dropped **GLM-4.7** on December 22, which was the first open-source model I used that could reliably do "think-then-act" execution in agent frameworks. It ranked #1 among open-source models on agentic coding benchmarks at the time. Then, two weeks ago on February 11, they released **GLM-5** — a 744B parameter model that topped open-source leaderboards across reasoning, coding, and agentic tasks. Their paper was called "From Vibe Coding to Agentic Engineering," which sums up the shift.
 
-**MiniMax M2.2** dropped February 12, scoring 80.2% on SWE-bench Verified — close to Opus 4.5's 80.9% — while costing roughly a tenth to a twentieth of the price. The efficiency is striking.
+**MiniMax M2.5** dropped February 12, scoring 80.2% on SWE-bench Verified — close to Opus 4.5's 80.9% — while costing roughly a tenth to a twentieth of the price. The efficiency is striking.
 
 Here's my take: these open-source models are *really good* at raw coding. On benchmarks, they're competitive with closed models from Anthropic and OpenAI. But where they still struggled — and this is the thing that drove most of my tooling choices — was in **following tool calls and instructions reliably**. They could write the code, but they'd stumble when asked to use tools in sequence, maintain context across long agent sessions, or follow complex multi-step plans without going off the rails.
 
@@ -85,7 +85,7 @@ Let me put the timeline in perspective. In roughly 90 days:
 - **Jan 27**: Kimi K2.5 with Agent Swarm
 - **Feb 5**: Anthropic ships Claude Opus 4.6
 - **Feb 11**: GLM-5 launches — new #1 open-source model
-- **Feb 12**: MiniMax M2.2 — Opus-tier coding at a fraction of the cost
+- **Feb 12**: MiniMax M2.5 — Opus-tier coding at a fraction of the cost
 
 And that's just the models. The harnesses, frameworks, MCP servers, skills — all moving at the same pace. New tools drop weekly. Existing tools get major updates every few days. The GSD repo alone has had dozens of releases since it gained traction.
 
