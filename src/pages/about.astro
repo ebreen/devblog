@@ -2,33 +2,316 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="About">
-  <section class="page">
-    <h1>About</h1>
-    <p>
-      I'm a Linux systems consultant based in Oslo. I work with Kubernetes, GitOps, and automation—mostly with
-      companies that have compliance requirements and can't afford surprises.
-    </p>
-
-    <div class="section" aria-labelledby="about-skills">
-      <h2 id="about-skills">Skills</h2>
-      <ul>
-        <li>Linux server administration (RHEL)</li>
-        <li>Kubernetes (K3s/MKS) and GitOps with ArgoCD</li>
-        <li>Secrets management (Vault, OpenBao)</li>
-        <li>Automation with Ansible</li>
-        <li>Experience working in PCI-DSS environments</li>
-        <li>Splunk and Elastic Stack for log analysis</li>
-        <li>AI-assisted coding with Claude Code and OpenCode</li>
-        <li>Experimenting with agentic workflows and MCP servers</li>
-        <li>Fine-tuning models for infrastructure and ops tasks</li>
-      </ul>
-    </div>
-
-    <div class="section" aria-labelledby="about-linkedin">
-      <p>
-        The full career stuff is on <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>.
+<BaseLayout title="About" description="About Eirik Breen, an Oslo-based Linux systems consultant, homelabber, and AI tinkerer.">
+  <article class="page about-page">
+    <header class="intro">
+      <p class="kicker">A little context</p>
+      <h1>Linux at work. Rabbit holes after.</h1>
+      <p class="lede">
+        I’m a Linux systems consultant in Oslo. Work is mostly Linux, Kubernetes, and the awkward bits nobody wants
+        to own. After hours, I follow sidequests. Sometimes they become tools or posts. Sometimes I just stay up too
+        late.
       </p>
-    </div>
-  </section>
+    </header>
+
+    <section class="story" aria-labelledby="how-i-work">
+      <p class="section-label">How I work</p>
+      <h2 id="how-i-work">Make it understandable. Clever can wait.</h2>
+      <p>
+        Most days I’m somewhere between Linux, Kubernetes, GitOps, secrets, and observability. A lot of it runs in
+        PCI-DSS environments, so “probably fine” is not a deployment strategy.
+      </p>
+      <p>
+        I want the next person to understand what I changed and why. If the automation hides the plot, I don’t trust
+        it.
+      </p>
+      <p>
+        At home I mess with my homelab, native macOS apps, local models, and coding agents. When something survives
+        more than a weekend, I write it up.
+      </p>
+    </section>
+
+    <aside class="glance" aria-labelledby="at-a-glance">
+      <h2 id="at-a-glance">At a glance</h2>
+      <dl>
+        <div>
+          <dt>Based</dt>
+          <dd>Oslo, Norway</dd>
+        </div>
+        <div>
+          <dt>Day job</dt>
+          <dd>Systems consultant</dd>
+        </div>
+        <div>
+          <dt>Default shell</dt>
+          <dd>Something with too many aliases</dd>
+        </div>
+        <div>
+          <dt>Current rabbit hole</dt>
+          <dd>Useful AI agents</dd>
+        </div>
+      </dl>
+      <p>Open to a good technical conversation</p>
+    </aside>
+
+    <section class="toolkit" aria-labelledby="toolkit-title">
+      <header>
+        <p class="section-label">The toolkit</p>
+        <h2 id="toolkit-title">Things I reach for.</h2>
+      </header>
+
+      <div class="skill-notes">
+        <section aria-labelledby="systems-title">
+          <p class="note-number">01</p>
+          <h3 id="systems-title">Systems</h3>
+          <ul>
+            <li>Linux administration, mostly RHEL</li>
+            <li>Kubernetes with K3s and MKS</li>
+            <li>PCI-DSS environments</li>
+            <li>Splunk and Elastic Stack</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="automation-title">
+          <p class="note-number">02</p>
+          <h3 id="automation-title">Automation</h3>
+          <ul>
+            <li>GitOps with Argo CD</li>
+            <li>Ansible for repeatable operations</li>
+            <li>Vault and OpenBao</li>
+            <li>Small tools with narrow jobs</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="ai-title">
+          <p class="note-number">03</p>
+          <h3 id="ai-title">AI experiments</h3>
+          <ul>
+            <li>Agentic coding workflows</li>
+            <li>MCP servers and tool use</li>
+            <li>Local and open models</li>
+            <li>Fine-tuning for ops tasks</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <aside class="elsewhere" aria-labelledby="formal-version">
+      <p class="section-label">The formal version</p>
+      <h2 id="formal-version">Need dates, roles, and sensible nouns?</h2>
+      <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">Find me on LinkedIn</a>
+    </aside>
+  </article>
 </BaseLayout>
+
+<style>
+  .about-page {
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    padding-block: clamp(5rem, 12vw, 10rem);
+  }
+
+  .intro {
+    margin-bottom: clamp(7rem, 17vw, 12rem);
+  }
+
+  .kicker,
+  .section-label,
+  .note-number,
+  .glance dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .kicker,
+  .section-label,
+  .note-number {
+    margin: 0 0 1.25rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  h1 {
+    max-width: 9ch;
+    margin: 0;
+    font-size: clamp(3.7rem, 10vw, 6.8rem);
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+  }
+
+  .lede {
+    max-width: 35rem;
+    margin: 2.5rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    line-height: 1.75;
+  }
+
+  .story {
+    margin-bottom: clamp(7rem, 17vw, 11rem);
+  }
+
+  .story h2,
+  .toolkit > header h2,
+  .elsewhere h2 {
+    margin: 0 0 2rem;
+    font-size: clamp(2.3rem, 6.5vw, 3.8rem);
+    letter-spacing: -0.035em;
+    line-height: 1.03;
+  }
+
+  .story > p:not(.section-label) {
+    margin: 0 0 1.35rem;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .story > p:last-child {
+    margin-bottom: 0;
+  }
+
+  .glance {
+    margin-bottom: clamp(7rem, 17vw, 11rem);
+    padding-block: 1.75rem;
+    border-block: 1px solid var(--border);
+  }
+
+  .glance h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.55rem;
+    letter-spacing: -0.02em;
+  }
+
+  .glance dl {
+    margin: 0;
+  }
+
+  .glance dl div {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.75fr) minmax(0, 1.25fr);
+    gap: 1.5rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .glance dt,
+  .glance dd {
+    margin: 0;
+  }
+
+  .glance dd {
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .glance > p {
+    margin: 1.75rem 0 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+
+  .toolkit {
+    margin-bottom: clamp(7rem, 17vw, 11rem);
+  }
+
+  .toolkit > header {
+    margin-bottom: 4rem;
+  }
+
+  .skill-notes > section {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(7rem, 0.65fr) minmax(0, 1.35fr);
+    gap: 1.25rem;
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .skill-notes > section:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .note-number {
+    color: var(--faint);
+  }
+
+  .skill-notes h3 {
+    margin: -0.2rem 0 0;
+    font-size: 1.45rem;
+    line-height: 1.2;
+  }
+
+  .skill-notes ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
+  .skill-notes li + li {
+    margin-top: 0.35rem;
+  }
+
+  .skill-notes li::marker {
+    color: var(--faint);
+  }
+
+  .elsewhere {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .elsewhere h2 {
+    max-width: 15ch;
+  }
+
+  .elsewhere a {
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.28em;
+  }
+
+  .elsewhere a:hover {
+    color: var(--text);
+  }
+
+  @media (max-width: 36rem) {
+    .about-page {
+      padding-block: 4rem 7rem;
+    }
+
+    .skill-notes > section {
+      grid-template-columns: 2rem 1fr;
+    }
+
+    .skill-notes ul {
+      grid-column: 2;
+      margin-top: 0.5rem;
+    }
+
+    .glance dl div {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+</style>

@@ -2,22 +2,30 @@
 import "../styles/global.css";
 
 type NavItem = {
-  label: "About" | "Projects" | "Blog" | "Contact";
+  label: "about" | "made" | "wrote" | "email";
   href: "/about" | "/projects" | "/blog" | "/contact";
 };
 
+type Props = {
+  title?: string;
+  description?: string;
+};
+
 const navItems: NavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" }
+  { label: "about", href: "/about" },
+  { label: "made", href: "/projects" },
+  { label: "wrote", href: "/blog" },
+  { label: "email", href: "/contact" }
 ];
 
 const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
-const title = Astro.props.title ? `${Astro.props.title} | Portfolio` : "Portfolio";
+const isHome = normalizedPath === "/";
+const { title: pageTitle, description = "Eirik Breen's notes on Linux, homelabs, software, and AI sidequests." } = Astro.props as Props;
+const title = pageTitle ? `${pageTitle} — Eirik Breen` : "Eirik Breen — sidequests";
+const year = new Date().getFullYear();
 
 const isActive = (href: NavItem["href"]) =>
-  href === "/" ? normalizedPath === "/" : normalizedPath === href || normalizedPath.startsWith(`${href}/`);
+  normalizedPath === href || normalizedPath.startsWith(`${href}/`);
 ---
 
 <!doctype html>
@@ -26,72 +34,42 @@ const isActive = (href: NavItem["href"]) =>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#090909" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
-    <style is:global>
-      html,
-      body {
-        background: #111316;
-        color: #f3f4f6;
-      }
-    </style>
   </head>
-  <body>
-    <div class="layout">
-      <header class="site-header">
-        <div class="container header-inner">
-          <a class="brand" href="/" aria-label="Go to homepage">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="home-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </a>
+  <body class:list={{ "is-home": isHome }}>
+    <a class="skip-link" href="#main-content">skip to content</a>
 
-          <nav id="site-nav" class="site-nav" data-open="false" aria-label="Primary">
-            <ul class="nav-list">
-              {
-                navItems.map(({ label, href }) => (
-                  <li>
-                    <a class="nav-link" href={href} aria-current={isActive(href) ? "page" : undefined}>
-                      {label}
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-          </nav>
-        </div>
+    <div class="layout">
+      <header class="site-header" aria-label="Site header">
+        <a class="brand" href="/">eirik breen <span>— oslo</span></a>
+
+        <nav class="site-nav" aria-label="Primary">
+          <ul class="nav-list">
+            {
+              navItems.map(({ label, href }, index) => (
+                <li>
+                  <a class="nav-link" href={href} aria-current={isActive(href) ? "page" : undefined}>
+                    {label}
+                  </a>
+                  {index < navItems.length - 1 && <span aria-hidden="true">/</span>}
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
       </header>
 
-      <main class="container">
+      <main id="main-content" class="site-main">
         <slot />
       </main>
+
+      <footer class="site-footer">
+        <p>© {year} eirik breen</p>
+        <p><a href="https://github.com/ebreen" target="_blank" rel="noreferrer">github</a> / <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">linkedin</a></p>
+      </footer>
     </div>
-
-    <script is:inline>
-      const menuButton = document.querySelector(".menu-toggle");
-      const siteNav = document.getElementById("site-nav");
-      const mobileQuery = window.matchMedia("(max-width: 48rem)");
-
-      if (menuButton instanceof HTMLButtonElement && siteNav) {
-        const setOpen = (open) => {
-          siteNav.setAttribute("data-open", String(open));
-          menuButton.setAttribute("aria-expanded", String(open));
-        };
-
-        menuButton.addEventListener("click", () => {
-          const isOpen = siteNav.getAttribute("data-open") === "true";
-          setOpen(!isOpen);
-        });
-
-        siteNav.querySelectorAll("a").forEach((link) => {
-          link.addEventListener("click", () => {
-            if (mobileQuery.matches) {
-              setOpen(false);
-            }
-          });
-        });
-
-        if (!mobileQuery.matches) {
-          setOpen(false);
-        }
-      }
-    </script>
   </body>
 </html>

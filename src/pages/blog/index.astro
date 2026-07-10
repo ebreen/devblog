@@ -15,38 +15,48 @@ const entries = sortBlogEntries(await getCollection("blog"));
 const hasEntries = entries.length > 0;
 ---
 
-<BaseLayout title="Blog">
-  <section class="page">
-    <h1>Blog</h1>
-    <p>Thoughts on building, shipping, and maintaining a minimal developer portfolio.</p>
+<BaseLayout title="Blog" description="Field notes from Eirik Breen on infrastructure, homelabs, software, and useful AI.">
+  <section class="blog-page">
+    <header class="blog-header">
+      <p class="blog-label">Field notes</p>
+      <h1>Things worth writing down.</h1>
+      <p class="blog-intro">Occasional notes on infrastructure, the homelab, small software, and useful AI.</p>
+      <p class="blog-tally" data-blog-tally aria-label={`${entries.length} published posts`}>
+        {entries.length} {entries.length === 1 ? "note" : "notes"}, newest first.
+      </p>
+    </header>
 
-    <div class="section" role="status" data-blog-empty-state hidden={hasEntries}>
-      <p>No blog posts are available yet. Check back soon.</p>
+    <div class="empty-state" role="status" data-blog-empty-state hidden={hasEntries}>
+      <h2>The notebook is empty.</h2>
+      <p>No posts are available yet. Check back after the next rabbit hole.</p>
     </div>
 
-    <ul class="blog-list" data-blog-list hidden={!hasEntries}>
+    <ol class="blog-list" data-blog-list hidden={!hasEntries}>
       {entries.map((entry) => (
-        <li class="section blog-item">
-          <h2>
-            <a href={`/blog/${entry.slug}`}>{entry.data.title}</a>
-          </h2>
-          <p class="meta">
-            <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-            {" · "}
-            <span>{getReadingTime(entry)}</span>
-          </p>
+        <li class="post-item">
+          <article>
+            <p class="post-meta">
+              <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+              <span aria-hidden="true">/</span>
+              <span>{getReadingTime(entry)}</span>
+            </p>
+            <h2><a href={`/blog/${entry.slug}`}>{entry.data.title}</a></h2>
+            {entry.data.tags.length > 0 && (
+              <ul class="post-tags" aria-label="Tags">
+                {entry.data.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+            )}
+          </article>
         </li>
       ))}
-    </ul>
+    </ol>
 
-    <div class="section fixture-note" data-blog-schema-invalid-fixture hidden>
+    <div class="fixture-note" data-blog-schema-invalid-fixture hidden>
       <p>
-        Schema-invalid route fixture active. Use this deterministic route to validate not-found semantics for
-        a schema-invalid entry slug.
+        Schema-invalid route fixture active. Use this deterministic route to validate not-found semantics for a
+        schema-invalid entry slug.
       </p>
-      <p>
-        <a href={BLOG_SCHEMA_INVALID_ENTRY_ROUTE}>Open schema-invalid-entry fixture route</a>
-      </p>
+      <a href={BLOG_SCHEMA_INVALID_ENTRY_ROUTE}>Open fixture route</a>
     </div>
   </section>
 </BaseLayout>
@@ -73,6 +83,7 @@ const hasEntries = entries.length > 0;
   if (runZeroValidFixture) {
     const emptyState = document.querySelector("[data-blog-empty-state]");
     const blogList = document.querySelector("[data-blog-list]");
+    const blogTally = document.querySelector("[data-blog-tally]");
 
     if (emptyState instanceof HTMLElement) {
       emptyState.hidden = false;
@@ -80,6 +91,10 @@ const hasEntries = entries.length > 0;
 
     if (blogList instanceof HTMLElement) {
       blogList.hidden = true;
+    }
+
+    if (blogTally instanceof HTMLElement) {
+      blogTally.hidden = true;
     }
   }
 
@@ -93,58 +108,162 @@ const hasEntries = entries.length > 0;
 </script>
 
 <style>
-  .blog-list,
-  .tag-list {
-    list-style: none;
+  .blog-page {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+  }
+
+  .blog-header {
+    margin-bottom: clamp(5.5rem, 15vw, 9rem);
+  }
+
+  .blog-label,
+  .blog-tally,
+  .post-meta,
+  .post-tags {
+    font-family: var(--font-mono);
+  }
+
+  .blog-label {
+    margin: 0 0 1.35rem;
+    color: var(--accent);
+    font-size: 0.67rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+  }
+
+  .blog-header h1 {
+    max-width: 11ch;
     margin: 0;
-    padding: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(3.35rem, 10vw, 5.4rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .blog-intro {
+    max-width: 33rem;
+    margin: 2.1rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 2.2vw, 1.12rem);
+    line-height: 1.8;
+  }
+
+  .blog-tally {
+    margin: 2rem 0 0;
+    color: var(--muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
   }
 
   .blog-list {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
-    margin-top: 3rem;
-  }
-
-  .blog-item {
-    padding: 0;
     margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+    list-style: none;
   }
 
-  .blog-item h2 {
-    font-size: 1.8rem;
-    font-weight: 500;
-    margin: 0 0 0.5rem;
-    letter-spacing: -0.01em;
+  .post-item {
+    padding-block: clamp(1.9rem, 5vw, 2.65rem);
+    border-bottom: 1px solid var(--border);
   }
 
-  .blog-item .meta {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .tag-list {
+  .post-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-top: 0.75rem;
+    gap: 0.55rem;
+    margin: 0 0 0.85rem;
+    color: var(--muted);
+    font-size: 0.63rem;
+    letter-spacing: 0.075em;
+    text-transform: lowercase;
   }
 
-  .tag {
-    border: 1px solid var(--border);
-    border-radius: 999px;
+  .post-item h2 {
+    max-width: 24ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.16;
+  }
+
+  .post-item h2 a {
+    color: var(--text);
+    text-decoration-color: var(--faint);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+
+  .post-item h2 a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 1rem 0 0;
+    padding: 0;
+    color: var(--faint);
+    font-size: 0.61rem;
+    letter-spacing: 0.04em;
+    list-style: none;
+  }
+
+  .post-tags li:not(:last-child)::after {
+    margin-inline: 0.55rem;
+    color: var(--border);
+    content: "/";
+  }
+
+  .empty-state,
+  .fixture-note {
+    padding-block: 2rem;
+    border-block: 1px solid var(--border);
+  }
+
+  .empty-state h2 {
+    margin: 0 0 0.5rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 400;
+  }
+
+  .empty-state p {
+    margin: 0;
     color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    padding: 0.2rem 0.55rem;
   }
 
   .fixture-note {
-    border-style: dashed;
-    border-color: var(--accent);
+    margin-top: 4rem;
+  }
+
+  .fixture-note p {
+    margin: 0 0 0.75rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+
+  .fixture-note a {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-underline-offset: 0.25em;
+  }
+
+  @media (max-width: 34rem) {
+    .blog-header {
+      margin-bottom: 5rem;
+    }
   }
 </style>

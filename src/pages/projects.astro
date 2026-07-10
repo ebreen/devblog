@@ -2,34 +2,222 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Projects">
-  <section class="page">
-    <h1>Projects</h1>
-    <p>
-      Things I'm working on outside of client work.
-    </p>
+<BaseLayout title="Projects" description="Side projects and open-source experiments by Eirik Breen.">
+  <section class="page projects-page">
+    <header class="intro">
+      <p class="kicker">Built after hours</p>
+      <h1>Small tools. Real reasons.</h1>
+      <p class="lede">
+        Things I’m building outside client work—usually because a workflow annoyed me, a new platform looked
+        interesting, or I wanted to see how far an idea could go.
+      </p>
+    </header>
 
-    <article class="section" aria-labelledby="project-cloudmount">
-      <h2 id="project-cloudmount">CloudMount</h2>
-      <p>
-        macOS menu bar app that mounts Backblaze B2 buckets as native Finder volumes. Uses Apple's FSKit framework so
-        it just shows up as a regular folder. Written in Swift, no FUSE, no kernel extensions. Currently macOS 26+
-        only.
-      </p>
-      <p>
-        <a href="https://github.com/ebreen/cloudmount" target="_blank" rel="noreferrer">github.com/ebreen/cloudmount</a>
-      </p>
-    </article>
+    <div class="project-notes">
+      <article class="project" aria-labelledby="project-cloudmount">
+        <header>
+          <div class="project-meta">
+            <span>01 / 02</span>
+            <span>in progress</span>
+          </div>
+          <p class="section-label">Native macOS utility</p>
+          <h2 id="project-cloudmount">CloudMount</h2>
+        </header>
 
-    <article class="section" aria-labelledby="project-solana-agent-toolkit">
-      <h2 id="project-solana-agent-toolkit">Solana Agent Toolkit</h2>
-      <p>
-        27 JavaScript tools for Solana development. Wallet ops, token management, Jupiter swaps, yield tracking,
-        NFT minting, DCA bots. Designed for AI agents to call programmatically.
-      </p>
-      <p>
-        <a href="https://github.com/ebreen/solana-agent-toolkit" target="_blank" rel="noreferrer">github.com/ebreen/solana-agent-toolkit</a>
-      </p>
-    </article>
+        <p class="project-description">
+          A macOS menu bar app that mounts Backblaze B2 buckets as native Finder volumes. It uses Apple’s FSKit
+          framework, so buckets appear as ordinary folders—no FUSE and no kernel extensions. Currently macOS 26+.
+        </p>
+
+        <ul class="technologies" aria-label="CloudMount technologies">
+          <li>swift</li>
+          <li>fskit</li>
+          <li>macos</li>
+          <li>backblaze-b2</li>
+        </ul>
+
+        <a class="project-link" href="https://github.com/ebreen/cloudmount" target="_blank" rel="noreferrer">
+          View repository
+        </a>
+      </article>
+
+      <article class="project" aria-labelledby="project-solana-agent-toolkit">
+        <header>
+          <div class="project-meta">
+            <span>02 / 02</span>
+            <span>open source</span>
+          </div>
+          <p class="section-label">Tools for agents</p>
+          <h2 id="project-solana-agent-toolkit">Solana Agent Toolkit</h2>
+        </header>
+
+        <p class="project-description">
+          A set of 27 JavaScript tools for Solana development: wallet operations, token management, Jupiter swaps,
+          yield tracking, NFT minting, and DCA bots. Designed for AI agents to call programmatically.
+        </p>
+
+        <ul class="technologies" aria-label="Solana Agent Toolkit technologies">
+          <li>javascript</li>
+          <li>solana</li>
+          <li>agents</li>
+          <li>web3</li>
+        </ul>
+
+        <a
+          class="project-link"
+          href="https://github.com/ebreen/solana-agent-toolkit"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View repository
+        </a>
+      </article>
+    </div>
+
+    <aside class="github-note">
+      <p>There are more experiments—and considerably more half-finished branches—over on GitHub.</p>
+      <a href="https://github.com/ebreen" target="_blank" rel="noreferrer">Open the workbench</a>
+    </aside>
   </section>
 </BaseLayout>
+
+<style>
+  .projects-page {
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    padding-block: clamp(5rem, 12vw, 10rem);
+  }
+
+  .intro {
+    margin-bottom: clamp(8rem, 19vw, 13rem);
+  }
+
+  .kicker,
+  .section-label,
+  .project-meta,
+  .technologies {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .kicker,
+  .section-label {
+    margin: 0 0 1.25rem;
+  }
+
+  h1,
+  h2 {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  h1 {
+    max-width: 8ch;
+    margin: 0;
+    font-size: clamp(4rem, 11vw, 7rem);
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+
+  .lede {
+    max-width: 35rem;
+    margin: 2.5rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    line-height: 1.75;
+  }
+
+  .project {
+    padding-block: clamp(3rem, 8vw, 5rem) clamp(7rem, 17vw, 11rem);
+    border-top: 1px solid var(--border);
+  }
+
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(4rem, 10vw, 7rem);
+  }
+
+  .project-meta span:last-child {
+    color: var(--faint);
+  }
+
+  .project h2 {
+    max-width: 11ch;
+    margin: 0 0 2.5rem;
+    font-size: clamp(3.3rem, 9vw, 5.7rem);
+    letter-spacing: -0.055em;
+    line-height: 0.94;
+  }
+
+  .project-description {
+    margin: 0 0 2rem;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+    text-transform: lowercase;
+  }
+
+  .technologies li:not(:last-child)::after {
+    margin-right: 0.6rem;
+    color: var(--faint);
+    content: ",";
+  }
+
+  .project-link,
+  .github-note a {
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.28em;
+  }
+
+  .project-link:hover,
+  .github-note a:hover {
+    color: var(--text);
+  }
+
+  .github-note {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .github-note p {
+    max-width: 34rem;
+    margin: 0 0 1.5rem;
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 4.5vw, 2.25rem);
+    line-height: 1.3;
+  }
+
+  @media (max-width: 36rem) {
+    .projects-page {
+      padding-block: 4rem 7rem;
+    }
+
+    .project-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
