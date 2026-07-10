@@ -3,13 +3,93 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Not Found">
-  <section class="page">
-    <h1>Not Found</h1>
-    <p>The page you requested could not be found.</p>
-    <div class="section">
-      <p>
-        Return to the <a href="/blog">blog index</a> or go back to the <a href="/">home page</a>.
-      </p>
-    </div>
+  <section class="page not-found-page">
+    <p class="error-code" aria-hidden="true">404</p>
+    <p class="kicker">That route wandered off</p>
+    <h1>Nothing is running here.</h1>
+    <p class="lede">The page may have moved, or the URL is experimenting without supervision.</p>
+    <nav class="error-actions" aria-label="Not found options">
+      <a href="/">Back home</a>
+      <a href="/blog">Browse the blog</a>
+    </nav>
   </section>
 </BaseLayout>
+
+<style>
+  .not-found-page {
+    display: flex;
+    width: min(100%, 38rem);
+    min-height: 62vh;
+    flex-direction: column;
+    justify-content: center;
+    margin-inline: auto;
+    padding-block: clamp(6rem, 16vw, 11rem);
+  }
+
+  .error-code,
+  .kicker {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .error-code {
+    margin: 0 0 clamp(5rem, 13vw, 8rem);
+    color: var(--faint);
+  }
+
+  .kicker {
+    margin: 0 0 1.25rem;
+  }
+
+  h1 {
+    max-width: 8ch;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 11vw, 7rem);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+
+  .lede {
+    max-width: 30rem;
+    margin: 2.5rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.75rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .error-actions a {
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.28em;
+  }
+
+  .error-actions a:hover {
+    color: var(--text);
+  }
+
+  @media (max-width: 36rem) {
+    .not-found-page {
+      min-height: 55vh;
+      padding-block: 5rem 7rem;
+    }
+  }
+</style>
