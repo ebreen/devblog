@@ -21,88 +21,326 @@ const { Content } = await entry.render();
 ---
 
 <BaseLayout title={entry.data.title}>
-  <article class="page post-page">
+  <article class="post-page">
+    <a class="back-link" href="/blog"><span aria-hidden="true">←</span> All field notes</a>
+
     <header class="post-header">
-      <div class="meta-top">
-        <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-        <span class="reading-time">{getReadingTime(entry)}</span>
-      </div>
+      <p class="post-kicker">Field note</p>
       <h1>{entry.data.title}</h1>
-      <hr class="title-divider" />
+      <div class="post-details">
+        <p class="post-meta">
+          <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+          <span aria-hidden="true">/</span>
+          <span>{getReadingTime(entry)}</span>
+        </p>
+        {entry.data.tags.length > 0 && (
+          <ul class="post-tags" aria-label="Tags">
+            {entry.data.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+        )}
+      </div>
     </header>
+
+    <hr class="article-rule" />
+
     <section class="post-content">
       <Content />
     </section>
+
+    <footer class="post-footer">
+      <p>End of note.</p>
+      <a href="/blog">Read the other field notes</a>
+    </footer>
   </article>
 </BaseLayout>
 
 <style>
   .post-page {
-    max-width: 800px;
+    width: min(100%, 46rem);
     margin-inline: auto;
   }
 
-  .post-header {
-    margin-bottom: 2.5rem;
-  }
-
-  .meta-top {
-    display: flex;
-    justify-content: space-between;
+  .back-link {
+    display: inline-flex;
     align-items: center;
+    gap: 0.45rem;
+    margin-bottom: clamp(4.5rem, 12vw, 7rem);
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    text-underline-offset: 0.28em;
   }
 
-  .title-divider {
-    border: 0;
-    height: 2px;
-    background: var(--accent);
-    margin: 1.5rem 0 2rem;
-    width: 100%;
-  }
-
-  .post-content :global(h2) {
-    font-size: 1.8rem;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
+  .back-link:hover {
     color: var(--text);
   }
 
-  .post-content :global(pre) {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: #1a1a1a;
+  .post-header {
+    max-width: 44rem;
+  }
+
+  .post-kicker {
+    margin: 0 0 1.45rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+  }
+
+  .post-header h1 {
+    max-width: 15ch;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(3.1rem, 9vw, 5.35rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .post-details {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.4rem;
+    margin-top: 2.35rem;
+  }
+
+  .post-meta,
+  .post-tags {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
+    text-transform: lowercase;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    color: var(--faint);
+    list-style: none;
+  }
+
+  .post-tags li:not(:last-child)::after {
+    margin-inline: 0.55rem;
+    color: var(--border);
+    content: "/";
+  }
+
+  .article-rule {
+    height: 1px;
+    margin-block: clamp(3.5rem, 9vw, 5.5rem) clamp(4.5rem, 11vw, 7rem);
     border: 0;
-    border-radius: 4px;
-    overflow-x: auto;
+    background: var(--border);
+  }
+
+  .post-content {
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 1.8vw, 1.08rem);
+    line-height: 1.9;
+  }
+
+  .post-content :global(p),
+  .post-content :global(ul),
+  .post-content :global(ol),
+  .post-content :global(blockquote),
+  .post-content :global(pre),
+  .post-content :global(table) {
+    margin-block: 0 1.75rem;
+  }
+
+  .post-content :global(p:first-child) {
+    color: var(--text);
+    font-size: clamp(1.1rem, 2.4vw, 1.25rem);
+    line-height: 1.75;
+  }
+
+  .post-content :global(h2) {
+    margin: 4.5rem 0 1.3rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  .post-content :global(h3) {
+    margin: 3.4rem 0 1rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 1.7rem);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .post-content :global(strong) {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .post-content :global(em) {
+    color: var(--text-secondary);
+  }
+
+  .post-content :global(a) {
+    color: var(--accent);
+    text-decoration-color: var(--faint);
+    text-underline-offset: 0.22em;
+  }
+
+  .post-content :global(a:hover) {
+    color: var(--text);
+    text-decoration-color: var(--accent);
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    padding-left: 1.4rem;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 0.5rem;
+    padding-left: 0.3rem;
+  }
+
+  .post-content :global(li::marker) {
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  .post-content :global(blockquote) {
+    padding: 0.2rem 0 0.2rem 1.5rem;
+    border-left: 1px solid var(--accent);
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1.16em;
+    font-style: italic;
+    line-height: 1.75;
+  }
+
+  .post-content :global(blockquote p) {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  .post-content :global(hr) {
+    width: 3rem;
+    height: 1px;
+    margin: 4rem auto;
+    border: 0;
+    background: var(--border);
   }
 
   .post-content :global(code) {
-    background: rgb(255 255 255 / 6%);
-    border: 1px solid var(--border);
-    border-radius: 0.35rem;
-    padding: 0.08rem 0.35rem;
+    padding: 0.1rem 0.28rem;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+  }
+
+  .post-content :global(pre) {
+    padding: 1.5rem 0;
+    overflow-x: auto;
+    border-block: 1px solid var(--border);
+    background: var(--bg) !important;
+    font-size: 0.85rem;
+    line-height: 1.7;
   }
 
   .post-content :global(pre code) {
     display: block;
     width: max-content;
     min-width: 100%;
-    background: none;
-    border: 0;
-    border-radius: 0;
     padding: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
   }
 
   .post-content :global(img) {
+    display: block;
+    width: auto;
     max-width: 100%;
     height: auto;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    margin-block: 3rem;
+    border-block: 1px solid var(--border);
+  }
+
+  .post-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .post-content :global(th),
+  .post-content :global(td) {
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .post-content :global(th) {
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .post-footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    width: min(100%, 42rem);
+    margin: clamp(6rem, 14vw, 9rem) auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.07em;
+    text-transform: lowercase;
+  }
+
+  .post-footer p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .post-footer a {
+    color: var(--accent);
+    text-underline-offset: 0.25em;
+  }
+
+  @media (max-width: 42rem) {
+    .post-content {
+      font-size: 1rem;
+    }
+
+    .post-content :global(pre) {
+      padding-block: 1.15rem;
+    }
   }
 </style>

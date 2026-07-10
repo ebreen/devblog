@@ -2,26 +2,181 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Contact">
-  <section class="page">
-    <h1>Contact</h1>
-    <p>
-      I like this stuff. Email me.
-    </p>
+<BaseLayout title="Contact" description="Get in touch with Eirik Breen.">
+  <section class="page contact-page">
+    <header class="intro">
+      <p class="kicker">Say hello</p>
+      <h1>Good conversations welcome.</h1>
+      <p class="lede">
+        Want to compare homelab notes, talk infrastructure, or show me an AI workflow that is actually useful? My
+        inbox is open.
+      </p>
+    </header>
 
-    <div class="section" aria-labelledby="contact-methods">
-      <h2 id="contact-methods">Ways to Reach Me</h2>
-      <ul>
+    <section class="email-note" aria-labelledby="direct-route">
+      <h2 id="direct-route">The direct route</h2>
+      <a class="email-address" href="mailto:me@eirikbreen.com">me@eirikbreen.com</a>
+      <p>Start an email</p>
+    </section>
+
+    <section class="elsewhere" aria-labelledby="elsewhere-title">
+      <h2 id="elsewhere-title">Elsewhere online</h2>
+      <ol>
         <li>
-          Email: <a href="mailto:me@eirikbreen.com">me@eirikbreen.com</a>
+          <span class="social-index">01</span>
+          <div>
+            <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>
+            <p>The sensible career version</p>
+          </div>
         </li>
         <li>
-          LinkedIn: <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">linkedin.com/in/eirikbreen</a>
+          <span class="social-index">02</span>
+          <div>
+            <a href="https://github.com/ebreen" target="_blank" rel="noreferrer">GitHub</a>
+            <p>Code, experiments, loose screws</p>
+          </div>
         </li>
-        <li>
-          GitHub: <a href="https://github.com/ebreen" target="_blank" rel="noreferrer">github.com/ebreen</a>
-        </li>
-      </ul>
-    </div>
+      </ol>
+    </section>
+
+    <p class="contact-note">Based in Oslo · replies may arrive between terminal sessions</p>
   </section>
 </BaseLayout>
+
+<style>
+  .contact-page {
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    padding-block: clamp(5rem, 12vw, 10rem);
+  }
+
+  .intro {
+    margin-bottom: clamp(8rem, 19vw, 13rem);
+  }
+
+  .kicker,
+  .email-note h2,
+  .elsewhere > h2,
+  .social-index,
+  .contact-note {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .kicker {
+    margin: 0 0 1.25rem;
+  }
+
+  h1 {
+    max-width: 9ch;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 10vw, 6.8rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+  }
+
+  .lede {
+    max-width: 35rem;
+    margin: 2.5rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    line-height: 1.75;
+  }
+
+  .email-note {
+    margin-bottom: clamp(8rem, 19vw, 13rem);
+    padding-block: 2rem;
+    border-block: 1px solid var(--border);
+  }
+
+  .email-note h2,
+  .elsewhere > h2 {
+    margin: 0 0 2rem;
+  }
+
+  .email-address {
+    display: inline;
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 7vw, 4.2rem);
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+
+  .email-address:hover,
+  .elsewhere a:hover {
+    color: var(--text);
+  }
+
+  .email-note > p {
+    margin: 1.5rem 0 0;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+  }
+
+  .elsewhere {
+    margin-bottom: clamp(6rem, 14vw, 9rem);
+  }
+
+  .elsewhere ol {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    list-style: none;
+  }
+
+  .elsewhere li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .social-index {
+    padding-top: 0.25rem;
+    color: var(--faint);
+  }
+
+  .elsewhere a {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .elsewhere li p {
+    margin: 0.55rem 0 0;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .contact-note {
+    margin: 0;
+    color: var(--faint);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 36rem) {
+    .contact-page {
+      padding-block: 4rem 7rem;
+    }
+  }
+</style>
