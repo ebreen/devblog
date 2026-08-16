@@ -14,10 +14,94 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </header>
 
     <div class="project-notes">
+      <article class="project" aria-labelledby="project-pixelwitness">
+        <header>
+          <div class="project-meta">
+            <span>01 / 05</span>
+            <span>in progress</span>
+          </div>
+          <p class="section-label">Browser extension / local AI</p>
+          <h2 id="project-pixelwitness">PixelWitness</h2>
+        </header>
+
+        <p class="project-description">
+          A privacy-preserving Manifest V3 Chrome extension that scores webpage images for likely AI generation.
+          Decoding, three-model inference, and metadata checks all run inside Chrome. Image bytes are never sent to
+          an inference service.
+        </p>
+
+        <ul class="technologies" aria-label="PixelWitness technologies">
+          <li>chrome-extension</li>
+          <li>onnx</li>
+          <li>privacy</li>
+          <li>ai</li>
+        </ul>
+
+        <a class="project-link" href="https://github.com/ebreen/pixelwitness" target="_blank" rel="noreferrer">
+          View repository
+        </a>
+      </article>
+
+      <article class="project" aria-labelledby="project-parrot-windows">
+        <header>
+          <div class="project-meta">
+            <span>02 / 05</span>
+            <span>open source</span>
+          </div>
+          <p class="section-label">Native Windows utility</p>
+          <h2 id="project-parrot-windows">Parrot for Windows</h2>
+        </header>
+
+        <p class="project-description">
+          Minimal private push-to-talk dictation for Windows. Hold one key, speak, release, and it types wherever the
+          cursor is. Transcription runs locally with NVIDIA CUDA/Vulkan acceleration (CPU fallback). Audio is not
+          saved or sent anywhere.
+        </p>
+
+        <ul class="technologies" aria-label="Parrot for Windows technologies">
+          <li>windows</li>
+          <li>csharp</li>
+          <li>whisper</li>
+          <li>nvidia</li>
+        </ul>
+
+        <a class="project-link" href="https://github.com/ebreen/parrot-windows" target="_blank" rel="noreferrer">
+          View repository
+        </a>
+      </article>
+
+      <article class="project" aria-labelledby="project-shield-airplay">
+        <header>
+          <div class="project-meta">
+            <span>03 / 05</span>
+            <span>open source</span>
+          </div>
+          <p class="section-label">Android TV / NVIDIA Shield</p>
+          <h2 id="project-shield-airplay">Shield AirPlay</h2>
+        </header>
+
+        <p class="project-description">
+          Free open-source AirPlay receiver for NVIDIA Shield and Android TV. Screen mirroring, HLS video, and local
+          audio, with no ads, subscriptions, or analytics. Independently maintained GPLv3 derivative of
+          android-airplay-server / UxPlay.
+        </p>
+
+        <ul class="technologies" aria-label="Shield AirPlay technologies">
+          <li>kotlin</li>
+          <li>android-tv</li>
+          <li>airplay</li>
+          <li>nvidia-shield</li>
+        </ul>
+
+        <a class="project-link" href="https://github.com/ebreen/shield-airplay" target="_blank" rel="noreferrer">
+          View repository
+        </a>
+      </article>
+
       <article class="project" aria-labelledby="project-cloudmount">
         <header>
           <div class="project-meta">
-            <span>01 / 02</span>
+            <span>04 / 05</span>
             <span>in progress</span>
           </div>
           <p class="section-label">Native macOS utility</p>
@@ -44,7 +128,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <article class="project" aria-labelledby="project-solana-agent-toolkit">
         <header>
           <div class="project-meta">
-            <span>02 / 02</span>
+            <span>05 / 05</span>
             <span>open source</span>
           </div>
           <p class="section-label">Tools for agents</p>
