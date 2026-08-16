@@ -40,7 +40,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
         <div>
           <dt>Day job</dt>
-          <dd>Systems consultant</dd>
+          <dd>Systems consultant, Orange Business</dd>
         </div>
         <div>
           <dt>Default shell</dt>
@@ -66,9 +66,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <h3 id="systems-title">Systems</h3>
           <ul>
             <li>Linux administration, mostly RHEL</li>
-            <li>Kubernetes with K3s and MKS</li>
-            <li>PCI-DSS environments</li>
-            <li>Splunk and Elastic Stack</li>
+            <li>Kubernetes with K3s, MKS, and Cilium</li>
+            <li>PCI DSS environments and audits</li>
+            <li>Splunk, Wazuh, and Elastic Stack</li>
           </ul>
         </section>
 
@@ -77,9 +77,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <h3 id="automation-title">Automation</h3>
           <ul>
             <li>GitOps with Argo CD</li>
-            <li>Ansible for repeatable operations</li>
+            <li>Ansible and CI/CD pipelines</li>
             <li>Vault and OpenBao</li>
-            <li>Small tools with narrow jobs</li>
+            <li>Thales HSM (PayShield, Luna)</li>
           </ul>
         </section>
 
@@ -99,7 +99,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <aside class="elsewhere" aria-labelledby="formal-version">
       <p class="section-label">The formal version</p>
       <h2 id="formal-version">Need dates, roles, and sensible nouns?</h2>
-      <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">Find me on LinkedIn</a>
+      <p class="elsewhere-links">
+        <a href="/resume">Read the CV</a>
+        <span aria-hidden="true"> / </span>
+        <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>
+      </p>
     </aside>
   </article>
 </BaseLayout>
@@ -280,6 +284,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .elsewhere h2 {
     max-width: 15ch;
+  }
+
+  .elsewhere-links {
+    margin: 0;
   }
 
   .elsewhere a {
