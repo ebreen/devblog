@@ -1,14 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../lib/projects";
-import { experience, resumeProfile, skillGroups } from "../lib/resume";
+import { education, experience, resumeProfile, skillGroups } from "../lib/resume";
 
 const selectedWork = projects.slice(0, 4);
 ---
 
 <BaseLayout
   title="Resume"
-  description="Resume for Eirik Breen, a systems consultant in Oslo working on Linux, Kubernetes, and platform operations."
+  description="Resume for Eirik Breen, systems consultant at Orange Business in Oslo. Linux, Kubernetes, GitOps, and PCI DSS."
 >
   <article class="page resume-page">
     <header class="intro">
@@ -16,7 +16,6 @@ const selectedWork = projects.slice(0, 4);
       <h1>Eirik Breen</h1>
       <p class="role-line">{resumeProfile.role} · {resumeProfile.location}</p>
       <p class="lede">{resumeProfile.intro}</p>
-      <p class="availability">Available · {resumeProfile.availability}</p>
 
       <div class="intro-actions">
         <a class="text-link" href={`mailto:${resumeProfile.email}`}>{resumeProfile.email}</a>
@@ -52,14 +51,47 @@ const selectedWork = projects.slice(0, 4);
                   {role.location}
                 </p>
 
-                {role.summary.map((paragraph) => (
-                  <p>{paragraph}</p>
-                ))}
+                <ul class="highlights">
+                  {role.highlights.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
 
-                <p class="experience-stack">
-                  <span>Daily stack</span>
-                  {role.stack.join(", ")}
+                {role.stack && role.stack.length > 0 && (
+                  <p class="experience-stack">
+                    <span>Daily stack</span>
+                    {role.stack.join(", ")}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="resume-section" aria-labelledby="education-title">
+      <p class="section-label">Education</p>
+      <h2 id="education-title">Education</h2>
+
+      <ol class="experience-list">
+        {
+          education.map((item) => (
+            <li class="experience">
+              <p class="experience-dates">
+                <time datetime={item.startDateTime}>{item.start}</time>
+                <span aria-hidden="true"> — </span>
+                <time datetime={item.endDateTime}>{item.end}</time>
+              </p>
+
+              <div class="experience-body">
+                <h3>{item.title}</h3>
+                <p class="experience-org">
+                  {item.school}
+                  <span aria-hidden="true"> · </span>
+                  {item.location}
                 </p>
+                {item.detail && <p>{item.detail}</p>}
               </div>
             </li>
           ))
@@ -116,9 +148,7 @@ const selectedWork = projects.slice(0, 4);
     <section class="resume-section contact-section" aria-labelledby="resume-contact-title">
       <p class="section-label">Contact</p>
       <h2 id="resume-contact-title">Get in touch</h2>
-      <p class="section-copy">
-        Best reached by email. LinkedIn has the formal version if you need it.
-      </p>
+      <p class="section-copy">Best reached by email. LinkedIn is there if you prefer that route.</p>
       <ul class="contact-list">
         <li>
           <a class="text-link" href={`mailto:${resumeProfile.email}`}>{resumeProfile.email}</a>
@@ -160,7 +190,6 @@ const selectedWork = projects.slice(0, 4);
 
   .kicker,
   .section-label,
-  .availability,
   .experience-dates,
   .experience-stack span,
   .work-index {
@@ -202,6 +231,7 @@ const selectedWork = projects.slice(0, 4);
   .lede,
   .section-copy,
   .experience-body > p,
+  .highlights,
   .work-list p {
     color: var(--text-secondary);
     font-family: var(--font-sans);
@@ -211,10 +241,6 @@ const selectedWork = projects.slice(0, 4);
 
   .lede {
     max-width: 36rem;
-    margin: 1.1rem 0 0;
-  }
-
-  .availability {
     margin: 1.1rem 0 0;
   }
 
@@ -257,7 +283,8 @@ const selectedWork = projects.slice(0, 4);
   .experience-list,
   .work-list,
   .skill-group ul,
-  .contact-list {
+  .contact-list,
+  .highlights {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -294,6 +321,18 @@ const selectedWork = projects.slice(0, 4);
 
   .experience-body > p {
     margin: 0 0 0.85rem;
+  }
+
+  .highlights {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+
+  .highlights li::marker {
+    color: var(--faint);
   }
 
   .experience-stack {
@@ -430,7 +469,9 @@ const selectedWork = projects.slice(0, 4);
       width: 100%;
     }
 
-    .resume-section {
+    .experience,
+    .skill-group,
+    .work-list li {
       break-inside: avoid;
     }
   }
