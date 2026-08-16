@@ -38,9 +38,10 @@ npm run astro -- check
   - Imports global styles from `src/styles/global.css`.
 
 - `src/pages`
-  - Static pages: `index.astro`, `about.astro`, `projects.astro`, `contact.astro`, `404.astro`.
+  - Static pages: `index.astro`, `about.astro`, `projects.astro`, `resume.astro`, `contact.astro`, `404.astro`.
   - Blog index: `blog/index.astro` loads collection entries and handles fixture query-param behavior.
   - Blog detail: `blog/[slug].astro` uses `getStaticPaths()` from collection entries and renders MD/MDX with `entry.render()`.
+  - `/cv` permanently redirects to `/resume`.
 
 - `src/content.config.ts`
   - Defines `blog` collection schema:
@@ -52,3 +53,9 @@ npm run astro -- check
 
 - `src/lib/blogFixtures.ts`
   - Central fixture constants used by blog index script/query handling and deterministic fixture route references.
+
+- `src/lib/projects.ts`
+  - Shared project catalog used by the Made page and resume selected-work list.
+
+- `src/lib/resume.ts`
+  - Resume profile, experience, and skill groups for `/resume`.
