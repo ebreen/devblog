@@ -99,7 +99,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <aside class="elsewhere" aria-labelledby="formal-version">
       <p class="section-label">The formal version</p>
       <h2 id="formal-version">Need dates, roles, and sensible nouns?</h2>
-      <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">Find me on LinkedIn</a>
+      <p class="elsewhere-links">
+        <a href="/resume">Read the CV</a>
+        <span aria-hidden="true"> / </span>
+        <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>
+      </p>
     </aside>
   </article>
 </BaseLayout>
@@ -280,6 +284,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .elsewhere h2 {
     max-width: 15ch;
+  }
+
+  .elsewhere-links {
+    margin: 0;
   }
 
   .elsewhere a {
