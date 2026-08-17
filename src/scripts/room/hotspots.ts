@@ -1,0 +1,153 @@
+export type HotspotId =
+  | "desk"
+  | "rack"
+  | "printer"
+  | "shelf"
+  | "coffee"
+  | "sofa"
+  | "window"
+  | "door"
+  | "mail"
+  | "lights"
+  | "roomba";
+
+export type Hotspot = {
+  id: HotspotId;
+  /** Shown in the interaction prompt as "e — {prompt}". */
+  prompt: string;
+  x: number;
+  z: number;
+  radius: number;
+  title: string;
+  lines: string[];
+  link?: { href: string; label: string };
+};
+
+export const hotspots: Hotspot[] = [
+  {
+    id: "desk",
+    prompt: "look at the setup",
+    x: -2.2,
+    z: 1.5,
+    radius: 1.7,
+    title: "the setup",
+    lines: [
+      "two screens: one for the terminal,",
+      "one for the game that got paused at 1am."
+    ],
+    link: { href: "/projects", label: "see what got made" }
+  },
+  {
+    id: "printer",
+    prompt: "print the cv",
+    x: -2.75,
+    z: -0.35,
+    radius: 1.1,
+    title: "the printer",
+    lines: [
+      "it prints exactly one document.",
+      "suspiciously reliable, for a printer."
+    ],
+    link: { href: "/resume", label: "take the printout" }
+  },
+  {
+    id: "rack",
+    prompt: "check the rack",
+    x: -2.75,
+    z: -2.7,
+    radius: 1.15,
+    title: "the rack",
+    lines: [
+      "a small homelab. a hypervisor, too many containers,",
+      "and backups that actually restore. mostly."
+    ],
+    link: { href: "/about", label: "more about all this" }
+  },
+  {
+    id: "shelf",
+    prompt: "browse the shelf",
+    x: 3.1,
+    z: -1.5,
+    radius: 1.2,
+    title: "the shelf",
+    lines: [
+      "notes on linux, homelabs, ai,",
+      "and other ideas that seemed good at midnight."
+    ],
+    link: { href: "/blog", label: "read the notes" }
+  },
+  {
+    id: "coffee",
+    prompt: "coffee",
+    x: 2.7,
+    z: -3.0,
+    radius: 1.05,
+    title: "the coffee machine",
+    lines: ["critical infrastructure.", "uptime target: five nines."]
+  },
+  {
+    id: "sofa",
+    prompt: "the sofa",
+    x: 0.9,
+    z: 1.6,
+    radius: 0.9,
+    title: "the sofa",
+    lines: [
+      "for watching the city instead of the terminal.",
+      "statistically underused."
+    ]
+  },
+  {
+    id: "window",
+    prompt: "look out over oslo",
+    x: -0.5,
+    z: -2.7,
+    radius: 1.35,
+    title: "the window",
+    lines: [
+      "oslo at night, from somewhere too high up.",
+      "the fjord is out there. so is a ferry, probably."
+    ]
+  },
+  {
+    id: "mail",
+    prompt: "check the mail tray",
+    x: 3.45,
+    z: 1.55,
+    radius: 0.95,
+    title: "the mail tray",
+    lines: ["say hello. or report a bug in this room."],
+    link: { href: "/contact", label: "send an email" }
+  },
+  {
+    id: "door",
+    prompt: "leave the room",
+    x: 3.4,
+    z: 2.5,
+    radius: 0.9,
+    title: "the door",
+    lines: ["back to the front page."],
+    link: { href: "/", label: "leave" }
+  },
+  {
+    id: "lights",
+    prompt: "lights on",
+    x: 3.5,
+    z: 3.2,
+    radius: 1.15,
+    title: "the light switch",
+    lines: []
+  },
+  {
+    id: "roomba",
+    prompt: "the roomba",
+    x: 0,
+    z: 0,
+    radius: 0.95,
+    title: "the roomba",
+    lines: [
+      "it has never once finished a run without getting stuck.",
+      "still employed."
+    ]
+  }
+];
