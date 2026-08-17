@@ -498,7 +498,7 @@ const selectedWork = projects.slice(0, 4);
       max-width: none;
       color: var(--text);
       font-size: 28pt;
-      letter-spacing: -0.045em;
+      letter-spacing: -0.04em;
       line-height: 0.95;
     }
 
@@ -564,12 +564,15 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .resume-section h2 {
-      margin: 0 0 0.15rem;
-      padding-bottom: 0;
-      border-bottom: 0;
-      font-size: 13pt;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
+      margin: 0 0 0.1rem;
+      padding-bottom: 0.32rem;
+      border-bottom: 0.7pt solid var(--text);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 8pt;
+      letter-spacing: 0.16em;
+      line-height: 1.2;
+      text-transform: uppercase;
       break-after: avoid;
       page-break-after: avoid;
     }
@@ -579,8 +582,13 @@ const selectedWork = projects.slice(0, 4);
       grid-template-columns: 1fr;
       gap: 0;
       position: relative;
-      padding-block: 0.52rem;
-      border-color: var(--border);
+      padding-block: 0.62rem;
+      border-top: 0;
+      border-bottom: 0.45pt solid var(--border);
+    }
+
+    .experience:last-child {
+      border-bottom: 0.45pt solid var(--border);
     }
 
     .experience-dates {
@@ -651,8 +659,8 @@ const selectedWork = projects.slice(0, 4);
     .skill-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0;
-      padding: 0;
+      gap: 0.12rem;
+      padding: 0.35rem 0 0.15rem;
       border: 0;
     }
 
@@ -661,19 +669,20 @@ const selectedWork = projects.slice(0, 4);
       grid-template-columns: 3.8cm minmax(0, 1fr);
       gap: 0.28rem 0.8rem;
       align-items: baseline;
-      padding: 0.28rem 0;
-      border-top: 0.45pt solid var(--border);
-      border-bottom: 0;
+      padding: 0.12rem 0;
+      border: 0;
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
     .skill-group:last-child {
-      border-bottom: 0.45pt solid var(--border);
+      border-bottom: 0;
     }
 
     .skill-group h3 {
       margin: 0;
+      color: var(--text);
+      font-family: var(--font-sans);
       font-size: 9pt;
     }
 
@@ -693,14 +702,14 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .work-list {
-      border-top: 0.45pt solid var(--border);
+      border-top: 0;
     }
 
     .work-list li {
       grid-template-columns: 1.15rem minmax(0, 1fr);
       gap: 0.35rem;
-      padding-block: 0.32rem;
-      border-bottom: 0.45pt solid var(--border);
+      padding-block: 0.38rem;
+      border-bottom: 0;
       break-inside: avoid;
       page-break-inside: avoid;
     }
