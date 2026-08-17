@@ -30,6 +30,10 @@ export type Education = {
   detail?: string;
 };
 
+export function displayUrl(url: string): string {
+  return url.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+}
+
 export const resumeProfile = {
   name: "Eirik Breen",
   role: "Systems Consultant",
