@@ -5,11 +5,10 @@ export type HotspotId =
   | "shelf"
   | "coffee"
   | "sofa"
-  | "tv"
   | "window"
   | "door"
   | "mail"
-  | "switch"
+  | "lights"
   | "roomba";
 
 export type Hotspot = {
@@ -27,23 +26,23 @@ export type Hotspot = {
 export const hotspots: Hotspot[] = [
   {
     id: "desk",
-    prompt: "look at the desk",
-    x: -3.55,
-    z: 2.0,
-    radius: 1.25,
-    title: "the desk",
+    prompt: "look at the setup",
+    x: -2.35,
+    z: 1.7,
+    radius: 1.2,
+    title: "the setup",
     lines: [
-      "two screens and a keyboard that is too loud.",
-      "at least one terminal at all times."
+      "two screens: one for the terminal,",
+      "one for the game that got paused at 1am."
     ],
     link: { href: "/projects", label: "see what got made" }
   },
   {
     id: "printer",
     prompt: "print the cv",
-    x: -3.5,
-    z: 0.55,
-    radius: 1.2,
+    x: -2.75,
+    z: -0.35,
+    radius: 1.1,
     title: "the printer",
     lines: [
       "it prints exactly one document.",
@@ -54,21 +53,21 @@ export const hotspots: Hotspot[] = [
   {
     id: "rack",
     prompt: "check the rack",
-    x: 3.5,
-    z: -2.5,
-    radius: 1.35,
+    x: -2.75,
+    z: -2.7,
+    radius: 1.15,
     title: "the rack",
     lines: [
-      "a small homelab in the kitchen corner.",
-      "backups that actually restore. mostly."
+      "a small homelab. a hypervisor, too many containers,",
+      "and backups that actually restore. mostly."
     ],
     link: { href: "/about", label: "more about all this" }
   },
   {
     id: "shelf",
     prompt: "browse the shelf",
-    x: 2.4,
-    z: 0,
+    x: 3.1,
+    z: -1.5,
     radius: 1.2,
     title: "the shelf",
     lines: [
@@ -80,18 +79,18 @@ export const hotspots: Hotspot[] = [
   {
     id: "coffee",
     prompt: "coffee",
-    x: 3.6,
-    z: -0.2,
-    radius: 1.1,
+    x: 2.7,
+    z: -3.0,
+    radius: 1.05,
     title: "the coffee machine",
     lines: ["critical infrastructure.", "uptime target: five nines."]
   },
   {
     id: "sofa",
     prompt: "the sofa",
-    x: 0.3,
-    z: 0.3,
-    radius: 0.95,
+    x: 0.9,
+    z: 1.6,
+    radius: 0.9,
     title: "the sofa",
     lines: [
       "for watching the city instead of the terminal.",
@@ -99,23 +98,11 @@ export const hotspots: Hotspot[] = [
     ]
   },
   {
-    id: "tv",
-    prompt: "the tv",
-    x: -1.2,
-    z: -2.35,
-    radius: 1.1,
-    title: "the tv",
-    lines: [
-      "technically for films.",
-      "mostly a very large terminal."
-    ]
-  },
-  {
     id: "window",
     prompt: "look out over oslo",
-    x: 1.5,
-    z: -2.6,
-    radius: 1.4,
+    x: -0.5,
+    z: -2.7,
+    radius: 1.35,
     title: "the window",
     lines: [
       "oslo at night, from somewhere too high up.",
@@ -125,31 +112,31 @@ export const hotspots: Hotspot[] = [
   {
     id: "mail",
     prompt: "check the mail tray",
-    x: 4.0,
+    x: 3.45,
     z: 1.55,
-    radius: 1.0,
+    radius: 0.95,
     title: "the mail tray",
     lines: ["say hello. or report a bug in this room."],
     link: { href: "/contact", label: "send an email" }
   },
   {
-    id: "switch",
-    prompt: "lights on",
-    x: 4.05,
-    z: 2.1,
-    radius: 1.0,
-    title: "the light switch",
-    lines: ["click."]
-  },
-  {
     id: "door",
     prompt: "leave the room",
-    x: 4.0,
-    z: 2.85,
+    x: 3.4,
+    z: 2.5,
     radius: 1.0,
     title: "the door",
     lines: ["back to the front page."],
     link: { href: "/", label: "leave" }
+  },
+  {
+    id: "lights",
+    prompt: "lights on",
+    x: 3.55,
+    z: 3.2,
+    radius: 0.9,
+    title: "the light switch",
+    lines: []
   },
   {
     id: "roomba",

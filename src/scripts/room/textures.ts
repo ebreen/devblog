@@ -116,6 +116,40 @@ export function makePaperTexture(): THREE.CanvasTexture {
   return toTexture(canvas);
 }
 
+/** A retro platformer, paused since 1am: gold platforms, a little hero, a flag. */
+export function makeGameTexture(): THREE.CanvasTexture {
+  const [canvas, ctx] = createCanvas(256, 160);
+  ctx.fillStyle = "#0d0d12";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "rgba(214, 180, 95, 0.85)";
+  const platforms: Array<[number, number, number]> = [
+    [10, 138, 92],
+    [128, 120, 60],
+    [204, 96, 42],
+    [58, 84, 48],
+    [150, 62, 40]
+  ];
+  for (const [x, y, width] of platforms) {
+    ctx.fillRect(x, y, width, 6);
+  }
+
+  ctx.fillStyle = "#efece3";
+  ctx.fillRect(70, 70, 10, 14);
+  ctx.fillStyle = "#d6503c";
+  ctx.fillRect(178, 44, 3, 18);
+  ctx.fillRect(181, 44, 10, 7);
+
+  ctx.fillStyle = "rgba(239, 236, 227, 0.9)";
+  ctx.font = "bold 13px monospace";
+  ctx.fillText("paused", 106, 26);
+  ctx.fillStyle = "#98938a";
+  ctx.font = "9px monospace";
+  ctx.fillText("since 01:14", 100, 40);
+
+  return toTexture(canvas);
+}
+
 export type ArtVariant = "fjord" | "moon" | "grid";
 
 /** Small abstract framed prints for the walls. */

@@ -74,7 +74,6 @@ export function initRoom(): void {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.75;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -88,6 +87,20 @@ export function initRoom(): void {
 
   const hud = createHud(stage);
   const touch = createTouchControls(stage);
+
+  // The lamps carry the room by default; the wall switch turns on the
+  // ceiling downlights for the bright version.
+  let lightsOn = false;
+  const applyLightMode = (): void => {
+    const rig = world.lighting;
+    rig.ambient.intensity = lightsOn ? 1.6 : 0.65;
+    rig.hemisphere.intensity = lightsOn ? 2.2 : 0.95;
+    for (let i = 0; i < rig.fills.length; i += 1) {
+      rig.fills[i].intensity = lightsOn ? rig.fillIntensities[i] : 0;
+    }
+    renderer.toneMappingExposure = lightsOn ? 1.75 : 1.45;
+  };
+  applyLightMode();
 
   const resize = (): void => {
     const width = Math.max(1, stage.clientWidth);
@@ -104,8 +117,6 @@ export function initRoom(): void {
   let activeHotspot: Hotspot | null = null;
   let openHotspotId: Hotspot["id"] | null = null;
 
-  let lightsOn = false;
-
   const closeDialog = (): void => {
     hud.hideDialog();
     openHotspotId = null;
@@ -113,9 +124,9 @@ export function initRoom(): void {
 
   const openHotspot = (hotspot: Hotspot): void => {
     // The light switch toggles instantly instead of opening a dialog.
-    if (hotspot.id === "switch") {
+    if (hotspot.id === "lights") {
       lightsOn = !lightsOn;
-      world.setLights(lightsOn);
+      applyLightMode();
       hotspot.prompt = lightsOn ? "lights off" : "lights on";
       hud.showPrompt(hotspot.prompt);
       return;
