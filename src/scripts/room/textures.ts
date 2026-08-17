@@ -20,6 +20,56 @@ function toTexture(canvas: HTMLCanvasElement): THREE.CanvasTexture {
   return texture;
 }
 
+/** Warm herringbone wood floor, tiled. */
+export function makeFloorTexture(): THREE.CanvasTexture {
+  const [canvas, ctx] = createCanvas(256, 256);
+  ctx.fillStyle = "#1d150e";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const planks = ["#3a2d20", "#443426", "#332818", "#3f3122"];
+  const cell = 32;
+  for (let row = 0; row < 8; row += 1) {
+    for (let col = 0; col < 8; col += 1) {
+      const px = col * cell;
+      const py = row * cell;
+      ctx.fillStyle = planks[(col * 13 + row * 7) % planks.length];
+      if ((col + row) % 2 === 0) {
+        ctx.fillRect(px, py + 1, cell, cell - 2);
+      } else {
+        ctx.fillRect(px + 1, py, cell - 2, cell);
+      }
+    }
+  }
+
+  const texture = toTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(3, 2.4);
+  return texture;
+}
+
+/** A tv that is paused on something: dark screen, gold play glyph, progress bar. */
+export function makeTvTexture(): THREE.CanvasTexture {
+  const [canvas, ctx] = createCanvas(192, 112);
+  ctx.fillStyle = "#0a0a0a";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "rgba(214, 180, 95, 0.85)";
+  ctx.beginPath();
+  ctx.moveTo(88, 42);
+  ctx.lineTo(110, 56);
+  ctx.lineTo(88, 70);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(152, 147, 138, 0.4)";
+  ctx.fillRect(16, 96, 160, 3);
+  ctx.fillStyle = "#d6b45f";
+  ctx.fillRect(16, 96, 58, 3);
+
+  return toTexture(canvas);
+}
+
 /** Terminal-style screen: gold mono text on near-black, block cursor at the end. */
 export function makeMonitorTexture(lines: string[]): THREE.CanvasTexture {
   const [canvas, ctx] = createCanvas(256, 160);
@@ -66,18 +116,81 @@ export function makePaperTexture(): THREE.CanvasTexture {
   return toTexture(canvas);
 }
 
-/** Dark rug with a subtle double gold border. */
-export function makeRugTexture(): THREE.CanvasTexture {
-  const [canvas, ctx] = createCanvas(256, 176);
-  ctx.fillStyle = "#14100d";
+export type ArtVariant = "fjord" | "moon" | "grid";
+
+/** Small abstract framed prints for the walls. */
+export function makeArtTexture(variant: ArtVariant): THREE.CanvasTexture {
+  const [canvas, ctx] = createCanvas(88, 120);
+  ctx.fillStyle = "#101318";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.strokeStyle = "rgba(214, 180, 95, 0.4)";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-  ctx.strokeStyle = "rgba(214, 180, 95, 0.18)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+  switch (variant) {
+    case "fjord": {
+      ctx.strokeStyle = "rgba(214, 180, 95, 0.75)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 5; i += 1) {
+        const y = 34 + i * 15;
+        ctx.beginPath();
+        ctx.moveTo(10, y);
+        ctx.bezierCurveTo(30, y - 8, 58, y + 8, 78, y);
+        ctx.stroke();
+      }
+      break;
+    }
+    case "moon": {
+      ctx.fillStyle = "rgba(239, 236, 227, 0.85)";
+      ctx.beginPath();
+      ctx.arc(44, 46, 20, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#101318";
+      ctx.beginPath();
+      ctx.arc(52, 40, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(214, 180, 95, 0.7)";
+      ctx.fillRect(14, 88, 60, 3);
+      break;
+    }
+    case "grid": {
+      ctx.strokeStyle = "rgba(152, 147, 138, 0.6)";
+      ctx.lineWidth = 1;
+      for (let x = 12; x <= 76; x += 16) {
+        ctx.beginPath();
+        ctx.moveTo(x, 14);
+        ctx.lineTo(x, 106);
+        ctx.stroke();
+      }
+      for (let y = 14; y <= 106; y += 16) {
+        ctx.beginPath();
+        ctx.moveTo(12, y);
+        ctx.lineTo(76, y);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#d6b45f";
+      ctx.fillRect(44, 46, 16, 16);
+      break;
+    }
+    default: {
+      const exhaustive: never = variant;
+      throw new Error(`unhandled art variant: ${String(exhaustive)}`);
+    }
+  }
+
+  return toTexture(canvas);
+}
+
+/** Striped lounge rug: soft wavy bands in cream, brown, and dark taupe. */
+export function makeRugTexture(): THREE.CanvasTexture {
+  const [canvas, ctx] = createCanvas(256, 176);
+  const bands = ["#d8cdb8", "#6b5d4f", "#4a3c2d", "#a3937b", "#3a2f24", "#d8cdb8", "#8a7a63", "#4a3c2d"];
+  const bandHeight = canvas.height / bands.length;
+
+  for (let i = 0; i < bands.length; i += 1) {
+    ctx.fillStyle = bands[i];
+    for (let x = 0; x < canvas.width; x += 4) {
+      const wobble = Math.sin(x * 0.05 + i * 1.9) * 3;
+      ctx.fillRect(x, i * bandHeight + wobble, 4, bandHeight + 3);
+    }
+  }
 
   return toTexture(canvas);
 }

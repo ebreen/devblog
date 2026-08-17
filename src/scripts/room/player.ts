@@ -61,8 +61,8 @@ export function buildPlayer(reducedMotion: boolean): Player {
 
   return {
     group,
-    x: 0.5,
-    z: 2.4,
+    x: 1.6,
+    z: 2.6,
     heading: Math.PI,
     walkPhase: 0,
     moving: false,

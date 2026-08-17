@@ -6,7 +6,7 @@ import { fetchHomelabStatus, serviceStateGlyph, type HomelabStatus, type Service
 import { buildWorld, type RectCollider } from "./world";
 
 const RENDER_SCALE = 0.5;
-const CAMERA_OFFSET = new THREE.Vector3(0, 5.4, 6.1);
+const CAMERA_OFFSET = new THREE.Vector3(0, 4.2, 4.6);
 const CITY_FRAME_INTERVAL = 0.05;
 const PRINT_DURATION = 1.4;
 const ROOMBA_SPEED = 0.55;
@@ -74,7 +74,7 @@ export function initRoom(): void {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.75;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -104,12 +104,23 @@ export function initRoom(): void {
   let activeHotspot: Hotspot | null = null;
   let openHotspotId: Hotspot["id"] | null = null;
 
+  let lightsOn = false;
+
   const closeDialog = (): void => {
     hud.hideDialog();
     openHotspotId = null;
   };
 
   const openHotspot = (hotspot: Hotspot): void => {
+    // The light switch toggles instantly instead of opening a dialog.
+    if (hotspot.id === "switch") {
+      lightsOn = !lightsOn;
+      world.setLights(lightsOn);
+      hotspot.prompt = lightsOn ? "lights off" : "lights on";
+      hud.showPrompt(hotspot.prompt);
+      return;
+    }
+
     hud.showDialog({ title: hotspot.title, lines: hotspot.lines, link: hotspot.link });
     openHotspotId = hotspot.id;
 
@@ -235,7 +246,7 @@ export function initRoom(): void {
     if (printing) {
       printProgress = Math.min(1, printProgress + dt / PRINT_DURATION);
       const ease = 1 - (1 - printProgress) * (1 - printProgress);
-      world.printerPaper.position.x = world.printerPaperHomeX - ease * 0.42;
+      world.printerPaper.position.x = world.printerPaperHomeX + ease * world.printerPaperTravelX;
       if (printProgress >= 1) {
         printing = false;
       }
@@ -275,7 +286,11 @@ export function initRoom(): void {
       }
     }
 
-    const targetCamera = new THREE.Vector3(player.x, 0, player.z).add(CAMERA_OFFSET);
+    // Follow a point biased toward the room's center so the frame stays
+    // filled with room instead of the darkness outside it.
+    const followX = THREE.MathUtils.clamp(player.x, -1.7, 1.7);
+    const followZ = THREE.MathUtils.clamp(player.z, -0.5, 1.5);
+    const targetCamera = new THREE.Vector3(followX, 0, followZ).add(CAMERA_OFFSET);
     const smoothing = reducedMotion ? 1 : Math.min(1, dt * 4.5);
     camera.position.lerp(targetCamera, smoothing);
     camera.lookAt(camera.position.x - CAMERA_OFFSET.x, 0.6, camera.position.z - CAMERA_OFFSET.z);
