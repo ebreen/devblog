@@ -2,8 +2,8 @@
 import "../styles/global.css";
 
 type NavItem = {
-  label: "about" | "made" | "cv" | "wrote" | "email";
-  href: "/about" | "/projects" | "/resume" | "/blog" | "/contact";
+  label: "about" | "made" | "cv" | "wrote" | "room" | "email";
+  href: "/about" | "/projects" | "/resume" | "/blog" | "/room" | "/contact";
 };
 
 type Props = {
@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { label: "made", href: "/projects" },
   { label: "cv", href: "/resume" },
   { label: "wrote", href: "/blog" },
+  { label: "room", href: "/room" },
   { label: "email", href: "/contact" }
 ];
 
