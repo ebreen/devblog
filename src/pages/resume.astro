@@ -543,8 +543,11 @@ const selectedWork = projects.slice(0, 4);
       color: var(--accent);
     }
 
-    .resume-contact a {
+    .resume-contact a,
+    .resume-contact .text-link {
       color: var(--text-secondary);
+      text-decoration: none;
+      text-decoration-line: none;
     }
 
     .resume-section {
@@ -557,16 +560,11 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .section-label {
-      margin-bottom: 0.15rem;
-      color: var(--accent);
-      font-size: 7pt;
-      letter-spacing: 0.14em;
-      break-after: avoid;
-      page-break-after: avoid;
+      display: none;
     }
 
     .resume-section h2 {
-      margin: 0 0 0.25rem;
+      margin: 0 0 0.15rem;
       padding-bottom: 0;
       border-bottom: 0;
       font-size: 13pt;
@@ -578,25 +576,29 @@ const selectedWork = projects.slice(0, 4);
 
     .experience {
       display: grid;
-      grid-template-columns: 2.4cm minmax(0, 1fr);
-      gap: 0.15rem 0.8rem;
-      padding-block: 0.5rem;
+      grid-template-columns: 1fr;
+      gap: 0;
+      position: relative;
+      padding-block: 0.52rem;
       border-color: var(--border);
     }
 
     .experience-dates {
-      display: flex;
-      flex-direction: column;
-      gap: 0.12rem;
-      margin: 0.12rem 0 0;
-      font-size: 7.5pt;
-      line-height: 1.3;
+      position: absolute;
+      top: 0.58rem;
+      right: 0;
+      display: block;
+      margin: 0;
+      font-size: 8pt;
+      line-height: 1.2;
       font-variant-numeric: tabular-nums;
+      text-align: right;
       text-transform: none;
+      white-space: nowrap;
     }
 
     .experience-dates span {
-      display: none;
+      display: inline;
     }
 
     .experience-body h3,
@@ -606,6 +608,7 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .experience-body h3 {
+      padding-right: 4.1cm;
       font-size: 11pt;
       line-height: 1.2;
     }
@@ -697,7 +700,7 @@ const selectedWork = projects.slice(0, 4);
       grid-template-columns: 1.15rem minmax(0, 1fr);
       gap: 0.35rem;
       padding-block: 0.32rem;
-      border-bottom-color: var(--border);
+      border-bottom: 0.45pt solid var(--border);
       break-inside: avoid;
       page-break-inside: avoid;
     }
