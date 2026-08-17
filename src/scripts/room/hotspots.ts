@@ -27,9 +27,9 @@ export const hotspots: Hotspot[] = [
   {
     id: "desk",
     prompt: "look at the setup",
-    x: -2.35,
-    z: 1.7,
-    radius: 1.2,
+    x: -2.2,
+    z: 1.5,
+    radius: 1.7,
     title: "the setup",
     lines: [
       "two screens: one for the terminal,",
@@ -124,7 +124,7 @@ export const hotspots: Hotspot[] = [
     prompt: "leave the room",
     x: 3.4,
     z: 2.5,
-    radius: 1.0,
+    radius: 0.9,
     title: "the door",
     lines: ["back to the front page."],
     link: { href: "/", label: "leave" }
@@ -132,9 +132,9 @@ export const hotspots: Hotspot[] = [
   {
     id: "lights",
     prompt: "lights on",
-    x: 3.55,
+    x: 3.5,
     z: 3.2,
-    radius: 0.9,
+    radius: 1.15,
     title: "the light switch",
     lines: []
   },
