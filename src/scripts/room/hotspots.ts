@@ -43,7 +43,7 @@ export const hotspots: Hotspot[] = [
     prompt: "print the cv",
     x: -3.5,
     z: 0.55,
-    radius: 1.1,
+    radius: 1.2,
     title: "the printer",
     lines: [
       "it prints exactly one document.",
@@ -56,7 +56,7 @@ export const hotspots: Hotspot[] = [
     prompt: "check the rack",
     x: 3.5,
     z: -2.5,
-    radius: 1.2,
+    radius: 1.35,
     title: "the rack",
     lines: [
       "a small homelab in the kitchen corner.",
@@ -115,7 +115,7 @@ export const hotspots: Hotspot[] = [
     prompt: "look out over oslo",
     x: 1.5,
     z: -2.6,
-    radius: 1.3,
+    radius: 1.4,
     title: "the window",
     lines: [
       "oslo at night, from somewhere too high up.",
@@ -137,7 +137,7 @@ export const hotspots: Hotspot[] = [
     prompt: "lights on",
     x: 4.05,
     z: 2.1,
-    radius: 0.9,
+    radius: 1.0,
     title: "the light switch",
     lines: ["click."]
   },
