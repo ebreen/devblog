@@ -80,7 +80,7 @@ const selectedWork = projects.slice(0, 4);
       </ol>
     </section>
 
-    <section class="resume-section" aria-labelledby="education-title">
+    <section class="resume-section resume-keep" aria-labelledby="education-title">
       <p class="section-label">Education</p>
       <h2 id="education-title">Education</h2>
 
@@ -109,7 +109,7 @@ const selectedWork = projects.slice(0, 4);
       </ol>
     </section>
 
-    <section class="resume-section" aria-labelledby="stack-title">
+    <section class="resume-section resume-keep" aria-labelledby="stack-title">
       <p class="section-label">The stack</p>
       <h2 id="stack-title">What I work with</h2>
 
@@ -129,7 +129,7 @@ const selectedWork = projects.slice(0, 4);
       </div>
     </section>
 
-    <section class="resume-section" aria-labelledby="selected-work-title">
+    <section class="resume-section resume-keep" aria-labelledby="selected-work-title">
       <p class="section-label">Selected work</p>
       <h2 id="selected-work-title">After-hours tools</h2>
       <p class="section-copy no-print">A few personal projects that show how I like to build. The full list is on the made page.</p>
@@ -154,6 +154,8 @@ const selectedWork = projects.slice(0, 4);
 
       <a class="text-link no-print" href="/projects">See everything I made</a>
     </section>
+
+    <p class="print-footer print-only">eirikbreen.com</p>
 
     <section class="resume-section contact-section no-print" aria-labelledby="resume-contact-title">
       <p class="section-label">Contact</p>
@@ -485,27 +487,30 @@ const selectedWork = projects.slice(0, 4);
     .intro {
       display: flex;
       flex-direction: column;
-      margin-bottom: 0.95rem;
+      margin-bottom: 0.9rem;
       padding-bottom: 0;
       border-bottom: 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
 
     h1 {
       max-width: none;
-      font-size: 26pt;
+      color: var(--text);
+      font-size: 28pt;
       letter-spacing: -0.045em;
       line-height: 0.95;
     }
 
     .role-line {
-      margin-top: 0.28rem;
+      margin-top: 0.3rem;
       font-size: 11pt;
     }
 
     .lede {
       order: 4;
       max-width: none;
-      margin-top: 0.75rem;
+      margin-top: 0.7rem;
       font-size: 9.25pt;
       line-height: 1.4;
     }
@@ -513,9 +518,9 @@ const selectedWork = projects.slice(0, 4);
     .intro-actions {
       order: 3;
       display: block;
-      margin-top: 0.42rem;
-      padding-bottom: 0.7rem;
-      border-bottom: 1.6pt solid var(--text);
+      margin-top: 0.4rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1.75pt solid var(--text);
     }
 
     .resume-contact {
@@ -543,20 +548,27 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .resume-section {
-      margin-bottom: 0.9rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .resume-keep {
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
 
     .section-label {
-      margin-bottom: 0.18rem;
+      margin-bottom: 0.15rem;
       color: var(--accent);
       font-size: 7pt;
       letter-spacing: 0.14em;
+      break-after: avoid;
+      page-break-after: avoid;
     }
 
     .resume-section h2 {
-      margin: 0 0 0.4rem;
-      padding-bottom: 0.22rem;
-      border-bottom: 0.6pt solid var(--border);
+      margin: 0 0 0.25rem;
+      padding-bottom: 0;
+      border-bottom: 0;
       font-size: 13pt;
       letter-spacing: -0.02em;
       line-height: 1.15;
@@ -566,17 +578,25 @@ const selectedWork = projects.slice(0, 4);
 
     .experience {
       display: grid;
-      grid-template-columns: 2.65cm minmax(0, 1fr);
-      gap: 0.2rem 0.85rem;
-      padding-block: 0.55rem;
+      grid-template-columns: 2.4cm minmax(0, 1fr);
+      gap: 0.15rem 0.8rem;
+      padding-block: 0.5rem;
       border-color: var(--border);
     }
 
     .experience-dates {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
       margin: 0.12rem 0 0;
       font-size: 7.5pt;
-      line-height: 1.35;
+      line-height: 1.3;
       font-variant-numeric: tabular-nums;
+      text-transform: none;
+    }
+
+    .experience-dates span {
+      display: none;
     }
 
     .experience-body h3,
@@ -591,18 +611,18 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .experience-org {
-      margin: 0.1rem 0 0.35rem;
+      margin: 0.1rem 0 0.32rem;
       font-size: 9pt;
     }
 
     .highlights {
-      gap: 0.18rem;
+      gap: 0.16rem;
       padding-left: 0.95rem;
     }
 
     .highlights li {
       font-size: 9pt;
-      line-height: 1.36;
+      line-height: 1.35;
     }
 
     .highlights li::marker {
@@ -610,7 +630,7 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .experience-stack {
-      margin: 0.38rem 0 0;
+      margin: 0.35rem 0 0;
       font-size: 8pt;
       line-height: 1.35;
     }
@@ -618,6 +638,7 @@ const selectedWork = projects.slice(0, 4);
     .experience-stack span {
       display: inline;
       margin: 0 0.35rem 0 0;
+      text-transform: none;
     }
 
     .experience-stack span::after {
@@ -634,13 +655,18 @@ const selectedWork = projects.slice(0, 4);
 
     .skill-group {
       display: grid;
-      grid-template-columns: 3.7cm minmax(0, 1fr);
-      gap: 0.3rem 0.8rem;
+      grid-template-columns: 3.8cm minmax(0, 1fr);
+      gap: 0.28rem 0.8rem;
       align-items: baseline;
-      padding: 0.26rem 0;
-      border-bottom: 0.45pt solid var(--border);
+      padding: 0.28rem 0;
+      border-top: 0.45pt solid var(--border);
+      border-bottom: 0;
       break-inside: avoid;
       page-break-inside: avoid;
+    }
+
+    .skill-group:last-child {
+      border-bottom: 0.45pt solid var(--border);
     }
 
     .skill-group h3 {
@@ -664,20 +690,20 @@ const selectedWork = projects.slice(0, 4);
     }
 
     .work-list {
-      border-top: 0.6pt solid var(--border);
+      border-top: 0.45pt solid var(--border);
     }
 
     .work-list li {
       grid-template-columns: 1.15rem minmax(0, 1fr);
       gap: 0.35rem;
-      padding-block: 0.28rem;
+      padding-block: 0.32rem;
       border-bottom-color: var(--border);
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
     .work-index {
-      padding-top: 0.1rem;
+      padding-top: 0.12rem;
       font-size: 7pt;
     }
 
@@ -696,6 +722,16 @@ const selectedWork = projects.slice(0, 4);
       display: inline;
       font-size: 8.5pt;
       line-height: 1.35;
+    }
+
+    .print-footer {
+      margin: 0.9rem 0 0;
+      padding-top: 0.4rem;
+      border-top: 0.45pt solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 7pt;
+      letter-spacing: 0.08em;
     }
   }
 </style>

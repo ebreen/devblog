@@ -31,7 +31,7 @@ export type Education = {
 };
 
 export function displayUrl(url: string): string {
-  return url.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  return url.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/$/, "");
 }
 
 export const resumeProfile = {

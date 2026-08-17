@@ -390,7 +390,7 @@ svg {
 }
 
 @page {
-  size: auto;
+  size: A4;
   margin: 12mm 14mm 14mm;
 }
 
@@ -398,8 +398,8 @@ svg {
   :root {
     --bg: #ffffff;
     --surface: #ffffff;
-    --text: #171411;
-    --text-secondary: #3c3934;
+    --text: #141210;
+    --text-secondary: #2f2c28;
     --muted: #5c5852;
     --faint: #7a756c;
     --accent: #7a5c16;
