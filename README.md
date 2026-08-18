@@ -27,6 +27,8 @@ npm run doctor
 
 `npm run doctor` runs [React Doctor](https://github.com/millionco/react-doctor), which scans React/JSX for correctness, performance, accessibility, and architecture issues. Pull requests also get an advisory GitHub Actions scan.
 
+To audit and improve the `/room` Three.js scene in Cursor, type `/improve-threejs` in Agent chat. That skill is checked in at `.cursor/skills/improve-threejs`.
+
 ## Hosting & Deployment
 
 This repository is connected to GitHub and deployed through Vercel with serverless/static hosting.

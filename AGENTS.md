@@ -20,6 +20,7 @@ npm run doctor
 - `npm run dev` (or `npm run start`) starts local development server.
 - `npm run astro -- check` is the primary validation command (type/content/schema checks).
 - `npm run doctor` runs [React Doctor](https://github.com/millionco/react-doctor) (React/JSX health scan). Agents should also use the project skill at `.agents/skills/react-doctor`.
+- `/improve-threejs` is a project skill (`.cursor/skills/improve-threejs` and `.agents/skills/improve-threejs`) for auditing and fixing the `/room` Three.js scene. Invoke it in Cursor Agent chat.
 - There is no dedicated unit test runner configured in `package.json`.
 
 ## Validation / “Single Test” Equivalents
