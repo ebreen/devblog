@@ -70,25 +70,28 @@ export function makeMonitorTexture(lines: string[]): THREE.CanvasTexture {
 
 /** A freshly printed CV page: heading plus rows of grey "text" lines. */
 export function makePaperTexture(): THREE.CanvasTexture {
-  const [canvas, ctx] = createCanvas(128, 168);
-  ctx.fillStyle = "#efece3";
+  const [canvas, ctx] = createCanvas(168, 236);
+  ctx.fillStyle = "#f3efe6";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.fillStyle = "#191919";
-  ctx.font = "bold 13px Georgia, serif";
-  ctx.fillText("eirik breen", 12, 24);
-  ctx.fillStyle = "#98938a";
-  ctx.font = "9px monospace";
-  ctx.fillText("cv — oslo", 12, 38);
+  ctx.font = "bold 18px Georgia, serif";
+  ctx.fillText("eirik breen", 16, 32);
+  ctx.fillStyle = "#6f6a64";
+  ctx.font = "11px monospace";
+  ctx.fillText("oslo", 16, 50);
 
   ctx.fillStyle = "#d6b45f";
-  ctx.fillRect(12, 46, 104, 2);
+  ctx.fillRect(16, 60, 136, 2);
+
+  ctx.fillStyle = "#3f3c38";
+  ctx.font = "bold 10px monospace";
+  ctx.fillText("selected work", 16, 82);
 
   ctx.fillStyle = "#b7b1a5";
-  for (let row = 0; row < 9; row += 1) {
-    const y = 60 + row * 11;
-    const width = row % 4 === 3 ? 62 : 104;
-    ctx.fillRect(12, y, width, 3);
+  const blocks = [128, 118, 72, 128, 110, 86, 128, 102, 70, 124, 116, 80];
+  for (let row = 0; row < blocks.length; row += 1) {
+    ctx.fillRect(16, 96 + row * 10, blocks[row], 3);
   }
 
   return toTexture(canvas);

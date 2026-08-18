@@ -1,41 +1,17 @@
 import * as THREE from "three";
 
 /**
- * Animated night view of Oslo toward the fjord, seen from a high-rise window.
- * Drawn on a 2d canvas and used as a texture on a large plane behind the glass.
- * Layers, top to bottom: sky + stars + moon, the far side of the fjord, the
- * water (with a moon streak and a ferry), the waterfront skyline, and nearer
- * rooftops with streets full of moving car lights.
+ * Night view from a 10th-floor window looking south over Bjørvika:
+ * MUNCH to the east, the Opera House sliding into the fjord, Barcode
+ * towers in the near field, islands and Nesodden beyond.
  */
 
-const WIDTH = 1024;
-const HEIGHT = 448;
-
-const RIDGE_Y = 196;
-const WATER_TOP = 214;
-const WATER_BOTTOM = 282;
-const CITY_BASE = 362;
-
-type BuildingWindow = { x: number; y: number };
-
-type Building = {
-  x: number;
-  width: number;
-  height: number;
-  windows: BuildingWindow[];
-};
-
-type Road = { y: number; slope: number };
-
-type Car = {
-  road: number;
-  t: number;
-  speed: number;
-  dir: 1 | -1;
-};
+const BACKDROP_WIDTH = 2048;
+const BACKDROP_HEIGHT = 1024;
 
 export type Cityscape = {
   texture: THREE.CanvasTexture;
+  group: THREE.Group;
   update(time: number): void;
 };
 
@@ -58,210 +34,402 @@ function makeContext(width: number, height: number): CanvasRenderingContext2D {
   return context;
 }
 
-function buildSkyline(random: () => number): Building[] {
-  const buildings: Building[] = [];
-  let x = -10;
-  while (x < WIDTH + 10) {
-    const width = 26 + Math.floor(random() * 34);
-    const height = 34 + Math.floor(random() * 66);
-    const windows: BuildingWindow[] = [];
-    for (let wx = 5; wx < width - 6; wx += 7) {
-      for (let wy = 8; wy < height - 6; wy += 9) {
-        if (random() < 0.42) {
-          windows.push({ x: x + wx, y: CITY_BASE - height + wy });
-        }
-      }
-    }
-    buildings.push({ x, width, height, windows });
-    x += width + Math.floor(random() * 8);
-  }
-  return buildings;
+function toFacadeTexture(canvas: HTMLCanvasElement): THREE.CanvasTexture {
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+  texture.generateMipmaps = true;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  return texture;
 }
 
-function drawBase(ctx: CanvasRenderingContext2D, random: () => number, buildings: Building[]): void {
-  const sky = ctx.createLinearGradient(0, 0, 0, RIDGE_Y + 30);
-  sky.addColorStop(0, "#0a101d");
-  sky.addColorStop(1, "#0e1526");
+function marble(color: number, roughness = 0.38): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness,
+    metalness: 0.08,
+    emissive: 0xb8c4d4,
+    emissiveIntensity: 0.12
+  });
+}
+
+function darkMetal(color: number): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.72,
+    metalness: 0.18,
+    emissive: color,
+    emissiveIntensity: 0.04
+  });
+}
+
+function boxMesh(
+  width: number,
+  height: number,
+  depth: number,
+  material: THREE.Material
+): THREE.Mesh {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  return mesh;
+}
+
+function drawBackdrop(ctx: CanvasRenderingContext2D, random: () => number): void {
+  const sky = ctx.createLinearGradient(0, 0, 0, 620);
+  sky.addColorStop(0, "#070b14");
+  sky.addColorStop(0.45, "#10182a");
+  sky.addColorStop(0.78, "#1a2438");
+  sky.addColorStop(1, "#151d2c");
   ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, WIDTH, RIDGE_Y);
+  ctx.fillRect(0, 0, BACKDROP_WIDTH, BACKDROP_HEIGHT);
 
-  for (let i = 0; i < 110; i += 1) {
-    const x = random() * WIDTH;
-    const y = random() * (RIDGE_Y - 26);
-    ctx.fillStyle = `rgba(239, 236, 227, ${0.18 + random() * 0.5})`;
-    ctx.fillRect(x, y, random() < 0.12 ? 2 : 1, 1);
+  for (let i = 0; i < 260; i += 1) {
+    const x = random() * BACKDROP_WIDTH;
+    const y = random() * 520;
+    ctx.fillStyle = `rgba(236, 232, 220, ${0.12 + random() * 0.55})`;
+    ctx.fillRect(x, y, random() < 0.1 ? 2 : 1, 1);
   }
 
-  ctx.fillStyle = "rgba(239, 236, 227, 0.12)";
+  const moonX = 1580;
+  const moonY = 168;
+  const halo = ctx.createRadialGradient(moonX, moonY, 8, moonX, moonY, 90);
+  halo.addColorStop(0, "rgba(236, 232, 220, 0.22)");
+  halo.addColorStop(1, "rgba(236, 232, 220, 0)");
+  ctx.fillStyle = halo;
+  ctx.fillRect(moonX - 90, moonY - 90, 180, 180);
+  ctx.fillStyle = "#e8e4d6";
   ctx.beginPath();
-  ctx.arc(838, 62, 30, 0, Math.PI * 2);
+  ctx.arc(moonX, moonY, 22, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#e8e4d8";
+  ctx.fillStyle = "rgba(150, 148, 138, 0.45)";
   ctx.beginPath();
-  ctx.arc(838, 62, 19, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(160, 158, 148, 0.5)";
-  ctx.beginPath();
-  ctx.arc(831, 56, 5, 0, Math.PI * 2);
-  ctx.arc(845, 68, 3.4, 0, Math.PI * 2);
+  ctx.arc(moonX - 8, moonY - 6, 6, 0, Math.PI * 2);
+  ctx.arc(moonX + 9, moonY + 7, 4, 0, Math.PI * 2);
   ctx.fill();
 
-  // Far side of the fjord: a dark ridge with a handful of faint lights.
-  ctx.fillStyle = "#060910";
+  // Nesodden / far fjord shore, low and long.
+  ctx.fillStyle = "#080c14";
   ctx.beginPath();
-  ctx.moveTo(0, WATER_TOP);
-  for (let x = 0; x <= WIDTH; x += 64) {
-    ctx.lineTo(x, RIDGE_Y - random() * 14);
+  ctx.moveTo(0, 640);
+  ctx.lineTo(0, 598);
+  for (let x = 0; x <= BACKDROP_WIDTH; x += 48) {
+    ctx.lineTo(x, 576 + Math.sin(x * 0.01) * 10 + random() * 8);
   }
-  ctx.lineTo(WIDTH, WATER_TOP);
+  ctx.lineTo(BACKDROP_WIDTH, 640);
   ctx.closePath();
   ctx.fill();
-  for (let i = 0; i < 26; i += 1) {
-    ctx.fillStyle = `rgba(214, 180, 95, ${0.12 + random() * 0.3})`;
-    ctx.fillRect(random() * WIDTH, RIDGE_Y - 4 - random() * 8, 1.5, 1.5);
+
+  for (let i = 0; i < 40; i += 1) {
+    ctx.fillStyle = `rgba(214, 180, 95, ${0.08 + random() * 0.2})`;
+    ctx.fillRect(40 + random() * 1960, 582 + random() * 14, 2, 2);
   }
 
-  const water = ctx.createLinearGradient(0, WATER_TOP, 0, WATER_BOTTOM);
-  water.addColorStop(0, "#0a111d");
-  water.addColorStop(1, "#0c1420");
+  // Inner-fjord islands: Hovedøya, Lindøya, Nakholmen as low dark humps.
+  const islands: Array<[number, number, number, number]> = [
+    [620, 628, 210, 16],
+    [980, 634, 150, 12],
+    [1280, 630, 180, 14],
+    [420, 636, 90, 9]
+  ];
+  for (const [x, y, width, height] of islands) {
+    ctx.fillStyle = "#060910";
+    ctx.beginPath();
+    ctx.ellipse(x, y, width, height, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(214, 180, 95, 0.16)";
+    ctx.fillRect(x - width * 0.2, y - 4, 2, 2);
+    ctx.fillRect(x + width * 0.15, y - 2, 2, 2);
+  }
+
+  const water = ctx.createLinearGradient(0, 640, 0, BACKDROP_HEIGHT);
+  water.addColorStop(0, "#0a121e");
+  water.addColorStop(0.45, "#0c1522");
+  water.addColorStop(1, "#081018");
   ctx.fillStyle = water;
-  ctx.fillRect(0, WATER_TOP, WIDTH, WATER_BOTTOM - WATER_TOP);
+  ctx.fillRect(0, 640, BACKDROP_WIDTH, BACKDROP_HEIGHT - 640);
 
-  // Waterfront skyline between the water and the near rooftops.
-  ctx.fillStyle = "#04060c";
-  ctx.fillRect(0, WATER_BOTTOM, WIDTH, CITY_BASE - WATER_BOTTOM);
-  for (const building of buildings) {
-    ctx.fillStyle = "#03040a";
-    ctx.fillRect(building.x, CITY_BASE - building.height, building.width, building.height);
-  }
+  const moonPath = ctx.createLinearGradient(moonX, 640, moonX, 900);
+  moonPath.addColorStop(0, "rgba(210, 216, 224, 0.16)");
+  moonPath.addColorStop(1, "rgba(210, 216, 224, 0)");
+  ctx.fillStyle = moonPath;
+  ctx.fillRect(moonX - 18, 640, 36, 220);
+}
 
-  // Nearer rooftops in the foreground, seen from above.
-  ctx.fillStyle = "#020307";
-  ctx.fillRect(0, CITY_BASE, WIDTH, HEIGHT - CITY_BASE);
-  for (let i = 0; i < 30; i += 1) {
-    const x = random() * WIDTH;
-    const y = CITY_BASE + 6 + random() * (HEIGHT - CITY_BASE - 20);
-    const w = 30 + random() * 70;
-    const h = 10 + random() * 22;
-    ctx.fillStyle = i % 3 === 0 ? "#05070d" : "#04050a";
-    ctx.fillRect(x, y, w, h);
+function drawWindowGrid(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  cols: number,
+  rows: number,
+  random: () => number,
+  litChance: number
+): void {
+  ctx.fillStyle = "#14171c";
+  ctx.fillRect(0, 0, width, height);
+  const padX = width * 0.08;
+  const padY = height * 0.06;
+  const cellW = (width - padX * 2) / cols;
+  const cellH = (height - padY * 2) / rows;
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      if (random() > litChance) {
+        ctx.fillStyle = "rgba(8, 9, 12, 0.9)";
+        ctx.fillRect(padX + col * cellW + 1, padY + row * cellH + 1, cellW - 2, cellH - 2);
+        continue;
+      }
+      ctx.fillStyle = random() < 0.18 ? "rgba(236, 232, 220, 0.55)" : "rgba(214, 180, 95, 0.5)";
+      ctx.fillRect(padX + col * cellW + 1, padY + row * cellH + 1, cellW - 2, cellH - 2);
+    }
   }
+}
+
+function makeTowerTexture(cols: number, rows: number, random: () => number): THREE.CanvasTexture {
+  const ctx = makeContext(128, 256);
+  drawWindowGrid(ctx, 128, 256, cols, rows, random, 0.62);
+  return toFacadeTexture(ctx.canvas);
+}
+
+function makeMunchTexture(random: () => number): THREE.CanvasTexture {
+  const ctx = makeContext(160, 320);
+  ctx.fillStyle = "#2a3036";
+  ctx.fillRect(0, 0, 160, 320);
+  ctx.fillStyle = "#1a1e24";
+  for (let y = 0; y < 320; y += 7) {
+    ctx.fillRect(0, y, 160, 2);
+  }
+  drawWindowGrid(ctx, 160, 320, 7, 18, random, 0.48);
+  return toFacadeTexture(ctx.canvas);
+}
+
+function buildOpera(): THREE.Group {
+  const opera = new THREE.Group();
+  const stone = marble(0xe8e4da, 0.34);
+  const stoneCool = marble(0xd4d8de, 0.42);
+  const glass = new THREE.MeshStandardMaterial({
+    color: 0x1c242c,
+    emissive: 0xd6b45f,
+    emissiveIntensity: 0.55,
+    roughness: 0.15,
+    metalness: 0.35,
+    transparent: true,
+    opacity: 0.92
+  });
+
+  const plaza = boxMesh(9.6, 0.12, 6.4, stone);
+  plaza.position.y = 0.06;
+  opera.add(plaza);
+
+  const lowSlope = boxMesh(8.4, 0.18, 4.8, stone);
+  lowSlope.position.set(-0.1, 0.28, 0.15);
+  lowSlope.rotation.x = -0.16;
+  opera.add(lowSlope);
+
+  const midSlope = boxMesh(5.6, 0.16, 3.4, stoneCool);
+  midSlope.position.set(-0.6, 0.82, -0.35);
+  midSlope.rotation.x = -0.28;
+  midSlope.rotation.z = 0.04;
+  opera.add(midSlope);
+
+  const peak = boxMesh(3.1, 0.14, 2.2, stone);
+  peak.position.set(-1.1, 1.42, -0.7);
+  peak.rotation.x = -0.22;
+  opera.add(peak);
+
+  const iceEdge = boxMesh(4.8, 0.1, 2.6, stoneCool);
+  iceEdge.position.set(1.6, 0.22, 1.7);
+  iceEdge.rotation.x = 0.18;
+  iceEdge.rotation.y = -0.12;
+  opera.add(iceEdge);
+
+  const hall = boxMesh(3.4, 1.15, 2.2, glass);
+  hall.position.set(0.2, 0.72, -1.35);
+  hall.name = "opera-hall";
+  opera.add(hall);
+
+  const lobbyGlow = new THREE.PointLight(0xd6b45f, 4.5, 12);
+  lobbyGlow.position.set(0.2, 1.1, -1.1);
+  opera.add(lobbyGlow);
+
+  return opera;
+}
+
+function buildMunch(facade: THREE.CanvasTexture): THREE.Group {
+  const munch = new THREE.Group();
+  const skin = darkMetal(0x2c3238);
+  const skinDark = darkMetal(0x1b1f24);
+  const glass = new THREE.MeshStandardMaterial({
+    color: 0x9aa3ad,
+    map: facade,
+    roughness: 0.35,
+    metalness: 0.22,
+    emissive: 0xd6b45f,
+    emissiveIntensity: 0.22
+  });
+
+  const shaft = boxMesh(1.85, 4.6, 2.15, skin);
+  shaft.position.y = 2.3;
+  munch.add(shaft);
+
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 4.3), glass);
+  face.position.set(0, 2.3, 1.09);
+  munch.add(face);
+
+  const crown = boxMesh(2.15, 2.5, 2.35, skinDark);
+  crown.position.set(0.55, 5.85, 0.15);
+  munch.add(crown);
+
+  const crownFace = new THREE.Mesh(new THREE.PlaneGeometry(1.95, 2.2), glass);
+  crownFace.position.set(0.55, 5.85, 1.34);
+  munch.add(crownFace);
+
+  const crownLight = new THREE.PointLight(0xc8d0d8, 2.2, 10);
+  crownLight.position.set(0.4, 6.4, 1.6);
+  munch.add(crownLight);
+
+  return munch;
+}
+
+function buildBarcode(random: () => number): THREE.Group {
+  const row = new THREE.Group();
+  const heights = [4.2, 5.8, 3.6, 6.4, 4.8, 3.2, 5.1];
+  let x = 0;
+  for (let i = 0; i < heights.length; i += 1) {
+    const height = heights[i];
+    const width = 0.72 + random() * 0.28;
+    const depth = 1.1 + random() * 0.4;
+    const texture = makeTowerTexture(4, 12 + Math.floor(random() * 6), random);
+    const material = new THREE.MeshStandardMaterial({
+      color: i % 2 === 0 ? 0x8a9098 : 0x6b7178,
+      map: texture,
+      roughness: 0.28,
+      metalness: 0.45,
+      emissive: 0xd6b45f,
+      emissiveIntensity: 0.16
+    });
+    const tower = boxMesh(width, height, depth, material);
+    tower.position.set(x, height / 2, (random() - 0.5) * 0.6);
+    row.add(tower);
+    x += width + 0.38;
+  }
+  return row;
+}
+
+function buildNearRoofs(random: () => number): THREE.Group {
+  const roofs = new THREE.Group();
+  const tar = darkMetal(0x16181c);
+  for (let i = 0; i < 10; i += 1) {
+    const width = 1.4 + random() * 2.2;
+    const depth = 1.1 + random() * 1.6;
+    const height = 0.35 + random() * 0.5;
+    const roof = boxMesh(width, height, depth, tar);
+    roof.position.set(-9 + i * 2.05 + random() * 0.3, height / 2, (random() - 0.5) * 1.4);
+    roofs.add(roof);
+    if (random() < 0.55) {
+      const glow = boxMesh(0.12, 0.08, 0.12, new THREE.MeshBasicMaterial({ color: 0xd6b45f }));
+      glow.position.set(roof.position.x, height + 0.08, roof.position.z);
+      roofs.add(glow);
+    }
+  }
+  return roofs;
+}
+
+function buildFerry(): THREE.Group {
+  const ferry = new THREE.Group();
+  const hull = boxMesh(1.15, 0.18, 0.34, darkMetal(0x12151a));
+  hull.position.y = 0.1;
+  const cabin = boxMesh(0.55, 0.2, 0.26, darkMetal(0x2a2e34));
+  cabin.position.set(-0.12, 0.28, 0);
+  const lightA = boxMesh(0.06, 0.06, 0.06, new THREE.MeshBasicMaterial({ color: 0xd6b45f }));
+  lightA.position.set(0.42, 0.2, 0.1);
+  const lightB = boxMesh(0.06, 0.06, 0.06, new THREE.MeshBasicMaterial({ color: 0xd6b45f }));
+  lightB.position.set(0.42, 0.2, -0.1);
+  ferry.add(hull, cabin, lightA, lightB);
+  return ferry;
 }
 
 export function createCityscape(): Cityscape {
   const random = createRandom(20260817);
-  const buildings = buildSkyline(random);
+  const group = new THREE.Group();
 
-  const base = makeContext(WIDTH, HEIGHT);
-  drawBase(base, random, buildings);
+  const backdropCtx = makeContext(BACKDROP_WIDTH, BACKDROP_HEIGHT);
+  drawBackdrop(backdropCtx, random);
+  const texture = toFacadeTexture(backdropCtx.canvas);
+  texture.needsUpdate = true;
 
-  const ctx = makeContext(WIDTH, HEIGHT);
-  const texture = new THREE.CanvasTexture(ctx.canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.magFilter = THREE.NearestFilter;
-  texture.minFilter = THREE.NearestFilter;
-  texture.generateMipmaps = false;
+  const backdrop = new THREE.Mesh(
+    new THREE.PlaneGeometry(92, 46),
+    new THREE.MeshBasicMaterial({ map: texture, toneMapped: false })
+  );
+  backdrop.position.set(0, 8.4, -46);
+  group.add(backdrop);
 
-  const allWindows: BuildingWindow[] = buildings.flatMap((building) => building.windows);
-  const windowLit = allWindows.map(() => random() < 0.8);
-  let nextTwinkle = 0;
+  const water = new THREE.Mesh(
+    new THREE.PlaneGeometry(78, 40),
+    new THREE.MeshStandardMaterial({
+      color: 0x0b1420,
+      roughness: 0.22,
+      metalness: 0.55,
+      emissive: 0x1a2433,
+      emissiveIntensity: 0.2
+    })
+  );
+  water.rotation.x = -Math.PI / 2;
+  water.position.set(1, -3.55, -24);
+  group.add(water);
 
-  const roads: Road[] = [
-    { y: 388, slope: -6 },
-    { y: 412, slope: 4 },
-    { y: 436, slope: 0 }
-  ];
+  const moon = new THREE.DirectionalLight(0xc5d0e0, 1.35);
+  moon.position.set(14, 18, -8);
+  moon.target.position.set(0, -1, -17);
+  group.add(moon, moon.target);
 
-  const cars: Car[] = [];
-  for (let i = 0; i < 34; i += 1) {
-    cars.push({
-      road: i % roads.length,
-      t: random(),
-      speed: 0.016 + random() * 0.05,
-      dir: random() < 0.5 ? 1 : -1
-    });
-  }
+  const opera = buildOpera();
+  opera.position.set(0.4, -3.55, -17.2);
+  opera.rotation.y = 0.18;
+  group.add(opera);
 
-  const beacons = [
-    { x: 236, y: WATER_BOTTOM - 88, rate: 1.6 },
-    { x: 654, y: WATER_BOTTOM - 72, rate: 2.3 }
-  ];
+  const munch = buildMunch(makeMunchTexture(random));
+  munch.position.set(6.4, -3.55, -15.4);
+  munch.rotation.y = -0.08;
+  group.add(munch);
 
-  let lastTime = 0;
+  const barcode = buildBarcode(random);
+  barcode.position.set(-10.6, -2.7, -11.6);
+  barcode.rotation.y = 0.08;
+  group.add(barcode);
+
+  const eastTowers = buildBarcode(random);
+  eastTowers.scale.setScalar(0.72);
+  eastTowers.position.set(9.4, -2.9, -12.4);
+  eastTowers.rotation.y = -0.2;
+  group.add(eastTowers);
+
+  const roofs = buildNearRoofs(random);
+  roofs.position.set(0.6, -3.2, -8.6);
+  group.add(roofs);
+
+  const ferry = buildFerry();
+  ferry.position.set(-8, -3.48, -22);
+  group.add(ferry);
+
+  const sheLies = boxMesh(0.7, 0.9, 0.55, marble(0xcdd3da, 0.2));
+  sheLies.position.set(4.6, -3.05, -20.2);
+  sheLies.rotation.set(0.4, 0.6, -0.25);
+  group.add(sheLies);
+
+  const operaHall = opera.getObjectByName("opera-hall");
 
   function update(time: number): void {
-    const dt = Math.min(0.2, Math.max(0, time - lastTime));
-    lastTime = time;
-
-    ctx.drawImage(base.canvas, 0, 0);
-
-    // Lit building windows, with the occasional one flipping on or off.
-    if (time > nextTwinkle) {
-      nextTwinkle = time + 0.7;
-      for (let i = 0; i < 3; i += 1) {
-        const index = Math.floor(Math.random() * windowLit.length);
-        windowLit[index] = !windowLit[index];
-      }
+    ferry.position.x = ((time * 1.15) % 36) - 18;
+    ferry.position.z = -22 + Math.sin(time * 0.35) * 0.8;
+    ferry.rotation.y = Math.atan2(-Math.cos(time * 0.35) * 0.8, 1.15);
+    if (operaHall instanceof THREE.Mesh && operaHall.material instanceof THREE.MeshStandardMaterial) {
+      operaHall.material.emissiveIntensity = 0.48 + Math.sin(time * 0.7) * 0.08;
     }
-    for (let i = 0; i < allWindows.length; i += 1) {
-      if (!windowLit[i]) continue;
-      const w = allWindows[i];
-      ctx.fillStyle = i % 7 === 0 ? "rgba(239, 236, 227, 0.75)" : "rgba(214, 180, 95, 0.7)";
-      ctx.fillRect(w.x, w.y, 3, 4);
-    }
-
-    // Moon streak shimmering on the fjord.
-    for (let i = 0; i < 14; i += 1) {
-      const y = WATER_TOP + 4 + i * 4.6;
-      const sway = Math.sin(time * 1.4 + i * 1.7) * (3 + i * 0.6);
-      const width = 8 + Math.sin(time * 2.1 + i) * 4 + i * 1.4;
-      ctx.fillStyle = `rgba(212, 216, 222, ${0.1 - i * 0.005})`;
-      ctx.fillRect(838 + sway - width / 2, y, width, 2);
-    }
-
-    // A ferry crossing toward the fjord islands, with a dim wake.
-    const ferryX = ((time * 11) % (WIDTH + 160)) - 80;
-    const ferryY = WATER_TOP + 34;
-    ctx.fillStyle = "rgba(214, 180, 95, 0.25)";
-    ctx.fillRect(ferryX - 16, ferryY + 3, 16, 1.5);
-    ctx.fillStyle = "#0a0d14";
-    ctx.fillRect(ferryX, ferryY - 2, 14, 4);
-    ctx.fillStyle = "#d6b45f";
-    ctx.fillRect(ferryX + 2, ferryY - 1, 2, 2);
-    ctx.fillRect(ferryX + 9, ferryY - 1, 2, 2);
-
-    // Aviation beacons on the tallest cranes.
-    for (const beacon of beacons) {
-      ctx.strokeStyle = "#05070d";
-      ctx.beginPath();
-      ctx.moveTo(beacon.x, beacon.y + 60);
-      ctx.lineTo(beacon.x, beacon.y);
-      ctx.lineTo(beacon.x + 26, beacon.y + 8);
-      ctx.stroke();
-      if (Math.sin(time * beacon.rate) > 0.55) {
-        ctx.fillStyle = "#d6503c";
-        ctx.fillRect(beacon.x - 2, beacon.y - 2, 4, 4);
-      }
-    }
-
-    // Car lights on the streets below: gold one way, red the other.
-    for (const car of cars) {
-      car.t += car.speed * car.dir * dt;
-      if (car.t > 1.1) car.t = -0.1;
-      if (car.t < -0.1) car.t = 1.1;
-      const road = roads[car.road];
-      const x = car.t * WIDTH;
-      const y = road.y + (x / WIDTH) * road.slope + (car.dir === 1 ? 0 : 4);
-      ctx.fillStyle = car.dir === 1 ? "rgba(239, 230, 201, 0.9)" : "rgba(214, 80, 60, 0.85)";
-      ctx.fillRect(x, y, 4, 2);
-      ctx.fillStyle = car.dir === 1 ? "rgba(239, 230, 201, 0.25)" : "rgba(214, 80, 60, 0.25)";
-      ctx.fillRect(x - car.dir * 4, y, 4, 2);
-    }
-
-    texture.needsUpdate = true;
   }
 
   update(0);
 
-  return { texture, update };
+  return { texture, group, update };
 }

@@ -129,6 +129,7 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
   scene.add(floor);
 
   const wallMaterial = new THREE.MeshStandardMaterial({ color: colors.wall, roughness: 0.95 });
+  const ceilingMaterial = new THREE.MeshStandardMaterial({ color: 0x1b1b1b, roughness: 0.97 });
   for (const side of [-1, 1]) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.3, 7.4), wallMaterial);
     wall.position.set(side * 4.1, 1.65, 0);
@@ -140,19 +141,29 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
     scene.add(baseboard);
   }
 
-  // The whole back wall is glass: sill, top beam, mullions, and a faint pane.
-  const sill = box(8.4, 0.18, 0.2, colors.metal);
+  const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 3.3, 0.2), wallMaterial);
+  backWall.position.set(0, 1.65, 3.6);
+  backWall.receiveShadow = true;
+  scene.add(backWall);
+
+  const ceiling = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.18, 7.5), ceilingMaterial);
+  ceiling.position.set(0, 3.39, 0.05);
+  ceiling.receiveShadow = true;
+  scene.add(ceiling);
+
+  // Window is a punched opening: sill, head flush with the ceiling, mullions.
+  const sill = box(8.4, 0.18, 0.22, colors.metal);
   sill.position.set(0, 0.09, -3.55);
-  const beam = box(8.4, 0.16, 0.2, colors.metal);
-  beam.position.set(0, 3.2, -3.55);
-  scene.add(sill, beam);
+  const head = box(8.4, 0.2, 0.42, colors.metal);
+  head.position.set(0, 3.2, -3.44);
+  scene.add(sill, head);
   for (let i = 0; i <= 4; i += 1) {
-    const mullion = box(0.1, 3.3, 0.14, colors.metal);
-    mullion.position.set(-4.2 + i * 2.1, 1.65, -3.55);
+    const mullion = box(0.1, 3.02, 0.14, colors.metal);
+    mullion.position.set(-4.2 + i * 2.1, 1.6, -3.55);
     scene.add(mullion);
   }
   const pane = new THREE.Mesh(
-    new THREE.PlaneGeometry(8.2, 3.0),
+    new THREE.PlaneGeometry(8.2, 2.92),
     new THREE.MeshBasicMaterial({
       color: 0x93a7c4,
       transparent: true,
@@ -160,7 +171,7 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
       depthWrite: false
     })
   );
-  pane.position.set(0, 1.66, -3.52);
+  pane.position.set(0, 1.64, -3.52);
   scene.add(pane);
 
   // A string of warm little bulbs along the top of the glass.
@@ -177,17 +188,12 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
 
   // Curtains gathered at both ends of the window wall.
   for (const side of [-1, 1]) {
-    const curtain = box(0.42, 3.0, 0.36, colors.curtain, 1);
-    curtain.position.set(side * 3.75, 1.52, -3.3);
+    const curtain = box(0.42, 2.92, 0.36, colors.curtain, 1);
+    curtain.position.set(side * 3.75, 1.55, -3.3);
     scene.add(curtain);
   }
 
-  const city = new THREE.Mesh(
-    new THREE.PlaneGeometry(16, 8),
-    new THREE.MeshBasicMaterial({ map: cityscape.texture, toneMapped: false })
-  );
-  city.position.set(0, 1.8, -6.8);
-  scene.add(city);
+  scene.add(cityscape.group);
 
   const rug = new THREE.Mesh(
     new THREE.PlaneGeometry(3.4, 2.2),
@@ -456,9 +462,11 @@ function buildPrinter(
   body.position.y = 0.85;
   const lid = box(0.44, 0.06, 0.4, colors.metal);
   lid.position.y = 1.0;
-  const slot = box(0.04, 0.03, 0.4, 0x050505);
+  const slot = box(0.04, 0.03, 0.36, 0x050505);
   slot.position.set(0.31, 0.9, 0);
-  station.add(cabinet, body, lid, slot);
+  const tray = box(0.5, 0.02, 0.44, colors.metal);
+  tray.position.set(0.52, 0.868, 0);
+  station.add(cabinet, body, lid, slot, tray);
 
   const led = ledMesh(0.03, leds, random);
   led.rotation.y = Math.PI / 2;
@@ -471,12 +479,14 @@ function buildPrinter(
     new THREE.PlaneGeometry(0.42, 0.56),
     new THREE.MeshBasicMaterial({ map: makePaperTexture(), side: THREE.DoubleSide })
   );
-  paper.rotation.x = -Math.PI / 2;
-  paper.position.set(-3.15, 0.9, -0.35);
+  // Portrait page, long side coming out of the slot, heading toward the room.
+  paper.rotateX(-Math.PI / 2);
+  paper.rotateZ(-Math.PI / 2);
+  paper.position.set(-3.38, 0.882, -0.35);
   paper.visible = false;
   scene.add(paper);
 
-  return { paper, homeX: -3.15, travelX: 0.45 };
+  return { paper, homeX: -3.38, travelX: 0.58 };
 }
 
 /** Coffee corner in the back-right, under the window's edge. */
@@ -697,7 +707,7 @@ function buildLights(scene: THREE.Scene): LightRig {
 export function buildWorld(): RoomWorld {
   const random = createRandom(4321);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x050505);
+  scene.background = new THREE.Color(0x0a101d);
 
   const cityscape = createCityscape();
   const leds: BlinkingLed[] = [];

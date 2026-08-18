@@ -89,7 +89,7 @@ export function initRoom(): void {
   const world = buildWorld();
   const player = createPlayer();
 
-  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 60);
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 90);
   applyLook(camera, player.yaw, player.pitch, player.x, player.z);
 
   const hud = createHud(stage);

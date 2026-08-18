@@ -105,8 +105,8 @@ export const hotspots: Hotspot[] = [
     radius: 1.35,
     title: "the window",
     lines: [
-      "oslo at night, from somewhere too high up.",
-      "the fjord is out there. so is a ferry, probably."
+      "tenth floor, looking south over bjørvika.",
+      "munch to the left, the opera sliding into the fjord."
     ]
   },
   {
