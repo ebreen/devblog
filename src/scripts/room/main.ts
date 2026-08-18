@@ -126,12 +126,12 @@ export function initRoom(): void {
   let lightsOn = false;
   const applyLightMode = (): void => {
     const rig = world.lighting;
-    rig.ambient.intensity = lightsOn ? 1.6 : 0.65;
-    rig.hemisphere.intensity = lightsOn ? 2.2 : 0.95;
+    rig.ambient.intensity = lightsOn ? 1.5 : 0.72;
+    rig.hemisphere.intensity = lightsOn ? 2.1 : 1.02;
     for (let i = 0; i < rig.fills.length; i += 1) {
       rig.fills[i].intensity = lightsOn ? rig.fillIntensities[i] : 0;
     }
-    renderer.toneMappingExposure = lightsOn ? 1.75 : 1.45;
+    renderer.toneMappingExposure = lightsOn ? 1.7 : 1.45;
   };
   applyLightMode();
 
@@ -164,9 +164,22 @@ export function initRoom(): void {
     }
   };
 
+  // Re-enter look mode after a dialog closes so walking resumes without an
+  // extra click. The dialog itself stays unlocked so links stay clickable.
+  const relock = (): void => {
+    if (coarsePointer || document.pointerLockElement === canvas) {
+      return;
+    }
+    const request = canvas.requestPointerLock() as unknown;
+    if (request instanceof Promise) {
+      request.catch(() => {});
+    }
+  };
+
   const closeDialog = (): void => {
     hud.hideDialog();
     openHotspotId = null;
+    relock();
     if (lookHint) {
       lookHint.hidden = document.pointerLockElement === canvas;
     }
@@ -182,12 +195,13 @@ export function initRoom(): void {
       return;
     }
 
+    hud.showDialog({ title: hotspot.title, lines: hotspot.lines, link: hotspot.link });
+    openHotspotId = hotspot.id;
+    // Unlock after the dialog flag is set so the browser's cursor-restore
+    // delta cannot spin the camera.
     if (document.pointerLockElement === canvas) {
       document.exitPointerLock();
     }
-
-    hud.showDialog({ title: hotspot.title, lines: hotspot.lines, link: hotspot.link });
-    openHotspotId = hotspot.id;
     if (lookHint) {
       lookHint.hidden = true;
     }
@@ -258,12 +272,22 @@ export function initRoom(): void {
     pressedKeys.clear();
   };
 
+  let swallowNextLookEvent = false;
+
   const onPointerLockChange = (): void => {
-    setLooking(document.pointerLockElement === canvas);
+    const locked = document.pointerLockElement === canvas;
+    // Browsers may report one huge movement delta right after a lock
+    // transition in either direction.
+    swallowNextLookEvent = true;
+    setLooking(locked);
   };
 
   const onMouseLook = (event: MouseEvent): void => {
     if (document.pointerLockElement !== canvas || hud.isDialogOpen()) {
+      return;
+    }
+    if (swallowNextLookEvent) {
+      swallowNextLookEvent = false;
       return;
     }
     lookPlayer(player, event.movementX, event.movementY);

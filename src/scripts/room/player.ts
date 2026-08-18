@@ -16,10 +16,10 @@ export type Player = {
 
 export function createPlayer(): Player {
   return {
-    x: 2.15,
-    z: 0.35,
-    yaw: -0.35,
-    pitch: 0.04
+    x: 1.05,
+    z: 1.9,
+    yaw: -0.15,
+    pitch: 0.03
   };
 }
 
