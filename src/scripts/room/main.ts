@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { hotspots, type Hotspot } from "./hotspots";
 import { createHud, createTouchControls, type StatusLine } from "./hud";
 import { createPlayer, EYE_HEIGHT, lookPlayer, updatePlayer } from "./player";
@@ -6,7 +10,6 @@ import { fetchHomelabStatus, serviceStateGlyph, type HomelabStatus, type Service
 import { buildWorld, type RectCollider } from "./world";
 
 const RENDER_SCALE = 0.5;
-const CITY_FRAME_INTERVAL = 0.05;
 const PRINT_DURATION = 1.4;
 const ROOMBA_SPEED = 0.55;
 const ROOMBA_RADIUS = 0.28;
@@ -89,8 +92,31 @@ export function initRoom(): void {
   const world = buildWorld();
   const player = createPlayer();
 
-  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 90);
+  // Dev-only pose fixture for deterministic screenshots: /room?pose=yaw,pitch,x,z
+  if (import.meta.env.DEV) {
+    const pose = new URLSearchParams(window.location.search).get("pose");
+    if (pose) {
+      const [yaw, pitch, px, pz] = pose.split(",").map(Number);
+      if ([yaw, pitch, px, pz].every(Number.isFinite)) {
+        player.yaw = yaw;
+        player.pitch = pitch;
+        player.x = px;
+        player.z = pz;
+      }
+    }
+  }
+
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 140);
   applyLook(camera, player.yaw, player.pitch, player.x, player.z);
+
+  // Subtle bloom makes the city lights, LEDs, and lamps glow. An 8-bit
+  // target keeps the pipeline working on software/half-float-less WebGL.
+  const composerTarget = new THREE.WebGLRenderTarget(1, 1, { type: THREE.UnsignedByteType });
+  const composer = new EffectComposer(renderer, composerTarget);
+  composer.addPass(new RenderPass(world.scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.42, 0.4, 0.66);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
 
   const hud = createHud(stage);
   const touch = createTouchControls(stage);
@@ -112,7 +138,10 @@ export function initRoom(): void {
   const resize = (): void => {
     const width = Math.max(1, stage.clientWidth);
     const height = Math.max(1, stage.clientHeight);
-    renderer.setSize(Math.floor(width * RENDER_SCALE), Math.floor(height * RENDER_SCALE), false);
+    const scaledWidth = Math.floor(width * RENDER_SCALE);
+    const scaledHeight = Math.floor(height * RENDER_SCALE);
+    renderer.setSize(scaledWidth, scaledHeight, false);
+    composer.setSize(scaledWidth, scaledHeight);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
@@ -296,7 +325,6 @@ export function initRoom(): void {
   const roombaVelocity = new THREE.Vector2(ROOMBA_SPEED, 0.2);
   let printing = false;
   let printProgress = 0;
-  let cityTimer = 0;
   let firstFrame = true;
 
   let lastFrameTime: number | null = null;
@@ -342,6 +370,7 @@ export function initRoom(): void {
       }
       disposeMaterial(object.material);
     });
+    composer.dispose();
     renderer.dispose();
   };
   window.addEventListener("pagehide", dispose, { once: true });
@@ -400,10 +429,8 @@ export function initRoom(): void {
       }
     }
 
-    cityTimer += dt;
-    if (!reducedMotion && cityTimer >= CITY_FRAME_INTERVAL) {
+    if (!reducedMotion) {
       world.cityscape.update(elapsed);
-      cityTimer = 0;
     }
 
     let nearest: Hotspot | null = null;
@@ -435,7 +462,7 @@ export function initRoom(): void {
     }
 
     applyLook(camera, player.yaw, player.pitch, player.x, player.z);
-    renderer.render(world.scene, camera);
+    composer.render();
 
     if (firstFrame) {
       firstFrame = false;

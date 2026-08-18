@@ -33,6 +33,8 @@ npm run doctor
   - `/blog?fixture=zero-valid-posts` (forces empty-state UI)
   - `/blog?fixture=schema-invalid-entry` (shows schema-invalid fixture note + route)
   - Legacy params still supported: `/blog?empty=1`, `/blog?schemaInvalid=1`
+- Room camera fixture (dev-only, for deterministic screenshots):
+  - `/room?pose=yaw,pitch,x,z` (e.g. `/room?pose=0,0.02,0.5,-1.6` frames the fjord view)
 
 ## Architecture (High-Level)
 
