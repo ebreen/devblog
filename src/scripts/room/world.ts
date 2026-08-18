@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { createCityscape, type Cityscape } from "./cityscape";
 import {
   makeArtTexture,
+  makeFloorTexture,
   makeGameTexture,
   makeMonitorTexture,
   makePaperTexture,
@@ -37,7 +38,6 @@ export type RoomWorld = {
 };
 
 const colors = {
-  floor: 0x342a1f,
   wall: 0x242424,
   trim: 0x1f1f1f,
   darkWood: 0x241d16,
@@ -122,7 +122,7 @@ function lampShade(radiusTop: number, radiusBottom: number, height: number): THR
 function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
   const floor = new THREE.Mesh(
     new THREE.BoxGeometry(8.4, 0.2, 7.4),
-    new THREE.MeshStandardMaterial({ color: colors.floor, roughness: 0.96 })
+    new THREE.MeshStandardMaterial({ map: makeFloorTexture(), roughness: 0.96 })
   );
   floor.position.y = -0.1;
   floor.receiveShadow = true;

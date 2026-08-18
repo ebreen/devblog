@@ -48,28 +48,6 @@ export function makeFloorTexture(): THREE.CanvasTexture {
   return texture;
 }
 
-/** A tv that is paused on something: dark screen, gold play glyph, progress bar. */
-export function makeTvTexture(): THREE.CanvasTexture {
-  const [canvas, ctx] = createCanvas(192, 112);
-  ctx.fillStyle = "#0a0a0a";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "rgba(214, 180, 95, 0.85)";
-  ctx.beginPath();
-  ctx.moveTo(88, 42);
-  ctx.lineTo(110, 56);
-  ctx.lineTo(88, 70);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.fillStyle = "rgba(152, 147, 138, 0.4)";
-  ctx.fillRect(16, 96, 160, 3);
-  ctx.fillStyle = "#d6b45f";
-  ctx.fillRect(16, 96, 58, 3);
-
-  return toTexture(canvas);
-}
-
 /** Terminal-style screen: gold mono text on near-black, block cursor at the end. */
 export function makeMonitorTexture(lines: string[]): THREE.CanvasTexture {
   const [canvas, ctx] = createCanvas(256, 160);

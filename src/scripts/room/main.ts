@@ -1,16 +1,16 @@
 import * as THREE from "three";
 import { hotspots, type Hotspot } from "./hotspots";
 import { createHud, createTouchControls, type StatusLine } from "./hud";
-import { buildPlayer, updatePlayer } from "./player";
+import { createPlayer, EYE_HEIGHT, lookPlayer, updatePlayer } from "./player";
 import { fetchHomelabStatus, serviceStateGlyph, type HomelabStatus, type ServiceState } from "./status";
 import { buildWorld, type RectCollider } from "./world";
 
 const RENDER_SCALE = 0.5;
-const CAMERA_OFFSET = new THREE.Vector3(0, 4.2, 4.6);
 const CITY_FRAME_INTERVAL = 0.05;
 const PRINT_DURATION = 1.4;
 const ROOMBA_SPEED = 0.55;
 const ROOMBA_RADIUS = 0.28;
+const TOUCH_LOOK_SENSITIVITY = 0.35;
 
 function statusTone(state: ServiceState): StatusLine["tone"] {
   switch (state) {
@@ -53,6 +53,11 @@ function roombaHits(x: number, z: number, colliders: RectCollider[], bounds: Rec
   return false;
 }
 
+function applyLook(camera: THREE.PerspectiveCamera, yaw: number, pitch: number, x: number, z: number): void {
+  camera.position.set(x, EYE_HEIGHT, z);
+  camera.rotation.set(pitch, yaw, 0, "YXZ");
+}
+
 export function initRoom(): void {
   const stage = document.getElementById("room-stage");
   const canvas = document.getElementById("room-canvas");
@@ -61,6 +66,7 @@ export function initRoom(): void {
   }
   const loading = stage.querySelector<HTMLElement>(".room-loading");
   const fallback = stage.querySelector<HTMLElement>(".room-fallback");
+  const lookHint = stage.querySelector<HTMLElement>(".room-look-hint");
 
   let renderer: THREE.WebGLRenderer;
   try {
@@ -71,19 +77,20 @@ export function initRoom(): void {
     return;
   }
 
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.setPixelRatio(1);
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
   const world = buildWorld();
-  const player = buildPlayer(reducedMotion);
-  world.scene.add(player.group);
+  const player = createPlayer();
 
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 60);
-  camera.position.copy(CAMERA_OFFSET).add(player.group.position);
-  camera.lookAt(player.x, 0.6, player.z);
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 60);
+  applyLook(camera, player.yaw, player.pitch, player.x, player.z);
 
   const hud = createHud(stage);
   const touch = createTouchControls(stage);
@@ -110,16 +117,30 @@ export function initRoom(): void {
     camera.updateProjectionMatrix();
   };
   resize();
-  new ResizeObserver(resize).observe(stage);
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(stage);
 
   const pressedKeys = new Set<string>();
   let interactQueued = false;
   let activeHotspot: Hotspot | null = null;
   let openHotspotId: Hotspot["id"] | null = null;
+  let touchLookPointer: number | null = null;
+  let lastTouchLookX = 0;
+  let lastTouchLookY = 0;
+
+  const setLooking = (next: boolean): void => {
+    stage.classList.toggle("is-looking", next);
+    if (lookHint) {
+      lookHint.hidden = next || hud.isDialogOpen();
+    }
+  };
 
   const closeDialog = (): void => {
     hud.hideDialog();
     openHotspotId = null;
+    if (lookHint) {
+      lookHint.hidden = document.pointerLockElement === canvas;
+    }
   };
 
   const openHotspot = (hotspot: Hotspot): void => {
@@ -132,8 +153,15 @@ export function initRoom(): void {
       return;
     }
 
+    if (document.pointerLockElement === canvas) {
+      document.exitPointerLock();
+    }
+
     hud.showDialog({ title: hotspot.title, lines: hotspot.lines, link: hotspot.link });
     openHotspotId = hotspot.id;
+    if (lookHint) {
+      lookHint.hidden = true;
+    }
 
     if (hotspot.id === "printer") {
       printProgress = 0;
@@ -155,7 +183,7 @@ export function initRoom(): void {
     }
   };
 
-  window.addEventListener("keydown", (event) => {
+  const onKeyDown = (event: KeyboardEvent): void => {
     const target = event.target;
     if (target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
       return;
@@ -191,15 +219,79 @@ export function initRoom(): void {
       }
       pressedKeys.add(event.key.toLowerCase());
     }
-  });
+  };
 
-  window.addEventListener("keyup", (event) => {
+  const onKeyUp = (event: KeyboardEvent): void => {
     pressedKeys.delete(event.key.toLowerCase());
-  });
+  };
 
-  window.addEventListener("blur", () => {
+  const onBlur = (): void => {
     pressedKeys.clear();
-  });
+  };
+
+  const onPointerLockChange = (): void => {
+    setLooking(document.pointerLockElement === canvas);
+  };
+
+  const onMouseLook = (event: MouseEvent): void => {
+    if (document.pointerLockElement !== canvas || hud.isDialogOpen()) {
+      return;
+    }
+    lookPlayer(player, event.movementX, event.movementY);
+  };
+
+  const onCanvasClick = (event: MouseEvent): void => {
+    if (coarsePointer || hud.isDialogOpen()) {
+      return;
+    }
+    if (document.pointerLockElement !== canvas) {
+      event.preventDefault();
+      void canvas.requestPointerLock();
+    }
+  };
+
+  const onCanvasPointerDown = (event: PointerEvent): void => {
+    if (!coarsePointer || hud.isDialogOpen() || event.pointerType === "mouse") {
+      return;
+    }
+    touchLookPointer = event.pointerId;
+    lastTouchLookX = event.clientX;
+    lastTouchLookY = event.clientY;
+    canvas.setPointerCapture(event.pointerId);
+    setLooking(true);
+    event.preventDefault();
+  };
+
+  const onCanvasPointerMove = (event: PointerEvent): void => {
+    if (event.pointerId !== touchLookPointer) {
+      return;
+    }
+    lookPlayer(
+      player,
+      (event.clientX - lastTouchLookX) * TOUCH_LOOK_SENSITIVITY,
+      (event.clientY - lastTouchLookY) * TOUCH_LOOK_SENSITIVITY
+    );
+    lastTouchLookX = event.clientX;
+    lastTouchLookY = event.clientY;
+  };
+
+  const onCanvasPointerUp = (event: PointerEvent): void => {
+    if (event.pointerId !== touchLookPointer) {
+      return;
+    }
+    touchLookPointer = null;
+  };
+
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  window.addEventListener("blur", onBlur);
+  document.addEventListener("pointerlockchange", onPointerLockChange);
+  document.addEventListener("mousemove", onMouseLook);
+  canvas.addEventListener("click", onCanvasClick);
+  canvas.addEventListener("pointerdown", onCanvasPointerDown);
+  canvas.addEventListener("pointermove", onCanvasPointerMove);
+  canvas.addEventListener("pointerup", onCanvasPointerUp);
+  canvas.addEventListener("pointercancel", onCanvasPointerUp);
 
   const roombaVelocity = new THREE.Vector2(ROOMBA_SPEED, 0.2);
   let printing = false;
@@ -209,23 +301,41 @@ export function initRoom(): void {
 
   let lastFrameTime: number | null = null;
 
+  const dispose = (): void => {
+    renderer.setAnimationLoop(null);
+    resizeObserver.disconnect();
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
+    window.removeEventListener("blur", onBlur);
+    document.removeEventListener("pointerlockchange", onPointerLockChange);
+    document.removeEventListener("mousemove", onMouseLook);
+    canvas.removeEventListener("click", onCanvasClick);
+    canvas.removeEventListener("pointerdown", onCanvasPointerDown);
+    canvas.removeEventListener("pointermove", onCanvasPointerMove);
+    canvas.removeEventListener("pointerup", onCanvasPointerUp);
+    canvas.removeEventListener("pointercancel", onCanvasPointerUp);
+    world.cityscape.texture.dispose();
+    renderer.dispose();
+  };
+  window.addEventListener("pagehide", dispose, { once: true });
+
   renderer.setAnimationLoop((frameTime: number) => {
     const elapsed = frameTime / 1000;
     const dt = lastFrameTime === null ? 0.016 : Math.min(0.05, elapsed - lastFrameTime);
     lastFrameTime = elapsed;
 
-    let inputX = 0;
-    let inputZ = 0;
+    let strafe = 0;
+    let forward = 0;
     if (!hud.isDialogOpen()) {
-      if (pressedKeys.has("arrowleft") || pressedKeys.has("a")) inputX -= 1;
-      if (pressedKeys.has("arrowright") || pressedKeys.has("d")) inputX += 1;
-      if (pressedKeys.has("arrowup") || pressedKeys.has("w")) inputZ -= 1;
-      if (pressedKeys.has("arrowdown") || pressedKeys.has("s")) inputZ += 1;
+      if (pressedKeys.has("arrowleft") || pressedKeys.has("a")) strafe -= 1;
+      if (pressedKeys.has("arrowright") || pressedKeys.has("d")) strafe += 1;
+      if (pressedKeys.has("arrowup") || pressedKeys.has("w")) forward += 1;
+      if (pressedKeys.has("arrowdown") || pressedKeys.has("s")) forward -= 1;
       const touchMove = touch.readMove();
-      inputX += touchMove.x;
-      inputZ += touchMove.z;
+      strafe += touchMove.x;
+      forward -= touchMove.z;
     }
-    updatePlayer(player, inputX, inputZ, dt, world.colliders, world.bounds);
+    updatePlayer(player, strafe, forward, dt, world.colliders, world.bounds);
 
     // Roomba wanders and bounces off furniture; its hotspot follows it.
     const nextRoombaX = world.roomba.position.x + roombaVelocity.x * dt;
@@ -264,7 +374,7 @@ export function initRoom(): void {
     }
 
     cityTimer += dt;
-    if (cityTimer >= CITY_FRAME_INTERVAL) {
+    if (!reducedMotion && cityTimer >= CITY_FRAME_INTERVAL) {
       world.cityscape.update(elapsed);
       cityTimer = 0;
     }
@@ -297,15 +407,7 @@ export function initRoom(): void {
       }
     }
 
-    // Follow a point biased toward the room's center so the frame stays
-    // filled with room instead of the darkness outside it.
-    const followX = THREE.MathUtils.clamp(player.x, -1.7, 1.7);
-    const followZ = THREE.MathUtils.clamp(player.z, -0.5, 1.5);
-    const targetCamera = new THREE.Vector3(followX, 0, followZ).add(CAMERA_OFFSET);
-    const smoothing = reducedMotion ? 1 : Math.min(1, dt * 4.5);
-    camera.position.lerp(targetCamera, smoothing);
-    camera.lookAt(camera.position.x - CAMERA_OFFSET.x, 0.6, camera.position.z - CAMERA_OFFSET.z);
-
+    applyLook(camera, player.yaw, player.pitch, player.x, player.z);
     renderer.render(world.scene, camera);
 
     if (firstFrame) {

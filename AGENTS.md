@@ -45,7 +45,7 @@ npm run doctor
  - Blog index: `blog/index.astro` loads collection entries and handles fixture query-param behavior.
  - Blog detail: `blog/[slug].astro` uses `getStaticPaths()` from collection entries and renders MD/MDX with `entry.render()`.
  - `/cv` permanently redirects to `/resume`.
- - `room.astro` is a playable Three.js room (walkable character, interactable objects linking across the site).
+ - `room.astro` is a playable first-person Three.js room (look and walk, interactable objects linking across the site).
 
 - `src/scripts/room`
  - Client-side code for `/room`: `main.ts` (loop/input), `world.ts` (geometry/lighting), `cityscape.ts` (animated Oslo night view), `player.ts`, `hud.ts`, `hotspots.ts` (interaction content), `textures.ts`, `status.ts` (homelab status; set `HOMELAB_STATUS_ENDPOINT` to wire the rack to a live VPS endpoint).
