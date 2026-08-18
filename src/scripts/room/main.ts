@@ -301,6 +301,21 @@ export function initRoom(): void {
 
   let lastFrameTime: number | null = null;
 
+  const disposeMaterial = (material: THREE.Material): void => {
+    const maps = [
+      "map",
+      "emissiveMap",
+      "normalMap",
+      "roughnessMap",
+      "metalnessMap"
+    ] as const;
+    for (const key of maps) {
+      const texture = (material as THREE.MeshStandardMaterial)[key];
+      texture?.dispose();
+    }
+    material.dispose();
+  };
+
   const dispose = (): void => {
     renderer.setAnimationLoop(null);
     resizeObserver.disconnect();
@@ -314,7 +329,19 @@ export function initRoom(): void {
     canvas.removeEventListener("pointermove", onCanvasPointerMove);
     canvas.removeEventListener("pointerup", onCanvasPointerUp);
     canvas.removeEventListener("pointercancel", onCanvasPointerUp);
-    world.cityscape.texture.dispose();
+    world.scene.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) {
+        return;
+      }
+      object.geometry.dispose();
+      if (Array.isArray(object.material)) {
+        for (const material of object.material) {
+          disposeMaterial(material);
+        }
+        return;
+      }
+      disposeMaterial(object.material);
+    });
     renderer.dispose();
   };
   window.addEventListener("pagehide", dispose, { once: true });
