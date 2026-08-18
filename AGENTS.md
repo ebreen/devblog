@@ -14,10 +14,12 @@ npm run dev
 npm run build
 npm run preview
 npm run astro -- check
+npm run doctor
 ```
 
 - `npm run dev` (or `npm run start`) starts local development server.
 - `npm run astro -- check` is the primary validation command (type/content/schema checks).
+- `npm run doctor` runs [React Doctor](https://github.com/millionco/react-doctor) (React/JSX health scan). Agents should also use the project skill at `.agents/skills/react-doctor`.
 - There is no dedicated unit test runner configured in `package.json`.
 
 ## Validation / “Single Test” Equivalents

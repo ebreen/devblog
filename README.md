@@ -22,7 +22,10 @@ npm run dev
 ```bash
 npm run astro check
 npm run build
+npm run doctor
 ```
+
+`npm run doctor` runs [React Doctor](https://github.com/millionco/react-doctor), which scans React/JSX for correctness, performance, accessibility, and architecture issues. Pull requests also get an advisory GitHub Actions scan.
 
 ## Hosting & Deployment
 
