@@ -205,51 +205,56 @@ function makeMunchTexture(random: () => number): THREE.CanvasTexture {
 
 function buildOpera(): THREE.Group {
   const opera = new THREE.Group();
-  const stone = marble(0xe8e4da, 0.34);
-  const stoneCool = marble(0xd4d8de, 0.42);
+  const stone = marble(0xf2eee4, 0.28);
+  const stoneCool = marble(0xe4e8ee, 0.36);
   const glass = new THREE.MeshStandardMaterial({
     color: 0x1c242c,
-    emissive: 0xd6b45f,
-    emissiveIntensity: 0.55,
+    emissive: 0xe0c56a,
+    emissiveIntensity: 0.7,
     roughness: 0.15,
     metalness: 0.35,
     transparent: true,
-    opacity: 0.92
+    opacity: 0.94
   });
 
-  const plaza = boxMesh(9.6, 0.12, 6.4, stone);
-  plaza.position.y = 0.06;
+  const plaza = boxMesh(12.4, 0.14, 8.2, stone);
+  plaza.position.y = 0.07;
   opera.add(plaza);
 
-  const lowSlope = boxMesh(8.4, 0.18, 4.8, stone);
-  lowSlope.position.set(-0.1, 0.28, 0.15);
-  lowSlope.rotation.x = -0.16;
+  const lowSlope = boxMesh(11.2, 0.2, 6.2, stone);
+  lowSlope.position.set(-0.2, 0.42, 0.2);
+  lowSlope.rotation.x = -0.2;
   opera.add(lowSlope);
 
-  const midSlope = boxMesh(5.6, 0.16, 3.4, stoneCool);
-  midSlope.position.set(-0.6, 0.82, -0.35);
-  midSlope.rotation.x = -0.28;
-  midSlope.rotation.z = 0.04;
+  const midSlope = boxMesh(7.4, 0.18, 4.4, stoneCool);
+  midSlope.position.set(-0.8, 1.15, -0.45);
+  midSlope.rotation.x = -0.32;
+  midSlope.rotation.z = 0.05;
   opera.add(midSlope);
 
-  const peak = boxMesh(3.1, 0.14, 2.2, stone);
-  peak.position.set(-1.1, 1.42, -0.7);
-  peak.rotation.x = -0.22;
+  const peak = boxMesh(4.2, 0.16, 2.8, stone);
+  peak.position.set(-1.4, 1.95, -0.9);
+  peak.rotation.x = -0.24;
   opera.add(peak);
 
-  const iceEdge = boxMesh(4.8, 0.1, 2.6, stoneCool);
-  iceEdge.position.set(1.6, 0.22, 1.7);
-  iceEdge.rotation.x = 0.18;
-  iceEdge.rotation.y = -0.12;
+  const iceEdge = boxMesh(6.2, 0.12, 3.4, stoneCool);
+  iceEdge.position.set(2.2, 0.28, 2.3);
+  iceEdge.rotation.x = 0.2;
+  iceEdge.rotation.y = -0.14;
   opera.add(iceEdge);
 
-  const hall = boxMesh(3.4, 1.15, 2.2, glass);
-  hall.position.set(0.2, 0.72, -1.35);
+  const hall = boxMesh(4.2, 1.45, 2.6, glass);
+  hall.position.set(0.15, 0.9, -1.7);
   hall.name = "opera-hall";
   opera.add(hall);
 
-  const lobbyGlow = new THREE.PointLight(0xd6b45f, 4.5, 12);
-  lobbyGlow.position.set(0.2, 1.1, -1.1);
+  const flood = new THREE.SpotLight(0xf3efe3, 18, 22, 0.7, 0.45, 1);
+  flood.position.set(-2.4, 6.2, 3.4);
+  flood.target.position.set(0, 0.8, 0);
+  opera.add(flood, flood.target);
+
+  const lobbyGlow = new THREE.PointLight(0xe0c56a, 7, 16);
+  lobbyGlow.position.set(0.2, 1.3, -1.2);
   opera.add(lobbyGlow);
 
   return opera;
@@ -268,24 +273,24 @@ function buildMunch(facade: THREE.CanvasTexture): THREE.Group {
     emissiveIntensity: 0.22
   });
 
-  const shaft = boxMesh(1.85, 4.6, 2.15, skin);
-  shaft.position.y = 2.3;
+  const shaft = boxMesh(2.15, 5.4, 2.45, skin);
+  shaft.position.y = 2.7;
   munch.add(shaft);
 
-  const face = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 4.3), glass);
-  face.position.set(0, 2.3, 1.09);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(2, 5.1), glass);
+  face.position.set(0, 2.7, 1.24);
   munch.add(face);
 
-  const crown = boxMesh(2.15, 2.5, 2.35, skinDark);
-  crown.position.set(0.55, 5.85, 0.15);
+  const crown = boxMesh(2.65, 3.1, 2.7, skinDark);
+  crown.position.set(0.85, 6.85, 0.2);
   munch.add(crown);
 
-  const crownFace = new THREE.Mesh(new THREE.PlaneGeometry(1.95, 2.2), glass);
-  crownFace.position.set(0.55, 5.85, 1.34);
+  const crownFace = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.8), glass);
+  crownFace.position.set(0.85, 6.85, 1.56);
   munch.add(crownFace);
 
-  const crownLight = new THREE.PointLight(0xc8d0d8, 2.2, 10);
-  crownLight.position.set(0.4, 6.4, 1.6);
+  const crownLight = new THREE.PointLight(0xc8d0d8, 3.4, 14);
+  crownLight.position.set(0.6, 7.4, 1.8);
   munch.add(crownLight);
 
   return munch;
@@ -301,12 +306,12 @@ function buildBarcode(random: () => number): THREE.Group {
     const depth = 1.1 + random() * 0.4;
     const texture = makeTowerTexture(4, 12 + Math.floor(random() * 6), random);
     const material = new THREE.MeshStandardMaterial({
-      color: i % 2 === 0 ? 0x8a9098 : 0x6b7178,
+      color: i % 2 === 0 ? 0x6a727c : 0x4f565e,
       map: texture,
-      roughness: 0.28,
-      metalness: 0.45,
-      emissive: 0xd6b45f,
-      emissiveIntensity: 0.16
+      roughness: 0.32,
+      metalness: 0.5,
+      emissive: 0xb89a4e,
+      emissiveIntensity: 0.08
     });
     const tower = boxMesh(width, height, depth, material);
     tower.position.set(x, height / 2, (random() - 0.5) * 0.6);
@@ -362,59 +367,59 @@ export function createCityscape(): Cityscape {
     new THREE.PlaneGeometry(92, 46),
     new THREE.MeshBasicMaterial({ map: texture, toneMapped: false })
   );
-  backdrop.position.set(0, 8.4, -46);
+  backdrop.position.set(0, 9.2, -46);
   group.add(backdrop);
 
   const water = new THREE.Mesh(
     new THREE.PlaneGeometry(78, 40),
     new THREE.MeshStandardMaterial({
-      color: 0x0b1420,
-      roughness: 0.22,
-      metalness: 0.55,
-      emissive: 0x1a2433,
-      emissiveIntensity: 0.2
+      color: 0x0d1826,
+      roughness: 0.18,
+      metalness: 0.62,
+      emissive: 0x243044,
+      emissiveIntensity: 0.28
     })
   );
   water.rotation.x = -Math.PI / 2;
-  water.position.set(1, -3.55, -24);
+  water.position.set(1, -1.45, -24);
   group.add(water);
 
-  const moon = new THREE.DirectionalLight(0xc5d0e0, 1.35);
-  moon.position.set(14, 18, -8);
-  moon.target.position.set(0, -1, -17);
+  const moon = new THREE.DirectionalLight(0xd5dce6, 1.8);
+  moon.position.set(16, 20, -6);
+  moon.target.position.set(0.4, 0.4, -14);
   group.add(moon, moon.target);
 
   const opera = buildOpera();
-  opera.position.set(0.4, -3.55, -17.2);
-  opera.rotation.y = 0.18;
+  opera.position.set(-1.8, -1.45, -13.8);
+  opera.rotation.y = 0.12;
   group.add(opera);
 
   const munch = buildMunch(makeMunchTexture(random));
-  munch.position.set(6.4, -3.55, -15.4);
-  munch.rotation.y = -0.08;
+  munch.position.set(3.4, -1.45, -12.6);
+  munch.rotation.y = -0.06;
   group.add(munch);
 
   const barcode = buildBarcode(random);
-  barcode.position.set(-10.6, -2.7, -11.6);
-  barcode.rotation.y = 0.08;
+  barcode.position.set(-11.4, -1.15, -10.8);
+  barcode.rotation.y = 0.1;
   group.add(barcode);
 
   const eastTowers = buildBarcode(random);
-  eastTowers.scale.setScalar(0.72);
-  eastTowers.position.set(9.4, -2.9, -12.4);
-  eastTowers.rotation.y = -0.2;
+  eastTowers.scale.setScalar(0.68);
+  eastTowers.position.set(10.2, -1.2, -11.6);
+  eastTowers.rotation.y = -0.22;
   group.add(eastTowers);
 
   const roofs = buildNearRoofs(random);
-  roofs.position.set(0.6, -3.2, -8.6);
+  roofs.position.set(0.4, -1.35, -8.2);
   group.add(roofs);
 
   const ferry = buildFerry();
-  ferry.position.set(-8, -3.48, -22);
+  ferry.position.set(-8, -1.38, -22);
   group.add(ferry);
 
   const sheLies = boxMesh(0.7, 0.9, 0.55, marble(0xcdd3da, 0.2));
-  sheLies.position.set(4.6, -3.05, -20.2);
+  sheLies.position.set(4.8, -0.95, -18.6);
   sheLies.rotation.set(0.4, 0.6, -0.25);
   group.add(sheLies);
 
@@ -422,7 +427,7 @@ export function createCityscape(): Cityscape {
 
   function update(time: number): void {
     ferry.position.x = ((time * 1.15) % 36) - 18;
-    ferry.position.z = -22 + Math.sin(time * 0.35) * 0.8;
+    ferry.position.z = -21.5 + Math.sin(time * 0.35) * 0.8;
     ferry.rotation.y = Math.atan2(-Math.cos(time * 0.35) * 0.8, 1.15);
     if (operaHall instanceof THREE.Mesh && operaHall.material instanceof THREE.MeshStandardMaterial) {
       operaHall.material.emissiveIntensity = 0.48 + Math.sin(time * 0.7) * 0.08;

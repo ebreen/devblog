@@ -131,8 +131,8 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
   const wallMaterial = new THREE.MeshStandardMaterial({ color: colors.wall, roughness: 0.95 });
   const ceilingMaterial = new THREE.MeshStandardMaterial({ color: 0x1b1b1b, roughness: 0.97 });
   for (const side of [-1, 1]) {
-    const wall = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.3, 7.4), wallMaterial);
-    wall.position.set(side * 4.1, 1.65, 0);
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.42, 7.4), wallMaterial);
+    wall.position.set(side * 4.1, 1.71, 0);
     wall.receiveShadow = true;
     scene.add(wall);
 
@@ -141,25 +141,25 @@ function buildShell(scene: THREE.Scene, cityscape: Cityscape): void {
     scene.add(baseboard);
   }
 
-  const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 3.3, 0.2), wallMaterial);
-  backWall.position.set(0, 1.65, 3.6);
+  const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 3.42, 0.2), wallMaterial);
+  backWall.position.set(0, 1.71, 3.6);
   backWall.receiveShadow = true;
   scene.add(backWall);
 
-  const ceiling = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.18, 7.5), ceilingMaterial);
-  ceiling.position.set(0, 3.39, 0.05);
+  const ceiling = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.24, 7.62), ceilingMaterial);
+  ceiling.position.set(0, 3.3, 0.06);
   ceiling.receiveShadow = true;
   scene.add(ceiling);
 
-  // Window is a punched opening: sill, head flush with the ceiling, mullions.
+  // Window is a punched opening: sill, head that is part of the ceiling slab, mullions.
   const sill = box(8.4, 0.18, 0.22, colors.metal);
   sill.position.set(0, 0.09, -3.55);
-  const head = box(8.4, 0.2, 0.42, colors.metal);
-  head.position.set(0, 3.2, -3.44);
+  const head = box(8.4, 0.28, 0.55, 0x1b1b1b);
+  head.position.set(0, 3.18, -3.38);
   scene.add(sill, head);
   for (let i = 0; i <= 4; i += 1) {
-    const mullion = box(0.1, 3.02, 0.14, colors.metal);
-    mullion.position.set(-4.2 + i * 2.1, 1.6, -3.55);
+    const mullion = box(0.1, 2.9, 0.14, colors.metal);
+    mullion.position.set(-4.2 + i * 2.1, 1.54, -3.55);
     scene.add(mullion);
   }
   const pane = new THREE.Mesh(
@@ -475,18 +475,18 @@ function buildPrinter(
 
   scene.add(station);
 
+  const paperMap = makePaperTexture();
+  paperMap.center.set(0.5, 0.5);
+  paperMap.rotation = Math.PI / 2;
   const paper = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.42, 0.56),
-    new THREE.MeshBasicMaterial({ map: makePaperTexture(), side: THREE.DoubleSide })
+    new THREE.BoxGeometry(0.56, 0.004, 0.4),
+    new THREE.MeshBasicMaterial({ map: paperMap })
   );
-  // Portrait page, long side coming out of the slot, heading toward the room.
-  paper.rotateX(-Math.PI / 2);
-  paper.rotateZ(-Math.PI / 2);
-  paper.position.set(-3.38, 0.882, -0.35);
+  paper.position.set(-3.42, 0.884, -0.35);
   paper.visible = false;
   scene.add(paper);
 
-  return { paper, homeX: -3.38, travelX: 0.58 };
+  return { paper, homeX: -3.42, travelX: 0.62 };
 }
 
 /** Coffee corner in the back-right, under the window's edge. */
