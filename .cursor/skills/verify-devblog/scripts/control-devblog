@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ ! -e "$here/node_modules/playwright/package.json" ]]; then
+  echo "control-devblog: installing playwright under scripts/ (not the Astro app)..." >&2
+  npm install --prefix "$here" --no-fund --no-audit
+fi
+
+exec node "$here/control-devblog.mjs" "$@"

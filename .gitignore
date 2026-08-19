@@ -2,3 +2,5 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+.cursor/skills/verify-devblog/artifacts/
+.cursor/skills/verify-devblog/scripts/node_modules/

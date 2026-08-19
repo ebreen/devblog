@@ -1,0 +1,9 @@
+{
+  "name": "control-devblog",
+  "private": true,
+  "type": "module",
+  "description": "Skill-local driver for verify-devblog. Not an app dependency.",
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}
