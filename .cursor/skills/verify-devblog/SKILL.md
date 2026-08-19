@@ -53,9 +53,9 @@ Use `control-devblog`. Do not add Playwright to the Astro `package.json`. The he
 Identity handles that stay stable:
 
 - Skip link: role `link`, name `skip to content`
-- Brand: role `link`, name `eirik breen — oslo` (em dash)
-- Primary nav: role `navigation`, name `Primary`. Links, exact names: `about` `/about`, `made` `/projects`, `cv` `/resume`, `wrote` `/blog`, `room` `/room`, `email` `/contact`
-- Home explore nav: role `navigation`, name `Explore the site`. Same labels, but `email` is `mailto:me@eirikbreen.com`. Do not click it.
+- Brand: role `link`, name `eirik breen — oslo` (em dash). Present on inner pages only. Home hides the site header (`body.is-home`).
+- Home explore nav: role `navigation`, name `Explore the site`. Links: `about`, `made`, `cv`, `wrote`, `room`, and `email` (`mailto:me@eirikbreen.com`). This is the only header-like nav on `/`.
+- Primary nav: role `navigation`, name `Primary`. Same labels on every inner page. `email` goes to `/contact`. Do not look for this on `/`.
 - Main: `#main-content`
 - Blog tally: `[data-blog-tally]`
 - Blog list: `ol.blog-list` / `[data-blog-list]`
@@ -67,9 +67,14 @@ Identity handles that stay stable:
 - Resume print: `[data-print-resume]`. Do not click it (opens the print dialog).
 - Room canvas: `#room-canvas`. Heading `the room`.
 
-`about`, `made`, `cv`, `wrote`, `room`, and `email` exist twice on the home page. Always scope header clicks:
+`about`, `made`, `cv`, `wrote`, `room`, and `email` exist on home under `Explore the site`. On inner pages they exist under `Primary`. Always scope clicks:
 
 ```bash
+# from /
+./.cursor/skills/verify-devblog/scripts/control-devblog browser click \
+  --scope-role navigation --scope-name "Explore the site" --role link --name wrote
+
+# from /about, /blog, and other inner pages
 ./.cursor/skills/verify-devblog/scripts/control-devblog browser click \
   --scope-role navigation --scope-name Primary --role link --name wrote
 ```
@@ -139,8 +144,8 @@ Do not kill by process name. Do not `pkill -f astro`.
 ./.cursor/skills/verify-devblog/scripts/control-devblog env
 ./.cursor/skills/verify-devblog/scripts/control-devblog stop
 ./.cursor/skills/verify-devblog/scripts/control-devblog http get --path /blog
-./.cursor/skills/verify-devblog/scripts/control-devblog browser goto --path /blog
-./.cursor/skills/verify-devblog/scripts/control-devblog browser click --scope-role navigation --scope-name Primary --role link --name wrote
+./.cursor/skills/verify-devblog/scripts/control-devblog browser goto --path /
+./.cursor/skills/verify-devblog/scripts/control-devblog browser click --scope-role navigation --scope-name "Explore the site" --role link --name wrote
 ./.cursor/skills/verify-devblog/scripts/control-devblog browser visible --role heading --name "Things worth writing down."
 ./.cursor/skills/verify-devblog/scripts/control-devblog browser title
 ./.cursor/skills/verify-devblog/scripts/control-devblog browser url
@@ -149,5 +154,7 @@ Do not kill by process name. Do not `pkill -f astro`.
 ```
 
 `--path` for `http`/`goto` is a site path beginning with `/`. `--path` for snapshot/screenshot/out is a file path, relative to the repo root unless absolute.
+
+The helper injects `astro-dev-toolbar { display: none }` so the Astro dev overlay does not steal clicks or land in screenshots. That overlay is not the product. Each invocation then `process.exit`s so Playwright's CDP socket cannot hang the command.
 
 State lives in `/tmp/devblog-verify/$VERIFY_RUN_ID/state.json`. Logs: `astro.log`, `chrome.log` next to it.

@@ -22,7 +22,7 @@ Preconditions:
 - Doctor is green.
 - No mail handler interaction is required or allowed.
 
-- **Nav entry.** From `/`, choose `email` in Primary. Run `control-devblog browser click --scope-role navigation --scope-name Primary --role link --name email`. URL path is `/contact`. Heading `Good conversations welcome.` is visible. Title is `Contact — Eirik Breen`.
+- **Nav entry.** From `/about`, choose `email` in Primary. Run `control-devblog browser goto --path /about` then `control-devblog browser click --scope-role navigation --scope-name Primary --role link --name email`. URL path is `/contact`. Heading `Good conversations welcome.` is visible. Title is `Contact — Eirik Breen`.
 - **Direct entry.** Open `/contact`. Run `control-devblog browser goto --path /contact`. Same heading.
 - **Mailto href.** The link named `me@eirikbreen.com` is visible. Its href is `mailto:me@eirikbreen.com`. Do not click it.
 - **Elsewhere.** Links named `LinkedIn` and `GitHub` are visible and use `target="_blank"`. Do not click them.

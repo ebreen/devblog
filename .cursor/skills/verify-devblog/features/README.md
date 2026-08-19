@@ -13,7 +13,7 @@ This directory is the maintained source for verifying user-facing behavior of th
 ## Driving conventions
 
 - Start every recipe from `/` unless the feature file says otherwise.
-- Click header labels through `--scope-role navigation --scope-name Primary`. Home duplicates those labels under `Explore the site`, and that copy's `email` is mailto.
+- Click header labels through `--scope-role navigation --scope-name "Explore the site"` on `/`, and `--scope-name Primary` on inner pages. Home hides `.site-header`. The explore `email` is mailto.
 - Prefer role plus accessible name over CSS. The `data-blog-*` attributes are the exception because fixtures toggle `hidden` on those nodes.
 - Treat helper flags and quoted names as literal.
 - Restore nothing after a recipe. The site is static besides fixture query params. A new `goto` is enough.

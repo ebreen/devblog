@@ -26,7 +26,7 @@ Preconditions:
 - Doctor is green at `http://127.0.0.1:43721`.
 - Catalog has at least one Markdown/MDX entry under `src/content/blog` (the committed posts). Do not delete posts to simulate empty. Use the fixture URL.
 
-- **Nav entry.** From `/`, choose `wrote` in Primary. Run `control-devblog browser click --scope-role navigation --scope-name Primary --role link --name wrote`. Heading `Things worth writing down.` is visible. `[data-blog-list]` is visible. `[data-blog-empty-state]` is not visible.
+- **Nav entry.** From `/`, choose `wrote` in Explore the site. Run `control-devblog browser click --scope-role navigation --scope-name "Explore the site" --role link --name wrote`. Heading `Things worth writing down.` is visible. `[data-blog-list]` is visible. `[data-blog-empty-state]` is not visible.
 - **Direct entry.** Open `/blog`. Run `control-devblog browser goto --path /blog`. Same heading and visible list as nav entry. Title is `Blog — Eirik Breen`.
 - **Tally.** Read `[data-blog-tally]`. Run `control-devblog browser visible --selector "[data-blog-tally]"`. Visible text matches `N notes, newest first` (or `1 note`) and N equals the number of visible `li.post-item` nodes. Ignore nodes inside `[hidden]`.
 - **Newest first.** The first visible post title link is the latest `date` in the collection. As of this map that title is `Why CloudMount Uses FSKit Instead of FUSE`. If a newer post lands, assert the first link against the current catalog rather than this sentence.
@@ -38,6 +38,7 @@ Preconditions:
 ## Gotchas
 
 - Empty and schema-invalid states are query-param UI, not missing files. The committed posts stay on disk.
+- Home has no Primary nav. Reaching `/blog` from `/` is the Explore the site `wrote` link.
 - Fixture markup stays in the DOM when hidden. Count and click only visible nodes (`hidden` attribute, or `browser visible`).
 - Wait for the fixture script. `goto` can finish before `hidden` flips. `browser visible --role heading --name "The notebook is empty."` is the barrier, not a sleep.
 - `/blog?fixture=schema-invalid-entry` still shows the real list. The extra note is in addition to the list, not a replacement.

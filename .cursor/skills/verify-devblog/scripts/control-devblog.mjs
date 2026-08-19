@@ -570,6 +570,14 @@ async function ensureChrome(state) {
   fail(`Chrome CDP did not start on ${state.cdpPort} (${lastError})`);
 }
 
+async function hideDevToolbar(page) {
+  await page.addStyleTag({
+    content: "astro-dev-toolbar { display: none !important; }"
+  }).catch(() => {
+    // toolbar is absent on preview/prod
+  });
+}
+
 async function withPage(fn) {
   const started = requireState();
   if (!astroLooksLikeOurs(started)) {
@@ -583,6 +591,7 @@ async function withPage(fn) {
   }
   const page = context.pages()[0] || await context.newPage();
   await page.setViewportSize({ width: 1280, height: 800 });
+  await hideDevToolbar(page);
   return await fn(page, state);
 }
 
@@ -629,6 +638,7 @@ async function commandBrowser() {
         }
         const url = new URL(path, state.baseUrl);
         await page.goto(url.href, { waitUntil: "domcontentloaded", timeout: timeoutMs() });
+        await hideDevToolbar(page);
         console.log(`url=${page.url()}`);
         console.log(`title=${await page.title()}`);
       });
@@ -643,10 +653,12 @@ async function commandBrowser() {
       return;
     case "visible":
       await withPage(async (page) => {
-        const locator = targetLocator(page);
-        const visible = await locator.first().isVisible({ timeout: timeoutMs() }).catch(() => false);
-        console.log(`visible=${visible}`);
-        if (!visible) {
+        const locator = targetLocator(page).first();
+        try {
+          await locator.waitFor({ state: "visible", timeout: timeoutMs() });
+          console.log("visible=true");
+        } catch {
+          console.log("visible=false");
           process.exit(1);
         }
       });
@@ -695,34 +707,38 @@ async function commandBrowser() {
 async function main() {
   if (!command || command === "help" || command === "-h" || command === "--help") {
     help();
-    return;
+    process.exit(0);
   }
 
   switch (command) {
     case "launch":
       await commandLaunch();
-      return;
+      break;
     case "stop":
       await commandStop();
-      return;
+      break;
     case "doctor":
       await commandDoctor();
-      return;
+      break;
     case "env":
       commandEnv();
-      return;
+      break;
     case "http":
       if (subcommand !== "get") {
         fail('http requires "get"', 2);
       }
       await commandHttpGet();
-      return;
+      break;
     case "browser":
       await commandBrowser();
-      return;
+      break;
     default:
       fail(`Unknown command: ${command}. Known: ${COMMANDS.join(", ")}`, 2);
   }
+
+  // Playwright's CDP socket keeps the event loop alive. Exit so each command is
+  // one-shot without Browser.close, which would kill the persistent Chrome.
+  process.exit(0);
 }
 
 main().catch((error) => {

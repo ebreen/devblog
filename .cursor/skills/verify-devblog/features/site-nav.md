@@ -27,19 +27,20 @@ Preconditions:
 - Doctor is green at `http://127.0.0.1:43721`.
 - Chrome session is the one `launch` will attach, not a random tab on 4321.
 
-- **Home identity.** Open `/`. Run `control-devblog browser goto --path /`. Title is `Home — Eirik Breen`. Heading `i like sidequests` is visible.
+- **Home identity.** Open `/`. Run `control-devblog browser goto --path /`. Title is `Home — Eirik Breen`. Heading `i like sidequests` is visible. The `Site header` banner is not in the accessibility tree.
 - **Skip link.** Choose `skip to content`. Run `control-devblog browser click --role link --name "skip to content"`. The document still shows the home heading. The link href is `#main-content`.
-- **Wrote.** From home, choose `wrote` in the primary nav. Run `control-devblog browser click --scope-role navigation --scope-name Primary --role link --name wrote`. URL path is `/blog`. Heading `Things worth writing down.` is visible. The `wrote` link has `aria-current="page"`.
-- **About, made, email, room.** Repeat the primary-nav click for `about` `/about` heading `Linux at work. Rabbit holes after.`, `made` `/projects` heading `Things I built.`, `email` `/contact` heading `Good conversations welcome.`, `room` `/room` heading `the room`.
+- **Wrote from home.** Choose `wrote` in Explore the site. Run `control-devblog browser click --scope-role navigation --scope-name "Explore the site" --role link --name wrote`. URL path is `/blog`. Heading `Things worth writing down.` is visible. Primary `wrote` now has `aria-current="page"`.
+- **About, made, room from home.** Repeat Explore-the-site clicks for `about` `/about` heading `Linux at work. Rabbit holes after.`, `made` `/projects` heading `Things I built.`, `room` `/room` heading `the room`.
+- **Email from an inner page.** From `/about`, choose `email` in Primary. Run `control-devblog browser click --scope-role navigation --scope-name Primary --role link --name email`. URL path is `/contact`. Heading `Good conversations welcome.`
 - **CV redirect.** Fetch `/cv` without following. Run `control-devblog http get --path /cv --no-follow --out .cursor/skills/verify-devblog/artifacts/$VERIFY_RUN_ID/site-nav/cv-redirect.txt`. Status is 3xx and `location` contains `/resume`. Then `control-devblog browser goto --path /cv`. Heading is `Eirik Breen`. Button `Print / save PDF` is visible. Do not click it.
 - **Brand home.** From `/resume`, choose the brand. Run `control-devblog browser click --role link --name "eirik breen — oslo"`. URL path is `/`.
 - **Room canvas.** On `/room`, run `control-devblog browser visible --selector "#room-canvas"`. The canvas exists. Do not require a painted WebGL frame.
-- **Proof.** Snapshot and screenshot `/blog` after the wrote click. Run `control-devblog browser snapshot --aria --path .cursor/skills/verify-devblog/artifacts/$VERIFY_RUN_ID/site-nav/wrote.aria.txt` and `control-devblog browser screenshot --path .cursor/skills/verify-devblog/artifacts/$VERIFY_RUN_ID/site-nav/wrote.png --full`. Both show the brand and `Things worth writing down.`
+- **Proof.** Snapshot and screenshot `/blog` after the wrote click. Run `control-devblog browser snapshot --aria --path .cursor/skills/verify-devblog/artifacts/$VERIFY_RUN_ID/site-nav/wrote.aria.txt` and `control-devblog browser screenshot --path .cursor/skills/verify-devblog/artifacts/$VERIFY_RUN_ID/site-nav/wrote.png --full`. Both show the brand in the header and `Things worth writing down.`
 
 ## Gotchas
 
-- Home also lists `about` / `made` / `cv` / `wrote` / `room` / `email` under `Explore the site`. Unscoped `click --name about` is ambiguous. The explore `email` is mailto, not `/contact`.
-- The brand accessible name uses an em dash: `eirik breen — oslo`.
+- Home also lists `about` / `made` / `cv` / `wrote` / `room` / `email` under `Explore the site`. `body.is-home` sets `.site-header` and `.site-footer` to `display: none`, so Primary is not a home entry point. The explore `email` is mailto, not `/contact`.
+- The brand accessible name uses an em dash: `eirik breen — oslo`. It is not on `/`.
 - `cv` in the header goes to `/resume` already. The redirect proof is the `/cv` URL, not the header click.
 - Clicking `Print / save PDF` calls `window.print()`. Presence is the proof. A print dialog is not.
 - Headless Chrome often cannot prove the Oslo room actually rendered. Missing WebGL falls back to `.room-fallback` copy with the same site links. That fallback is acceptable room proof when the canvas path is hidden.
