@@ -33,6 +33,8 @@ npm run doctor
   - `/blog?fixture=zero-valid-posts` (forces empty-state UI)
   - `/blog?fixture=schema-invalid-entry` (shows schema-invalid fixture note + route)
   - Legacy params still supported: `/blog?empty=1`, `/blog?schemaInvalid=1`
+- Room camera fixture (dev-only, for deterministic screenshots):
+  - `/room?pose=yaw,pitch,x,z` (e.g. `/room?pose=0,0.02,0.5,-1.6` frames the fjord view)
 
 ## Architecture (High-Level)
 
@@ -45,7 +47,7 @@ npm run doctor
  - Blog index: `blog/index.astro` loads collection entries and handles fixture query-param behavior.
  - Blog detail: `blog/[slug].astro` uses `getStaticPaths()` from collection entries and renders MD/MDX with `entry.render()`.
  - `/cv` permanently redirects to `/resume`.
- - `room.astro` is a playable Three.js room (walkable character, interactable objects linking across the site).
+ - `room.astro` is a playable first-person Three.js room (look and walk, interactable objects linking across the site).
 
 - `src/scripts/room`
  - Client-side code for `/room`: `main.ts` (loop/input), `world.ts` (geometry/lighting), `cityscape.ts` (animated Oslo night view), `player.ts`, `hud.ts`, `hotspots.ts` (interaction content), `textures.ts`, `status.ts` (homelab status; set `HOMELAB_STATUS_ENDPOINT` to wire the rack to a live VPS endpoint).

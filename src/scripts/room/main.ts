@@ -1,16 +1,19 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { hotspots, type Hotspot } from "./hotspots";
 import { createHud, createTouchControls, type StatusLine } from "./hud";
-import { buildPlayer, updatePlayer } from "./player";
+import { createPlayer, EYE_HEIGHT, lookPlayer, updatePlayer } from "./player";
 import { fetchHomelabStatus, serviceStateGlyph, type HomelabStatus, type ServiceState } from "./status";
 import { buildWorld, type RectCollider } from "./world";
 
 const RENDER_SCALE = 0.5;
-const CAMERA_OFFSET = new THREE.Vector3(0, 4.2, 4.6);
-const CITY_FRAME_INTERVAL = 0.05;
 const PRINT_DURATION = 1.4;
 const ROOMBA_SPEED = 0.55;
 const ROOMBA_RADIUS = 0.28;
+const TOUCH_LOOK_SENSITIVITY = 0.35;
 
 function statusTone(state: ServiceState): StatusLine["tone"] {
   switch (state) {
@@ -53,6 +56,11 @@ function roombaHits(x: number, z: number, colliders: RectCollider[], bounds: Rec
   return false;
 }
 
+function applyLook(camera: THREE.PerspectiveCamera, yaw: number, pitch: number, x: number, z: number): void {
+  camera.position.set(x, EYE_HEIGHT, z);
+  camera.rotation.set(pitch, yaw, 0, "YXZ");
+}
+
 export function initRoom(): void {
   const stage = document.getElementById("room-stage");
   const canvas = document.getElementById("room-canvas");
@@ -61,6 +69,7 @@ export function initRoom(): void {
   }
   const loading = stage.querySelector<HTMLElement>(".room-loading");
   const fallback = stage.querySelector<HTMLElement>(".room-fallback");
+  const lookHint = stage.querySelector<HTMLElement>(".room-look-hint");
 
   let renderer: THREE.WebGLRenderer;
   try {
@@ -71,19 +80,43 @@ export function initRoom(): void {
     return;
   }
 
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.setPixelRatio(1);
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
   const world = buildWorld();
-  const player = buildPlayer(reducedMotion);
-  world.scene.add(player.group);
+  const player = createPlayer();
 
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 60);
-  camera.position.copy(CAMERA_OFFSET).add(player.group.position);
-  camera.lookAt(player.x, 0.6, player.z);
+  // Dev-only pose fixture for deterministic screenshots: /room?pose=yaw,pitch,x,z
+  if (import.meta.env.DEV) {
+    const pose = new URLSearchParams(window.location.search).get("pose");
+    if (pose) {
+      const [yaw, pitch, px, pz] = pose.split(",").map(Number);
+      if ([yaw, pitch, px, pz].every(Number.isFinite)) {
+        player.yaw = yaw;
+        player.pitch = pitch;
+        player.x = px;
+        player.z = pz;
+      }
+    }
+  }
+
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.08, 140);
+  applyLook(camera, player.yaw, player.pitch, player.x, player.z);
+
+  // Subtle bloom makes the city lights, LEDs, and lamps glow. An 8-bit
+  // target keeps the pipeline working on software/half-float-less WebGL.
+  const composerTarget = new THREE.WebGLRenderTarget(1, 1, { type: THREE.UnsignedByteType });
+  const composer = new EffectComposer(renderer, composerTarget);
+  composer.addPass(new RenderPass(world.scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.42, 0.4, 0.66);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
 
   const hud = createHud(stage);
   const touch = createTouchControls(stage);
@@ -93,33 +126,63 @@ export function initRoom(): void {
   let lightsOn = false;
   const applyLightMode = (): void => {
     const rig = world.lighting;
-    rig.ambient.intensity = lightsOn ? 1.6 : 0.65;
-    rig.hemisphere.intensity = lightsOn ? 2.2 : 0.95;
+    rig.ambient.intensity = lightsOn ? 1.5 : 0.72;
+    rig.hemisphere.intensity = lightsOn ? 2.1 : 1.02;
     for (let i = 0; i < rig.fills.length; i += 1) {
       rig.fills[i].intensity = lightsOn ? rig.fillIntensities[i] : 0;
     }
-    renderer.toneMappingExposure = lightsOn ? 1.75 : 1.45;
+    renderer.toneMappingExposure = lightsOn ? 1.7 : 1.45;
   };
   applyLightMode();
 
   const resize = (): void => {
     const width = Math.max(1, stage.clientWidth);
     const height = Math.max(1, stage.clientHeight);
-    renderer.setSize(Math.floor(width * RENDER_SCALE), Math.floor(height * RENDER_SCALE), false);
+    const scaledWidth = Math.floor(width * RENDER_SCALE);
+    const scaledHeight = Math.floor(height * RENDER_SCALE);
+    renderer.setSize(scaledWidth, scaledHeight, false);
+    composer.setSize(scaledWidth, scaledHeight);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
   resize();
-  new ResizeObserver(resize).observe(stage);
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(stage);
 
   const pressedKeys = new Set<string>();
   let interactQueued = false;
   let activeHotspot: Hotspot | null = null;
   let openHotspotId: Hotspot["id"] | null = null;
+  let touchLookPointer: number | null = null;
+  let lastTouchLookX = 0;
+  let lastTouchLookY = 0;
+
+  const setLooking = (next: boolean): void => {
+    stage.classList.toggle("is-looking", next);
+    if (lookHint) {
+      lookHint.hidden = next || hud.isDialogOpen();
+    }
+  };
+
+  // Re-enter look mode after a dialog closes so walking resumes without an
+  // extra click. The dialog itself stays unlocked so links stay clickable.
+  const relock = (): void => {
+    if (coarsePointer || document.pointerLockElement === canvas) {
+      return;
+    }
+    const request = canvas.requestPointerLock() as unknown;
+    if (request instanceof Promise) {
+      request.catch(() => {});
+    }
+  };
 
   const closeDialog = (): void => {
     hud.hideDialog();
     openHotspotId = null;
+    relock();
+    if (lookHint) {
+      lookHint.hidden = document.pointerLockElement === canvas;
+    }
   };
 
   const openHotspot = (hotspot: Hotspot): void => {
@@ -134,6 +197,14 @@ export function initRoom(): void {
 
     hud.showDialog({ title: hotspot.title, lines: hotspot.lines, link: hotspot.link });
     openHotspotId = hotspot.id;
+    // Unlock after the dialog flag is set so the browser's cursor-restore
+    // delta cannot spin the camera.
+    if (document.pointerLockElement === canvas) {
+      document.exitPointerLock();
+    }
+    if (lookHint) {
+      lookHint.hidden = true;
+    }
 
     if (hotspot.id === "printer") {
       printProgress = 0;
@@ -155,7 +226,7 @@ export function initRoom(): void {
     }
   };
 
-  window.addEventListener("keydown", (event) => {
+  const onKeyDown = (event: KeyboardEvent): void => {
     const target = event.target;
     if (target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
       return;
@@ -191,41 +262,160 @@ export function initRoom(): void {
       }
       pressedKeys.add(event.key.toLowerCase());
     }
-  });
+  };
 
-  window.addEventListener("keyup", (event) => {
+  const onKeyUp = (event: KeyboardEvent): void => {
     pressedKeys.delete(event.key.toLowerCase());
-  });
+  };
 
-  window.addEventListener("blur", () => {
+  const onBlur = (): void => {
     pressedKeys.clear();
-  });
+  };
+
+  let swallowNextLookEvent = false;
+
+  const onPointerLockChange = (): void => {
+    const locked = document.pointerLockElement === canvas;
+    // Browsers may report one huge movement delta right after a lock
+    // transition in either direction.
+    swallowNextLookEvent = true;
+    setLooking(locked);
+  };
+
+  const onMouseLook = (event: MouseEvent): void => {
+    if (document.pointerLockElement !== canvas || hud.isDialogOpen()) {
+      return;
+    }
+    if (swallowNextLookEvent) {
+      swallowNextLookEvent = false;
+      return;
+    }
+    lookPlayer(player, event.movementX, event.movementY);
+  };
+
+  const onCanvasClick = (event: MouseEvent): void => {
+    if (coarsePointer || hud.isDialogOpen()) {
+      return;
+    }
+    if (document.pointerLockElement !== canvas) {
+      event.preventDefault();
+      void canvas.requestPointerLock();
+    }
+  };
+
+  const onCanvasPointerDown = (event: PointerEvent): void => {
+    if (!coarsePointer || hud.isDialogOpen() || event.pointerType === "mouse") {
+      return;
+    }
+    touchLookPointer = event.pointerId;
+    lastTouchLookX = event.clientX;
+    lastTouchLookY = event.clientY;
+    canvas.setPointerCapture(event.pointerId);
+    setLooking(true);
+    event.preventDefault();
+  };
+
+  const onCanvasPointerMove = (event: PointerEvent): void => {
+    if (event.pointerId !== touchLookPointer) {
+      return;
+    }
+    lookPlayer(
+      player,
+      (event.clientX - lastTouchLookX) * TOUCH_LOOK_SENSITIVITY,
+      (event.clientY - lastTouchLookY) * TOUCH_LOOK_SENSITIVITY
+    );
+    lastTouchLookX = event.clientX;
+    lastTouchLookY = event.clientY;
+  };
+
+  const onCanvasPointerUp = (event: PointerEvent): void => {
+    if (event.pointerId !== touchLookPointer) {
+      return;
+    }
+    touchLookPointer = null;
+  };
+
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  window.addEventListener("blur", onBlur);
+  document.addEventListener("pointerlockchange", onPointerLockChange);
+  document.addEventListener("mousemove", onMouseLook);
+  canvas.addEventListener("click", onCanvasClick);
+  canvas.addEventListener("pointerdown", onCanvasPointerDown);
+  canvas.addEventListener("pointermove", onCanvasPointerMove);
+  canvas.addEventListener("pointerup", onCanvasPointerUp);
+  canvas.addEventListener("pointercancel", onCanvasPointerUp);
 
   const roombaVelocity = new THREE.Vector2(ROOMBA_SPEED, 0.2);
   let printing = false;
   let printProgress = 0;
-  let cityTimer = 0;
   let firstFrame = true;
 
   let lastFrameTime: number | null = null;
+
+  const disposeMaterial = (material: THREE.Material): void => {
+    const maps = [
+      "map",
+      "emissiveMap",
+      "normalMap",
+      "roughnessMap",
+      "metalnessMap"
+    ] as const;
+    for (const key of maps) {
+      const texture = (material as THREE.MeshStandardMaterial)[key];
+      texture?.dispose();
+    }
+    material.dispose();
+  };
+
+  const dispose = (): void => {
+    renderer.setAnimationLoop(null);
+    resizeObserver.disconnect();
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
+    window.removeEventListener("blur", onBlur);
+    document.removeEventListener("pointerlockchange", onPointerLockChange);
+    document.removeEventListener("mousemove", onMouseLook);
+    canvas.removeEventListener("click", onCanvasClick);
+    canvas.removeEventListener("pointerdown", onCanvasPointerDown);
+    canvas.removeEventListener("pointermove", onCanvasPointerMove);
+    canvas.removeEventListener("pointerup", onCanvasPointerUp);
+    canvas.removeEventListener("pointercancel", onCanvasPointerUp);
+    world.scene.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) {
+        return;
+      }
+      object.geometry.dispose();
+      if (Array.isArray(object.material)) {
+        for (const material of object.material) {
+          disposeMaterial(material);
+        }
+        return;
+      }
+      disposeMaterial(object.material);
+    });
+    composer.dispose();
+    renderer.dispose();
+  };
+  window.addEventListener("pagehide", dispose, { once: true });
 
   renderer.setAnimationLoop((frameTime: number) => {
     const elapsed = frameTime / 1000;
     const dt = lastFrameTime === null ? 0.016 : Math.min(0.05, elapsed - lastFrameTime);
     lastFrameTime = elapsed;
 
-    let inputX = 0;
-    let inputZ = 0;
+    let strafe = 0;
+    let forward = 0;
     if (!hud.isDialogOpen()) {
-      if (pressedKeys.has("arrowleft") || pressedKeys.has("a")) inputX -= 1;
-      if (pressedKeys.has("arrowright") || pressedKeys.has("d")) inputX += 1;
-      if (pressedKeys.has("arrowup") || pressedKeys.has("w")) inputZ -= 1;
-      if (pressedKeys.has("arrowdown") || pressedKeys.has("s")) inputZ += 1;
+      if (pressedKeys.has("arrowleft") || pressedKeys.has("a")) strafe -= 1;
+      if (pressedKeys.has("arrowright") || pressedKeys.has("d")) strafe += 1;
+      if (pressedKeys.has("arrowup") || pressedKeys.has("w")) forward += 1;
+      if (pressedKeys.has("arrowdown") || pressedKeys.has("s")) forward -= 1;
       const touchMove = touch.readMove();
-      inputX += touchMove.x;
-      inputZ += touchMove.z;
+      strafe += touchMove.x;
+      forward -= touchMove.z;
     }
-    updatePlayer(player, inputX, inputZ, dt, world.colliders, world.bounds);
+    updatePlayer(player, strafe, forward, dt, world.colliders, world.bounds);
 
     // Roomba wanders and bounces off furniture; its hotspot follows it.
     const nextRoombaX = world.roomba.position.x + roombaVelocity.x * dt;
@@ -263,10 +453,8 @@ export function initRoom(): void {
       }
     }
 
-    cityTimer += dt;
-    if (cityTimer >= CITY_FRAME_INTERVAL) {
+    if (!reducedMotion) {
       world.cityscape.update(elapsed);
-      cityTimer = 0;
     }
 
     let nearest: Hotspot | null = null;
@@ -297,16 +485,8 @@ export function initRoom(): void {
       }
     }
 
-    // Follow a point biased toward the room's center so the frame stays
-    // filled with room instead of the darkness outside it.
-    const followX = THREE.MathUtils.clamp(player.x, -1.7, 1.7);
-    const followZ = THREE.MathUtils.clamp(player.z, -0.5, 1.5);
-    const targetCamera = new THREE.Vector3(followX, 0, followZ).add(CAMERA_OFFSET);
-    const smoothing = reducedMotion ? 1 : Math.min(1, dt * 4.5);
-    camera.position.lerp(targetCamera, smoothing);
-    camera.lookAt(camera.position.x - CAMERA_OFFSET.x, 0.6, camera.position.z - CAMERA_OFFSET.z);
-
-    renderer.render(world.scene, camera);
+    applyLook(camera, player.yaw, player.pitch, player.x, player.z);
+    composer.render();
 
     if (firstFrame) {
       firstFrame = false;
