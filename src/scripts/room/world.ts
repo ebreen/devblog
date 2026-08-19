@@ -587,14 +587,14 @@ function buildShelf(scene: THREE.Scene, random: () => number): void {
   scene.add(shelf);
 }
 
-/** Printer on a low cabinet beside the office corner; prints the real CV. */
+/** Printer on a low cabinet along the back wall, right of the desk. */
 function buildPrinter(
   scene: THREE.Scene,
   leds: BlinkingLed[],
   random: () => number
 ): { paper: THREE.Mesh; homeX: number; travelX: number } {
   const station = new THREE.Group();
-  station.position.set(-3.5, 0, 2.35);
+  station.position.set(-0.7, 0, 3.1);
 
   const cabinet = box(0.85, 0.72, 0.8, colors.darkWood);
   cabinet.position.y = 0.36;
@@ -622,11 +622,11 @@ function buildPrinter(
     new THREE.BoxGeometry(0.56, 0.004, 0.4),
     new THREE.MeshStandardMaterial({ map: paperMap, color: 0xb8b3a6, roughness: 1 })
   );
-  paper.position.set(-3.42, 0.884, 2.35);
+  paper.position.set(-0.62, 0.884, 3.1);
   paper.visible = false;
   scene.add(paper);
 
-  return { paper, homeX: -3.42, travelX: 0.62 };
+  return { paper, homeX: -0.62, travelX: 0.62 };
 }
 
 /** Espresso station on a slim cart against the back wall. */
@@ -694,10 +694,12 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
   pillowDark.position.set(0.85, 0.7, 0.26);
   pillowDark.rotation.z = -0.14;
   sofa.add(pillowCream, pillowDark);
-  const throwBlanket = box(0.5, 0.04, 0.92, 0xb98a4e, 1);
-  throwBlanket.position.set(-1.18, 0.75, 0);
-  throwBlanket.rotation.z = 0.05;
-  sofa.add(throwBlanket);
+  // Throw blanket draped snugly over the arm: a top fold and a hanging flap.
+  const blanketTop = box(0.3, 0.035, 0.7, 0xb98a4e, 1);
+  blanketTop.position.set(-1.21, 0.75, 0);
+  const blanketFlap = box(0.035, 0.34, 0.7, 0xb98a4e, 1);
+  blanketFlap.position.set(-1.35, 0.56, 0);
+  sofa.add(blanketTop, blanketFlap);
   for (const [fx, fz] of [
     [-1.05, -0.4],
     [1.05, -0.4],
@@ -779,10 +781,10 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
   table.add(ceramic);
   scene.add(table);
 
-  // Boucle lounge chair with a checkered cushion.
+  // Boucle lounge chair with a checkered cushion, angled toward the sofa.
   const lounge = new THREE.Group();
-  lounge.position.set(-1.5, 0, 2.55);
-  lounge.rotation.y = -0.55;
+  lounge.position.set(-1.35, 0, 1.45);
+  lounge.rotation.y = -1.1;
   const loungeSeat = box(0.62, 0.3, 0.6, colors.boucle, 1);
   loungeSeat.position.y = 0.28;
   const loungeBack = box(0.62, 0.46, 0.16, colors.boucle, 1);
@@ -931,11 +933,11 @@ function buildDoorMailAndSwitch(scene: THREE.Scene): void {
 
   const tray = new THREE.Group();
   const shelfBox = box(0.14, 0.06, 0.44, colors.darkWood);
-  shelfBox.position.set(3.93, 1.12, 1.55);
+  shelfBox.position.set(3.93, 1.12, 1.85);
   const lip = box(0.03, 0.1, 0.44, colors.darkWood);
-  lip.position.set(3.87, 1.18, 1.55);
+  lip.position.set(3.87, 1.18, 1.85);
   const paper = box(0.1, 0.025, 0.34, colors.paperWhite);
-  paper.position.set(3.92, 1.17, 1.55);
+  paper.position.set(3.92, 1.17, 1.85);
   tray.add(shelfBox, lip, paper);
   scene.add(tray);
 
@@ -1034,12 +1036,12 @@ export function buildWorld(): RoomWorld {
   const colliders: RectCollider[] = [
     { minX: -3.95, maxX: -3.1, minZ: -2.05, maxZ: -0.05 }, // media console
     { minX: -4.0, maxX: -3.05, minZ: 0.4, maxZ: 1.6 }, // rack
-    { minX: -4.0, maxX: -3.0, minZ: 1.95, maxZ: 2.75 }, // printer cabinet
+    { minX: -1.15, maxX: -0.25, minZ: 2.7, maxZ: 3.45 }, // printer cabinet
     { minX: -3.55, maxX: -1.25, minZ: 2.55, maxZ: 3.45 }, // desk
     { minX: -2.75, maxX: -2.05, minZ: 1.85, maxZ: 2.55 }, // office chair
-    { minX: 1.8, maxX: 2.9, minZ: -0.95, maxZ: 1.45 }, // sofa
+    { minX: 1.8, maxX: 2.9, minZ: -1.1, maxZ: 1.6 }, // sofa
     { minX: 0.3, maxX: 1.6, minZ: -0.3, maxZ: 0.9 }, // glass coffee table
-    { minX: -1.9, maxX: -1.1, minZ: 2.15, maxZ: 2.95 }, // boucle chair
+    { minX: -1.75, maxX: -0.95, minZ: 1.05, maxZ: 1.85 }, // boucle chair
     { minX: 3.05, maxX: 3.55, minZ: -2.8, maxZ: -2.3 }, // side table
     { minX: 3.25, maxX: 3.65, minZ: -3.15, maxZ: -2.75 }, // globe lamp
     { minX: 3.3, maxX: 3.8, minZ: 0.25, maxZ: 0.85 }, // cart

@@ -41,8 +41,8 @@ export const hotspots: Hotspot[] = [
   {
     id: "printer",
     prompt: "print the cv",
-    x: -2.8,
-    z: 2.35,
+    x: -0.7,
+    z: 2.55,
     radius: 1.0,
     title: "the printer",
     lines: [
@@ -126,8 +126,8 @@ export const hotspots: Hotspot[] = [
     id: "mail",
     prompt: "check the mail tray",
     x: 3.45,
-    z: 1.55,
-    radius: 0.95,
+    z: 1.85,
+    radius: 0.9,
     title: "the mail tray",
     lines: ["say hello. or report a bug in this room."],
     link: { href: "/contact", label: "send an email" }
