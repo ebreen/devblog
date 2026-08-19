@@ -8,7 +8,6 @@ export type HotspotId =
   | "tv"
   | "window"
   | "door"
-  | "mail"
   | "lights"
   | "roomba";
 
@@ -121,16 +120,6 @@ export const hotspots: Hotspot[] = [
       "tenth floor, looking south over bjørvika.",
       "munch to the left, the opera sliding into the fjord."
     ]
-  },
-  {
-    id: "mail",
-    prompt: "check the mail tray",
-    x: 3.45,
-    z: 1.85,
-    radius: 0.9,
-    title: "the mail tray",
-    lines: ["say hello. or report a bug in this room."],
-    link: { href: "/contact", label: "send an email" }
   },
   {
     id: "door",

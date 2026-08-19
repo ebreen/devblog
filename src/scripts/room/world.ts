@@ -715,6 +715,7 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
   // Glass coffee table with the laptop and magazines.
   const table = new THREE.Group();
   table.position.set(0.95, 0, 0.3);
+  // Oval runs long-side along the sofa.
   const glassTop = new THREE.Mesh(
     new THREE.CylinderGeometry(0.62, 0.62, 0.028, 28),
     new THREE.MeshStandardMaterial({
@@ -725,7 +726,7 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
       metalness: 0.1
     })
   );
-  glassTop.scale.z = 0.72;
+  glassTop.scale.x = 0.72;
   glassTop.position.y = 0.4;
   table.add(glassTop);
   const lowerShelf = new THREE.Mesh(
@@ -738,14 +739,14 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
       metalness: 0.3
     })
   );
-  lowerShelf.scale.z = 0.72;
+  lowerShelf.scale.x = 0.72;
   lowerShelf.position.y = 0.15;
   table.add(lowerShelf);
   for (const [lx, lz] of [
-    [-0.44, -0.26],
-    [0.44, -0.26],
-    [-0.44, 0.26],
-    [0.44, 0.26]
+    [-0.26, -0.44],
+    [0.26, -0.44],
+    [-0.26, 0.44],
+    [0.26, 0.44]
   ]) {
     const leg = box(0.03, 0.4, 0.03, colors.black, 0.5);
     leg.position.set(lx, 0.2, lz);
@@ -781,10 +782,11 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
   table.add(ceramic);
   scene.add(table);
 
-  // Boucle lounge chair with a checkered cushion, angled toward the sofa.
+  // Boucle lounge chair with a checkered cushion, pulled up to the coffee
+  // table across from the sofa.
   const lounge = new THREE.Group();
-  lounge.position.set(-1.35, 0, 1.45);
-  lounge.rotation.y = -1.1;
+  lounge.position.set(-0.35, 0, 1.6);
+  lounge.rotation.y = -0.79;
   const loungeSeat = box(0.62, 0.3, 0.6, colors.boucle, 1);
   loungeSeat.position.y = 0.28;
   const loungeBack = box(0.62, 0.46, 0.16, colors.boucle, 1);
@@ -917,7 +919,7 @@ function buildPlant(scene: THREE.Scene, x: number, z: number, scale: number, ran
   scene.add(plant);
 }
 
-function buildDoorMailAndSwitch(scene: THREE.Scene): void {
+function buildDoorAndSwitch(scene: THREE.Scene): void {
   const door = new THREE.Group();
   const panel = box(0.08, 2.08, 0.98, colors.darkWood);
   panel.position.set(3.96, 1.04, 2.5);
@@ -930,16 +932,6 @@ function buildDoorMailAndSwitch(scene: THREE.Scene): void {
   knob.position.set(3.89, 1.02, 2.12);
   door.add(panel, frameTop, knob);
   scene.add(door);
-
-  const tray = new THREE.Group();
-  const shelfBox = box(0.14, 0.06, 0.44, colors.darkWood);
-  shelfBox.position.set(3.93, 1.12, 1.85);
-  const lip = box(0.03, 0.1, 0.44, colors.darkWood);
-  lip.position.set(3.87, 1.18, 1.85);
-  const paper = box(0.1, 0.025, 0.34, colors.paperWhite);
-  paper.position.set(3.92, 1.17, 1.85);
-  tray.add(shelfBox, lip, paper);
-  scene.add(tray);
 
   // Light switch between the door and the front edge of the room.
   const plate = box(0.05, 0.16, 0.1, 0x98938a);
@@ -1026,7 +1018,7 @@ export function buildWorld(): RoomWorld {
   const printer = buildPrinter(scene, leds, random);
   buildCoffee(scene, leds, random);
   buildLivingArea(scene, random);
-  buildDoorMailAndSwitch(scene);
+  buildDoorAndSwitch(scene);
   buildPlant(scene, 2.35, -3.05, 1.2, random);
   buildPlant(scene, 0.9, -3.2, 0.8, random);
   buildPlant(scene, -2.9, -3.0, 1.1, random);
@@ -1040,8 +1032,8 @@ export function buildWorld(): RoomWorld {
     { minX: -3.55, maxX: -1.25, minZ: 2.55, maxZ: 3.45 }, // desk
     { minX: -2.75, maxX: -2.05, minZ: 1.85, maxZ: 2.55 }, // office chair
     { minX: 1.8, maxX: 2.9, minZ: -1.1, maxZ: 1.6 }, // sofa
-    { minX: 0.3, maxX: 1.6, minZ: -0.3, maxZ: 0.9 }, // glass coffee table
-    { minX: -1.75, maxX: -0.95, minZ: 1.05, maxZ: 1.85 }, // boucle chair
+    { minX: 0.45, maxX: 1.45, minZ: -0.4, maxZ: 1.0 }, // glass coffee table
+    { minX: -0.75, maxX: 0.05, minZ: 1.2, maxZ: 2.0 }, // boucle chair
     { minX: 3.05, maxX: 3.55, minZ: -2.8, maxZ: -2.3 }, // side table
     { minX: 3.25, maxX: 3.65, minZ: -3.15, maxZ: -2.75 }, // globe lamp
     { minX: 3.3, maxX: 3.8, minZ: 0.25, maxZ: 0.85 }, // cart
