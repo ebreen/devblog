@@ -5,9 +5,9 @@ export type HotspotId =
   | "shelf"
   | "coffee"
   | "sofa"
+  | "tv"
   | "window"
   | "door"
-  | "mail"
   | "lights"
   | "roomba";
 
@@ -27,9 +27,9 @@ export const hotspots: Hotspot[] = [
   {
     id: "desk",
     prompt: "look at the setup",
-    x: -2.2,
-    z: 1.5,
-    radius: 1.7,
+    x: -2.4,
+    z: 2.1,
+    radius: 1.4,
     title: "the setup",
     lines: [
       "two screens: one for the terminal,",
@@ -40,9 +40,9 @@ export const hotspots: Hotspot[] = [
   {
     id: "printer",
     prompt: "print the cv",
-    x: -2.75,
-    z: -0.35,
-    radius: 1.1,
+    x: -0.7,
+    z: 2.55,
+    radius: 1.0,
     title: "the printer",
     lines: [
       "it prints exactly one document.",
@@ -53,9 +53,9 @@ export const hotspots: Hotspot[] = [
   {
     id: "rack",
     prompt: "check the rack",
-    x: -2.75,
-    z: -2.7,
-    radius: 1.15,
+    x: -2.9,
+    z: 1.0,
+    radius: 1.05,
     title: "the rack",
     lines: [
       "a small homelab. a hypervisor, too many containers,",
@@ -79,45 +79,47 @@ export const hotspots: Hotspot[] = [
   {
     id: "coffee",
     prompt: "coffee",
-    x: 2.7,
-    z: -3.0,
-    radius: 1.05,
+    x: 1.6,
+    z: 2.6,
+    radius: 1.0,
     title: "the coffee machine",
     lines: ["critical infrastructure.", "uptime target: five nines."]
   },
   {
     id: "sofa",
     prompt: "the sofa",
-    x: 0.9,
-    z: 1.6,
-    radius: 0.9,
-    title: "the sofa",
+    x: 1.6,
+    z: 0.25,
+    radius: 0.95,
+    title: "the leather sofa",
     lines: [
-      "for watching the city instead of the terminal.",
-      "statistically underused."
+      "cognac leather, broken in exactly right.",
+      "for watching the city instead of the terminal."
+    ]
+  },
+  {
+    id: "tv",
+    prompt: "see what's paused",
+    x: -2.8,
+    z: -1.05,
+    radius: 1.25,
+    title: "the tv",
+    lines: [
+      "a fjord documentary, paused at 45:12.",
+      "asleep by minute twelve, both times."
     ]
   },
   {
     id: "window",
     prompt: "look out over oslo",
-    x: -0.5,
+    x: 0.3,
     z: -2.7,
     radius: 1.35,
     title: "the window",
     lines: [
-      "oslo at night, from somewhere too high up.",
-      "the fjord is out there. so is a ferry, probably."
+      "tenth floor, looking south over bjørvika.",
+      "munch to the left, the opera sliding into the fjord."
     ]
-  },
-  {
-    id: "mail",
-    prompt: "check the mail tray",
-    x: 3.45,
-    z: 1.55,
-    radius: 0.95,
-    title: "the mail tray",
-    lines: ["say hello. or report a bug in this room."],
-    link: { href: "/contact", label: "send an email" }
   },
   {
     id: "door",
