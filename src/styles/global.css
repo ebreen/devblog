@@ -218,7 +218,13 @@ svg {
   width: min(100% - 2rem, 34rem);
   min-height: 100svh;
   align-items: start;
-  padding-block: clamp(3.25rem, 8vh, 6rem) 2.5rem;
+  padding-block: clamp(2.75rem, 6.5vh, 4.75rem) 2rem;
+}
+
+.is-home {
+  --text-secondary: #ece7db;
+  --muted: #ddd6c8;
+  --faint: #cfc8b8;
 }
 
 .home-scene {
