@@ -1,5 +1,5 @@
 const FADE_STORAGE_KEY = "eb-page-fade";
-const FADE_MS = 480;
+const FADE_MS = 720;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -234,7 +234,7 @@ svg {
   overflow: hidden;
   background: #163a96;
   pointer-events: none;
-  animation: home-scene-in 900ms ease both;
+  animation: home-scene-in 1.1s ease both;
 }
 
 .home-scene picture,
@@ -255,7 +255,7 @@ svg {
   background: var(--bg);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 480ms ease;
+  transition: opacity 720ms ease;
 }
 
 html.is-fade-leave .page-veil {
@@ -264,7 +264,7 @@ html.is-fade-leave .page-veil {
 }
 
 html.is-fade-enter .page-veil {
-  animation: fade-veil-out 560ms ease both;
+  animation: fade-veil-out 800ms ease both;
 }
 
 html.is-fade-leave {
