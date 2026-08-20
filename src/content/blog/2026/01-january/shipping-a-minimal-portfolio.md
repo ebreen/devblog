@@ -1,5 +1,5 @@
 ---
-title: "Shipping a Minimal Portfolio with Astro"
+title: "Shipping a minimal portfolio with Astro"
 date: "2026-01-12"
 tags:
   - astro
@@ -8,28 +8,28 @@ tags:
 readingTime: "1 min read"
 ---
 
-This post captures the shape of my minimalist portfolio stack and why I kept the implementation intentionally small.
+I rebuilt this site in Astro because I wanted pages that are HTML files, not a runtime I have to babysit.
 
-I prefer static-first delivery for personal sites because it gives fast page loads, lower maintenance cost, and simple deployment ergonomics.
+Posts live in Git as Markdown. If the frontmatter is wrong, the build fails. That is the whole CMS.
 
-The core idea is straightforward: keep structure predictable, keep typography readable, and keep content ownership in Markdown so edits are versioned.
+I kept global CSS small on purpose. Once a personal site grows a design system, I start polishing the system instead of writing.
 
 ## Practical defaults that hold up
 
-I still prefer a short checklist:
+I still use a short checklist:
 
-- Keep global styles intentionally small.
-- Use content collections so broken frontmatter fails fast.
-- Add a little instrumentation before shipping.
+- Keep global styles small enough to read in one sitting.
+- Put posts in a content collection so a missing date is a build error, not a blank page.
+- Run `npm run astro -- check` before `npm run build`.
 
-The pattern is simple: run `npm run astro check` first, then build.
-
-For Astro projects, the docs at [docs.astro.build](https://docs.astro.build) are usually enough to keep decisions grounded.
+The Astro docs at [docs.astro.build](https://docs.astro.build) are usually enough. I did not need a starter kit.
 
 ```ts
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const recent = posts.filter((post) => post.data.date >= new Date("2026-03-01T00:00:00.000Z"));
-console.log(recent.map((post) => `${post.slug}::${post.data.title}::${post.data.tags.join("|")}::${post.data.readingTime ?? "fallback"}`).join(" || "));
+const titles = posts
+  .map((post) => post.data.title)
+  .sort((a, b) => a.localeCompare(b, "en"));
+console.log(titles.join("\n"));
 ```
