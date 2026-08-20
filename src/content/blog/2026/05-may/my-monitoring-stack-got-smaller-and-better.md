@@ -1,5 +1,5 @@
 ---
-title: "My Monitoring Stack Got Smaller and Better"
+title: "My monitoring stack got smaller and better"
 date: "2026-05-24"
 tags:
   - monitoring
@@ -9,27 +9,27 @@ tags:
 readingTime: "4 min read"
 ---
 
-My homelab monitoring setup used to grow every time I learned about a new failure mode. I added another exporter, another dashboard, another notification, and usually another container to maintain.
+My homelab monitoring used to grow every time I learned about a new failure mode. Another exporter, another dashboard, another notification, usually another container.
 
-It looked serious. It was also becoming its own small production system, except nobody was on call except me and most of the alerts arrived when I was trying to do something else.
+It looked serious. It was also turning into a small production system, except nobody was on call except me, and most of the alerts arrived while I was doing something else.
 
-The stack got better when I stopped asking, "What else can I collect?" and started asking, "What decision will this signal help me make?"
+The stack got better when I stopped asking what else I could collect, and started asking which decision a signal would change.
 
-## I had monitoring-shaped clutter
+## Monitoring-shaped clutter
 
-The problem was not any single tool. Prometheus-style metrics, logs, dashboards, and external availability checks all solve real problems. The problem was that I had enabled pieces because they were available, then kept them without deciding what they were for.
+The problem was not any single tool. Prometheus-style metrics, logs, dashboards, and external availability checks all solve real problems. I had turned pieces on because they were there, then kept them without deciding what they were for.
 
-That produced familiar symptoms:
+That showed up as:
 
 - Dashboards I opened only when rearranging dashboards.
-- Alerts for conditions that recovered without intervention.
+- Alerts for conditions that recovered without me.
 - Host metrics with no threshold tied to an action.
-- Logs retained because storage was cheap, not because I used them.
+- Logs retained because disk was cheap, not because I read them.
 - Several views answering slightly different versions of "is it up?"
 
-I could explain how the system worked, but not always why each part existed. For a personal lab, that is a warning sign. Monitoring should reduce uncertainty. Mine was adding maintenance and noise.
+I could explain how the system worked. I could not always say why each part existed. For a lab I run alone, that is the warning. Monitoring should cut uncertainty. Mine was adding chores and noise.
 
-## I started from the questions
+## Start from the questions
 
 I wrote down the questions I actually ask when something feels wrong:
 
@@ -38,30 +38,30 @@ I wrote down the questions I actually ask when something feels wrong:
 3. Did the application report a useful error?
 4. Did a scheduled job, especially a backup, complete?
 
-Everything in the new setup has to answer one of those questions. Availability checks cover the user-visible edge. A small set of host and service metrics shows resource pressure and restarts. Centralized logs exist for the applications where local container output is not enough. Scheduled jobs report their own success or failure.
+Everything in the new setup has to answer one of those. Availability checks cover the user-visible edge. A small set of host and service metrics shows resource pressure and restarts. Centralized logs exist for the apps where local container output is not enough. Scheduled jobs report their own success or failure.
 
-That is less comprehensive than collecting everything. It is much closer to how I troubleshoot.
+That is less complete than collecting everything. It is much closer to how I troubleshoot.
 
-## Alerts need an owner and an action
+## Alerts need an owner and a next step
 
-I removed alerts that were merely interesting. A brief CPU spike is interesting. A filesystem approaching a point where writes will fail is actionable. One asks me to observe the machine being busy; the other asks me to clean up storage or expand it.
+I removed alerts that were merely interesting. A brief CPU spike is interesting. A filesystem approaching the point where writes fail is a job. One asks me to watch the machine being busy. The other asks me to delete things or add disk.
 
-My rule now is simple: if an alert wakes me up or interrupts my day, I should know what I am expected to do next. If I cannot write that action beside the alert, it belongs on a dashboard or nowhere at all.
+If an alert interrupts my day, I should already know the next action. If I cannot write that action next to the alert, it belongs on a dashboard or nowhere.
 
-I also prefer alerts at service boundaries. "The application cannot complete its health check" tells me more than a generic process count. Internal metrics are still useful during diagnosis, but they are not all paging conditions.
+I also page at service boundaries. "The application cannot complete its health check" tells me more than a generic process count. Internal metrics still help during diagnosis. They are not all paging conditions.
 
-## Fewer dashboards made the remaining ones useful
+## One overview, the rest on demand
 
-I kept a boring overview: reachability, recent failures, host pressure, storage, certificate state, and backup status. It is a page, not a wall of graphs. I can open it and quickly decide whether the problem is broad, isolated, or already understood.
+I kept a boring overview: reachability, recent failures, host pressure, storage, certificate state, backup status. It is a page, not a wall of graphs. I can open it and tell whether the problem is broad, isolated, or already understood.
 
-Deeper views still exist where the service justifies them. The difference is that they are diagnostic tools, not permanent decoration. I would rather follow a clear link from an alert to a focused view than scroll through a universal dashboard full of unrelated panels.
+Deeper views still exist where the service justifies them. They are diagnostic tools, not decoration. I would rather follow a link from an alert to a focused view than scroll a universal dashboard of unrelated panels.
 
-This also made configuration easier to keep in Git. The useful checks, alert rules, and dashboards are small enough to review. Changes are intentional instead of being a trail of experiments I am afraid to delete.
+This also made the config easier to keep in Git. The useful checks, alert rules, and dashboards are small enough to review. Changes are deliberate. I am no longer afraid to delete last month's experiment.
 
-## The test is failure, not ingestion
+## The test is a failure, not a green dashboard
 
-A green monitoring stack proves that the monitoring stack is green. It does not prove that it will notice a real problem.
+A dashboard full of green proves the monitoring stack is up. It does not prove the stack will notice a real failure.
 
-So I test the paths I care about. I stop a non-critical service and confirm the external check changes state. I verify that a failed scheduled job produces a notification. I check that the notification points me toward the right host or log view. Then I restore the service and make sure recovery is visible without creating another round of noise.
+So I test the paths I care about. I stop a non-critical service and confirm the external check changes state. I fail a scheduled job and check that a notification fires, and that it points at the right host or log view. Then I restore the service and make sure recovery is visible without another round of noise.
 
-The smaller setup gives me fewer things to admire, but more confidence in the things that remain. That is the trade I wanted. My homelab does not need maximum observability. It needs enough evidence to tell me what broke, where to look, and whether I need to act now or can finish my coffee first.
+I have fewer graphs. I trust the remaining ones more. The homelab does not need maximum observability. It needs enough evidence to say what broke, where to look, and whether I have to act before I finish what I was doing.
