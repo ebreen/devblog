@@ -246,6 +246,8 @@ svg {
 .home-scene img {
   object-fit: cover;
   object-position: center top;
+  transform: scale(1.12);
+  transform-origin: center top;
 }
 
 .page-veil {
