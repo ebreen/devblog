@@ -13,31 +13,31 @@ const emailHref = `mailto:me@eirikbreen.com?subject=${encodeURIComponent("Platfo
       <p class="kicker">Systems consultant, Oslo</p>
       <h1>I run Linux platforms that have to pass an audit.</h1>
       <p class="lede">
-        I design and run Kubernetes for enterprise customers at Orange Business. The PCI DSS Linux
-        environments I look after have passed their security audits. I also lead a project running
-        redundant payment HSMs across data centres.
+        I design and run Kubernetes for customers at Orange Business. The PCI DSS Linux
+        environments I run have made it through their security audits. I also lead a project
+        for redundant payment HSMs across data centres.
       </p>
     </header>
 
     <section aria-labelledby="work-heading">
       <h2 id="work-heading">The work</h2>
       <p>
-        The clusters are K3s and MKS, with GitOps through Argo CD, Cilium for networking, and secrets
-        in OpenBao and Vault, on RHEL. Ansible and CI/CD carry the routine changes. Splunk and the
-        Elastic Stack are how I find out what actually happened.
+        The clusters are K3s and MKS on RHEL. GitOps goes through Argo CD. Cilium handles
+        networking, and secrets live in OpenBao and Vault. Ansible and CI/CD do the routine
+        changes. When I need to know what actually happened, I am in Splunk or Elastic.
       </p>
       <p>
-        A lot of it runs under PCI DSS, so "probably fine" is not a deployment strategy. For one
-        customer I lead the HSM work, redundant Thales PayShield and Luna across data centres. I
-        write changes so the next person can read them. A boring pipeline beats a clever one nobody
-        can debug at three in the morning, and I do not merge automation that hides what it did.
+        A lot of it runs under PCI DSS, so "probably fine" is not a deployment strategy. The HSM
+        side is redundant Thales PayShield and Luna. I write the change so the person on the next
+        shift can follow it. I will take a dull pipeline over automation that hides what it did.
       </p>
       <p>
-        I came up through operations. Senior on the incident team at Orange Business before consulting,
-        mostly RHEL and Azure, on a roster that covered nights and weekends. I mentored apprentices
-        through their trade exam. Before that, first and second line at HDO in Gjøvik, supporting AMK
-        centres, out-of-hours clinics, and A&amp;E on Norway's emergency network. Trade certificate
-        with distinction. That is the origin, not the job I want next.
+        I came up through operations. Senior on the incident team at Orange Business before
+        consulting, mostly RHEL and Azure, nights and weekends on the roster. I mentored
+        apprentices through their trade exam. Before that, first and second line at HDO in Gjøvik,
+        supporting AMK centres, out-of-hours clinics, and A&amp;E on Norway's emergency network.
+        Trade certificate with distinction. I am glad I did that work. I am not trying to get back
+        on the incident roster.
       </p>
       <p>
         <a href="/resume">Read the CV for dates and the full stack</a>
@@ -47,17 +47,17 @@ const emailHref = `mailto:me@eirikbreen.com?subject=${encodeURIComponent("Platfo
     <section aria-labelledby="after-heading">
       <h2 id="after-heading">After hours</h2>
       <p>
-        The homelab runs K3s. Claude Code and OpenCode are in the day job.
-        When something survives more than a weekend it lands with
+        The homelab is K3s. Claude Code and OpenCode started after hours and now show up in the
+        day job. If a project lasts more than a weekend it lands with
         <a href="/projects">the other things I made</a>
-        or <a href="/blog">on the blog</a>. One that shipped is PixelWitness, a browser extension that
-        scores images for likely AI generation without sending them off the machine.
+        or <a href="/blog">on the blog</a>. PixelWitness is one that shipped. It is a browser
+        extension that scores images for likely AI generation without sending them off the machine.
       </p>
     </section>
 
     <section class="contact" aria-labelledby="contact-heading">
       <h2 id="contact-heading">Write me</h2>
-      <p>Platform work, PCI Linux, GitOps, or payment HSMs are all worth an email.</p>
+      <p>Platform work, PCI Linux, GitOps, or payment HSMs. Email me.</p>
       <p class="cta">
         <a href={emailHref}>me@eirikbreen.com</a>
       </p>
