@@ -782,11 +782,11 @@ function buildLivingArea(scene: THREE.Scene, random: () => number): void {
   table.add(ceramic);
   scene.add(table);
 
-  // Boucle lounge chair with a checkered cushion, pulled up to the coffee
-  // table across from the sofa.
+  // Boucle lounge chair with a checkered cushion, pulled onto the rug beside
+  // the coffee table so the walkway along the back wall stays open.
   const lounge = new THREE.Group();
-  lounge.position.set(-0.35, 0, 1.6);
-  lounge.rotation.y = -0.79;
+  lounge.position.set(0.04, 0, 0.50);
+  lounge.rotation.y = -0.72;
   const loungeSeat = box(0.62, 0.3, 0.6, colors.boucle, 1);
   loungeSeat.position.y = 0.28;
   const loungeBack = box(0.62, 0.46, 0.16, colors.boucle, 1);
@@ -1033,7 +1033,7 @@ export function buildWorld(): RoomWorld {
     { minX: -2.75, maxX: -2.05, minZ: 1.85, maxZ: 2.55 }, // office chair
     { minX: 1.8, maxX: 2.9, minZ: -1.1, maxZ: 1.6 }, // sofa
     { minX: 0.45, maxX: 1.45, minZ: -0.4, maxZ: 1.0 }, // glass coffee table
-    { minX: -0.75, maxX: 0.05, minZ: 1.2, maxZ: 2.0 }, // boucle chair
+    { minX: -0.38, maxX: 0.42, minZ: 0.08, maxZ: 0.92 }, // boucle chair
     { minX: 3.05, maxX: 3.55, minZ: -2.8, maxZ: -2.3 }, // side table
     { minX: 3.25, maxX: 3.65, minZ: -3.15, maxZ: -2.75 }, // globe lamp
     { minX: 3.3, maxX: 3.8, minZ: 0.25, maxZ: 0.85 }, // cart
