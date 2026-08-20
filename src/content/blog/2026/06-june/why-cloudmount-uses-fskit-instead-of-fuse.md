@@ -1,74 +1,70 @@
 ---
-title: "Why CloudMount Uses FSKit Instead of FUSE"
+title: "Why CloudMount uses FSKit instead of FUSE"
 date: "2026-06-21"
 tags:
   - swift
   - macos
   - fskit
   - development
-readingTime: "5 min read"
+readingTime: "3 min read"
 ---
 
-CloudMount started with a small annoyance: I wanted a Backblaze B2 bucket to feel like an ordinary folder on my Mac.
+CloudMount started because I wanted a Backblaze B2 bucket to show up as a normal folder on my Mac.
 
-There are plenty of ways to move files in and out of object storage. That was not the interesting part. I wanted the bucket to appear in Finder, work with normal file dialogs, and disappear again without leaving a pile of custom setup behind.
+Moving files in and out of object storage is a solved problem. I wanted the bucket in Finder, in ordinary file dialogs, and gone again without a leftover install.
 
-The obvious route was FUSE. I went the other way and built around Apple’s FSKit framework instead.
+FUSE is the usual answer. I used Apple's FSKit instead.
 
-That choice made the project more limited, more difficult in a few places, and much more interesting.
+That made the project harder. I like it more for that.
 
-## The constraint that shaped the app
+## macOS 26, on purpose
 
-I did not want CloudMount to depend on a kernel extension or ask the user to install a separate filesystem layer. I wanted it to behave like a native macOS app: launch from the menu bar, mount a bucket, and let the operating system handle the volume as part of its normal filesystem world.
+I did not want a kernel extension, and I did not want the user to install a separate filesystem layer. Launch from the menu bar, mount a bucket, let macOS treat it as a volume.
 
-FSKit gives me that path. The tradeoff is blunt: CloudMount currently targets macOS 26 and newer. A FUSE-based version could reach more machines, but broad compatibility was not the reason I started the project. I wanted to learn the native framework and see how far I could take it.
-
-Side projects get better when the main constraint is honest. Mine was not “support every Mac.” It was “make this feel at home on a current Mac.”
+FSKit is how you do that. CloudMount currently needs macOS 26 or newer. A FUSE build would run on more machines. I did not start this to support every Mac. I wanted to learn the native API.
 
 ## An object store is not a filesystem
 
-The first useful lesson was that mounting a bucket is not just a UI problem.
+Mounting a bucket is not a UI problem.
 
-B2 stores objects by key. Finder shows directories, files, names, dates, and operations that people expect to behave like a local disk. Those models overlap just enough to look simple from a distance.
+B2 stores objects by key. Finder wants directories, files, names, dates, and local-disk habits. They look similar until you try to implement them.
 
-Then the questions arrive:
+Then you hit the actual questions.
 
-- Does a key ending in a slash represent a directory, or is the directory only implied by other keys?
-- What should rename mean when the storage API does not have a cheap filesystem-style rename?
-- How much metadata should be synthesized, cached, or fetched again?
-- What happens when an application expects random writes instead of replacing a whole object?
-- Which Finder operations should work, and which should fail clearly instead of pretending?
+- Does a key ending in a slash mean a directory, or do other keys only imply one?
+- What should rename do when the storage API has no cheap rename?
+- How much metadata do you synthesize, cache, or fetch again?
+- What happens when an app wants random writes, and the store only replaces whole objects?
+- Which Finder operations should work, and which should fail in a way the user can see?
 
-The worst answer would be to hide every mismatch until data behaves surprisingly. I would rather support a smaller, understandable set of operations than create a volume that looks complete but becomes unpredictable under real applications.
+Hiding the mismatches is how you get a volume that looks fine and then eats data. I would rather expose a smaller set of operations that behave.
 
-## Start with the smallest honest filesystem
+## The smallest loop that is still a filesystem
 
-My early instinct was to think about all the features a mounted cloud drive might need. That list expands quickly: caching, retries, conflict handling, offline behavior, progress reporting, multiple accounts, and clever synchronization.
+I started by listing everything a cloud drive might need. Caching, retries, conflicts, offline mode, progress, multiple accounts, clever sync. The list grows if you let it.
 
-I pulled the scope back to the core loop:
+I cut it back to:
 
 1. Authenticate to B2.
 2. Present a bucket as a volume.
-3. Translate basic file operations into storage requests.
-4. Surface errors where the user can understand them.
-5. Unmount cleanly.
+3. Turn basic file operations into storage requests.
+4. Show errors where a person can read them.
+5. Unmount without leaving a mess.
 
-That loop is enough to expose the hard architectural decisions. It also gives me something I can test from Finder instead of only from a client library.
+That is enough to force the architecture choices, and I can test it from Finder instead of only from a client library.
 
-The menu bar app is intentionally quiet. Its job is to make mounts visible and controllable. The filesystem behavior belongs in the filesystem layer. Keeping those responsibilities separate has made compiler errors and runtime failures much easier to reason about.
+The menu bar app stays quiet. It shows mounts and lets me control them. Filesystem behavior lives in the filesystem layer. Mixing those made compiler errors and runtime failures harder to place.
 
-## Native development has a different feedback loop
+## Debugging a filesystem from Finder
 
-Most of my daily work is infrastructure, where I can usually inspect a process, read a log, change configuration, and try again. A filesystem extension adds more boundaries: the host app, the extension lifecycle, the operating system, and the remote API all have opinions.
+Most of my day job is infrastructure. Inspect a process, read a log, change config, try again. A filesystem extension adds extra walls: the host app, the extension lifecycle, the OS, the remote API.
 
-AI coding tools are useful here, but mostly as patient readers. I use them to trace an unfamiliar Swift type, compare an implementation with the API shape, or turn a run of compiler errors into a smaller question. They are less useful when they confidently invent behavior for a framework that has changed recently.
+I use coding agents here as patient readers. Trace an unfamiliar Swift type, compare my code with the API, turn a wall of compiler errors into one question. They are worse when they invent behavior for an API that moved last month.
 
-The reliable loop is still the old one: make one change, build, read the actual error, and verify the behavior from the outside. For CloudMount, “outside” means Finder and ordinary applications, not only a passing unit test.
+The loop that works is still one change, a build, the real error, then a try from Finder and ordinary apps. A green unit test is not the same thing.
 
-## The narrower choice was the right one
+## I accepted a smaller audience
 
-Choosing FSKit means I have accepted a smaller audience for now. It also means CloudMount can stay focused: Swift, Apple’s filesystem framework, a B2 backend, and no extra system extension for the user to manage.
+FSKit means fewer users for now. It also means the project stays Swift, Apple's filesystem API, a B2 backend, and no extra system extension for the user to nurse.
 
-That is exactly the kind of side project I enjoy. It solves a real annoyance, forces me into a part of the platform I did not already know, and has a clear boundary around what “native” should mean.
-
-CloudMount is still in progress. The interesting work is no longer getting a volume to appear. It is making the behavior boring enough that, once mounted, I can forget the clever parts are there.
+I still do not have a volume I can forget about. Getting it to appear was the easy part. Making copy, rename, and unmount boring is the work now.
