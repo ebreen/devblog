@@ -50,6 +50,7 @@ const latestPost = allPosts[0];
 <style>
   .home-intro {
     width: 100%;
+    animation: home-intro-rise 1.2s cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
   }
 
   .home-id,
@@ -57,6 +58,16 @@ const latestPost = allPosts[0];
   .latest-label,
   .latest-meta {
     font-family: var(--font-mono);
+  }
+
+  .home-id,
+  h1,
+  .home-copy,
+  .home-links a,
+  .latest-label,
+  .latest-meta,
+  .latest-note h2 a {
+    text-shadow: 0 2px 22px rgba(6, 18, 48, 0.72);
   }
 
   .home-id {
@@ -70,7 +81,7 @@ const latestPost = allPosts[0];
     margin: 0;
     color: var(--text);
     font-family: var(--font-display);
-    font-size: clamp(3.4rem, 11vw, 5rem);
+    font-size: clamp(3rem, 9vw, 4.4rem);
     font-weight: 400;
     letter-spacing: -0.045em;
     line-height: 0.95;
@@ -78,7 +89,7 @@ const latestPost = allPosts[0];
 
   .home-copy {
     max-width: 32rem;
-    margin: 1.65rem 0 0;
+    margin: 1.15rem 0 0;
     color: var(--text-secondary);
     font-size: 0.86rem;
     line-height: 1.75;
@@ -88,7 +99,7 @@ const latestPost = allPosts[0];
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 0.8rem;
-    margin-top: 1.55rem;
+    margin-top: 1.15rem;
     font-family: var(--font-display);
     font-size: 1.05rem;
   }
@@ -108,7 +119,7 @@ const latestPost = allPosts[0];
   }
 
   .latest-note {
-    margin-top: 3.2rem;
+    margin-top: 1.7rem;
   }
 
   .latest-label,
@@ -141,7 +152,7 @@ const latestPost = allPosts[0];
 
   @media (max-width: 34rem) {
     h1 {
-      font-size: clamp(3rem, 16vw, 4rem);
+      font-size: clamp(2.7rem, 14vw, 3.6rem);
     }
 
     .home-copy {
@@ -149,7 +160,19 @@ const latestPost = allPosts[0];
     }
 
     .latest-note {
-      margin-top: 2.8rem;
+      margin-top: 1.5rem;
+    }
+  }
+
+  @keyframes home-intro-rise {
+    from {
+      opacity: 0.15;
+      transform: translateY(26vh);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>
