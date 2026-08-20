@@ -25,6 +25,8 @@ const isHome = normalizedPath === "/";
 const { title: pageTitle, description = "Eirik Breen's notes on Linux, homelabs, software, and AI sidequests." } = Astro.props as Props;
 const title = pageTitle ? `${pageTitle} — Eirik Breen` : "Eirik Breen — sidequests";
 const year = new Date().getFullYear();
+const mountainPortrait = "/home-mountain.webp";
+const mountainWide = "/home-mountain-wide.webp";
 
 const isActive = (href: NavItem["href"]) =>
   normalizedPath === href || normalizedPath.startsWith(`${href}/`);
@@ -36,13 +38,64 @@ const isActive = (href: NavItem["href"]) =>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#090909" />
+    <meta name="theme-color" content={isHome ? "#163a96" : "#090909"} />
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {
+      isHome ? (
+        <>
+          <link
+            rel="preload"
+            as="image"
+            href={mountainWide}
+            type="image/webp"
+            media="(min-width: 48rem)"
+          />
+          <link
+            rel="preload"
+            as="image"
+            href={mountainPortrait}
+            type="image/webp"
+            media="(max-width: 47.99rem)"
+          />
+        </>
+      ) : (
+        <>
+          <link rel="prefetch" as="image" href={mountainWide} media="(min-width: 48rem)" />
+          <link rel="prefetch" as="image" href={mountainPortrait} media="(max-width: 47.99rem)" />
+        </>
+      )
+    }
     <title>{title}</title>
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem("eb-page-fade") === "1") {
+          document.documentElement.classList.add("is-fade-enter");
+          sessionStorage.removeItem("eb-page-fade");
+        }
+      } catch {}
+    </script>
   </head>
   <body class:list={{ "is-home": isHome }}>
     <a class="skip-link" href="#main-content">skip to content</a>
+
+    {
+      isHome && (
+        <div class="home-scene" data-home-scene aria-hidden="true">
+          <picture>
+            <source media="(min-width: 48rem)" srcset={mountainWide} type="image/webp" />
+            <img
+              src={mountainPortrait}
+              alt=""
+              width="1024"
+              height="1536"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </picture>
+        </div>
+      )
+    }
 
     <div class="layout">
       <header class="site-header" aria-label="Site header">
@@ -73,5 +126,22 @@ const isActive = (href: NavItem["href"]) =>
         <p><a href="https://github.com/ebreen" target="_blank" rel="noreferrer">github</a> / <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">linkedin</a></p>
       </footer>
     </div>
+
+    <div class="page-veil" data-page-veil aria-hidden="true"></div>
+
+    <noscript>
+      <style>
+        .home-scene img,
+        .home-intro {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+
+    <script>
+      import "../scripts/page-transition";
+    </script>
   </body>
 </html>
