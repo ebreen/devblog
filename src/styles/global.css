@@ -225,6 +225,14 @@ svg {
   --text-secondary: #ece7db;
   --muted: #ddd6c8;
   --faint: #cfc8b8;
+  --home-sky: #072da7;
+  --home-scene-shift: clamp(5.5rem, 24vh, 16rem);
+}
+
+@media (max-width: 48rem) {
+  .is-home {
+    --home-scene-shift: clamp(6rem, 30vh, 18rem);
+  }
 }
 
 .home-scene {
@@ -232,7 +240,7 @@ svg {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: #163a96;
+  background: var(--home-sky);
   pointer-events: none;
   animation: home-scene-in 1.1s ease both;
 }
@@ -246,8 +254,10 @@ svg {
 .home-scene img {
   object-fit: cover;
   object-position: center top;
-  transform: scale(1.12);
+  transform: translateY(var(--home-scene-shift));
   transform-origin: center top;
+  mask-image: linear-gradient(to bottom, transparent, #000 12rem);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12rem);
 }
 
 .page-veil {
