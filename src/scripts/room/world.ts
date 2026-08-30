@@ -402,7 +402,7 @@ function buildHomeOffice(scene: THREE.Scene, leds: BlinkingLed[], random: () => 
     {
       z: -0.44,
       angle: Math.PI / 2 - 0.2,
-      texture: makeMonitorTexture(["~/projects", "$ ls", "pixelwitness/", "cloudmount/", "shield-airplay/", "$ _"])
+      texture: makeMonitorTexture(["~/projects", "$ ls", "modeltable/", "pixelwitness/", "cloudmount/", "$ _"])
     },
     { z: 0.44, angle: Math.PI / 2 + 0.2, texture: makeGameTexture() }
   ];
