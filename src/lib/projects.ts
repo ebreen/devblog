@@ -28,7 +28,7 @@ export const projects: Project[] = [
     homeCopy: [
       "live model prices from providers, full scrape every 15 minutes, marketplace lists every 5.",
       "one worker, KV, edge cache.",
-      "three JS files, zero runtime npm, no build."
+      "three JS files (index.js, html.js, prices.js), zero runtime npm, no build."
     ]
   },
   {
