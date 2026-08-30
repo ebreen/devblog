@@ -26,10 +26,9 @@ export const projects: Project[] = [
     linkLabel: "Open modeltable.dev",
     homeTitle: "modeltable.dev",
     homeCopy: [
-      "full scrape every 15 minutes, marketplace lists every 5.",
+      "live model prices from providers, full scrape every 15 minutes, marketplace lists every 5.",
       "one worker, KV, edge cache.",
-      "three JS files (index.js, html.js, prices.js), zero runtime npm, no build.",
-      "all in cloudflare."
+      "three JS files, zero runtime npm, no build."
     ]
   },
   {
