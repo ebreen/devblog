@@ -2,9 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { sortBlogEntries, formatBlogDate, getReadingTime } from "../lib/blog";
+import { getLatestCreation } from "../lib/projects";
 
 const allPosts = sortBlogEntries(await getCollection("blog"));
 const latestPost = allPosts[0];
+const latestCreation = getLatestCreation();
 ---
 
 <BaseLayout title="Home">
@@ -31,8 +33,22 @@ const latestPost = allPosts[0];
       <a href="mailto:me@eirikbreen.com">email</a>
     </nav>
 
+    {latestCreation && (
+      <section class="latest-block latest-creation" aria-labelledby="latest-creation-title">
+        <p class="latest-label">latest creation</p>
+        <h2 id="latest-creation-title">
+          <a href={latestCreation.href} target="_blank" rel="noreferrer">
+            {latestCreation.homeTitle ?? latestCreation.title}
+          </a>
+        </h2>
+        {latestCreation.homeCopy && latestCreation.homeCopy.length > 0 && (
+          <p class="latest-copy">{latestCreation.homeCopy.join("\n")}</p>
+        )}
+      </section>
+    )}
+
     {latestPost && (
-      <section class="latest-note" aria-labelledby="latest-note-title">
+      <section class="latest-block latest-note" aria-labelledby="latest-note-title">
         <p class="latest-label">latest note · {allPosts.length} in the archive</p>
         <h2 id="latest-note-title">
           <a href={`/blog/${latestPost.slug}`}>{latestPost.data.title}</a>
@@ -56,7 +72,8 @@ const latestPost = allPosts[0];
   .home-id,
   .home-copy,
   .latest-label,
-  .latest-meta {
+  .latest-meta,
+  .latest-copy {
     font-family: var(--font-mono);
   }
 
@@ -66,7 +83,8 @@ const latestPost = allPosts[0];
   .home-links a,
   .latest-label,
   .latest-meta,
-  .latest-note h2 a {
+  .latest-copy,
+  .latest-block h2 a {
     text-shadow: 0 2px 22px rgba(6, 18, 48, 0.72);
   }
 
@@ -118,12 +136,13 @@ const latestPost = allPosts[0];
     text-decoration-color: currentColor;
   }
 
-  .latest-note {
+  .latest-block {
     margin-top: 1.7rem;
   }
 
   .latest-label,
-  .latest-meta {
+  .latest-meta,
+  .latest-copy {
     color: var(--muted);
     font-size: 0.66rem;
     letter-spacing: 0.055em;
@@ -134,20 +153,28 @@ const latestPost = allPosts[0];
     margin-bottom: 0.65rem;
   }
 
-  .latest-note h2 {
+  .latest-block h2 {
     max-width: 30rem;
     margin: 0;
     font-size: clamp(1.35rem, 4vw, 1.7rem);
     line-height: 1.28;
   }
 
-  .latest-note h2 a {
+  .latest-block h2 a {
     color: var(--text);
     text-decoration-color: var(--faint);
   }
 
-  .latest-meta {
+  .latest-meta,
+  .latest-copy {
     margin: 0.75rem 0 0;
+  }
+
+  .latest-copy {
+    max-width: 32rem;
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+    white-space: pre-line;
   }
 
   @media (max-width: 34rem) {
@@ -159,7 +186,7 @@ const latestPost = allPosts[0];
       font-size: 0.8rem;
     }
 
-    .latest-note {
+    .latest-block {
       margin-top: 1.5rem;
     }
   }

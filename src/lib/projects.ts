@@ -1,4 +1,4 @@
-export type ProjectStatus = "in-progress" | "open-source";
+export type ProjectStatus = "live" | "in-progress" | "open-source";
 
 export type Project = {
   id: string;
@@ -8,9 +8,29 @@ export type Project = {
   summary: string;
   technologies: string[];
   href: string;
+  linkLabel?: string;
+  homeTitle?: string;
+  homeCopy?: string[];
 };
 
 export const projects: Project[] = [
+  {
+    id: "modeltable",
+    title: "ModelTable",
+    category: "LLM prices",
+    status: "live",
+    summary:
+      "Live LLM prices. First-party catalogs scrape every 15 minutes, marketplace lists every 5. One Cloudflare Worker, KV, edge cache. Three JS files, zero runtime npm, no build.",
+    technologies: ["cloudflare", "workers", "kv", "javascript"],
+    href: "https://modeltable.dev",
+    linkLabel: "Open modeltable.dev",
+    homeTitle: "modeltable.dev",
+    homeCopy: [
+      "live model prices from providers, full scrape every 15 minutes, marketplace lists every 5.",
+      "one worker, KV, edge cache.",
+      "three JS files, zero runtime npm, no build."
+    ]
+  },
   {
     id: "pixelwitness",
     title: "PixelWitness",
@@ -65,6 +85,8 @@ export const projects: Project[] = [
 
 export function projectStatusLabel(status: ProjectStatus): string {
   switch (status) {
+    case "live":
+      return "live";
     case "in-progress":
       return "in progress";
     case "open-source":
@@ -74,6 +96,14 @@ export function projectStatusLabel(status: ProjectStatus): string {
       return _exhaustive;
     }
   }
+}
+
+export function projectLinkLabel(project: Project): string {
+  return project.linkLabel ?? "View repository";
+}
+
+export function getLatestCreation(list = projects): Project | undefined {
+  return list.find((project) => project.homeTitle) ?? list[0];
 }
 
 export function formatProjectIndex(index: number, total = projects.length): string {

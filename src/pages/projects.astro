@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatProjectIndex, projects, projectStatusLabel } from "../lib/projects";
+import { formatProjectIndex, projectLinkLabel, projects, projectStatusLabel } from "../lib/projects";
 ---
 
 <BaseLayout title="Made" description="Side projects and after-hours tools by Eirik Breen.">
@@ -35,7 +35,7 @@ import { formatProjectIndex, projects, projectStatusLabel } from "../lib/project
               </ul>
 
               <a class="project-link" href={project.href} target="_blank" rel="noreferrer">
-                View repository
+                {projectLinkLabel(project)}
               </a>
             </article>
           </li>
