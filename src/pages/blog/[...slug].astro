@@ -6,17 +6,23 @@ import { formatBlogDate, getReadingTime, sortBlogEntries } from "../../lib/blog"
 
 type Props = {
   entry: CollectionEntry<"blog">;
+  newerPost: CollectionEntry<"blog"> | null;
+  olderPost: CollectionEntry<"blog"> | null;
 };
 
 export async function getStaticPaths() {
   const entries = sortBlogEntries(await getCollection("blog"));
-  return entries.map((entry) => ({
+  return entries.map((entry, index) => ({
     params: { slug: entry.slug },
-    props: { entry }
+    props: {
+      entry,
+      newerPost: entries[index - 1] ?? null,
+      olderPost: entries[index + 1] ?? null
+    }
   }));
 }
 
-const { entry } = Astro.props as Props;
+const { entry, newerPost, olderPost } = Astro.props as Props;
 const { Content } = await entry.render();
 ---
 
@@ -51,6 +57,29 @@ const { Content } = await entry.render();
       <p>End of note.</p>
       <a href="/blog">Read the other field notes</a>
     </footer>
+
+    {(newerPost || olderPost) && (
+      <nav class="post-pager" aria-label="More field notes">
+        {newerPost && (
+          <a class="pager-link pager-newer" href={`/blog/${newerPost.slug}`} rel="prev">
+            <span class="pager-arrow" aria-hidden="true">←</span>
+            <span class="pager-body">
+              <span class="pager-label">newer note</span>
+              <span class="pager-title">{newerPost.data.title}</span>
+            </span>
+          </a>
+        )}
+        {olderPost && (
+          <a class="pager-link pager-older" href={`/blog/${olderPost.slug}`} rel="next">
+            <span class="pager-body">
+              <span class="pager-label">older note</span>
+              <span class="pager-title">{olderPost.data.title}</span>
+            </span>
+            <span class="pager-arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+      </nav>
+    )}
   </article>
 </BaseLayout>
 
@@ -332,6 +361,68 @@ const { Content } = await entry.render();
   .post-footer a {
     color: var(--accent);
     text-underline-offset: 0.25em;
+  }
+
+  .post-pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+    width: min(100%, 42rem);
+    margin: 3.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .pager-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    max-width: 21rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .pager-link:hover {
+    text-decoration: none;
+  }
+
+  .pager-link:hover .pager-title {
+    color: var(--accent);
+  }
+
+  .pager-older {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .pager-arrow {
+    flex: 0 0 auto;
+    margin-top: 0.05rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  .pager-body {
+    min-width: 0;
+  }
+
+  .pager-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+  }
+
+  .pager-title {
+    display: block;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    line-height: 1.35;
   }
 
   @media (max-width: 42rem) {
