@@ -20,6 +20,7 @@ npm run dev
 ## Validation
 
 ```bash
+npm test
 npm run astro check
 npm run build
 npm run doctor

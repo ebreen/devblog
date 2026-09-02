@@ -12,8 +12,11 @@ export const sortBlogEntries = (entries: CollectionEntry<"blog">[]) =>
     return entryA.slug.localeCompare(entryB.slug, "en");
   });
 
+// Content dates are coerced at UTC midnight; format in UTC so the calendar day
+// in the frontmatter never shifts with the build machine's timezone.
 export const formatBlogDate = (value: Date) =>
   new Intl.DateTimeFormat("en-GB", {
+    timeZone: "UTC",
     year: "numeric",
     month: "long",
     day: "numeric"
