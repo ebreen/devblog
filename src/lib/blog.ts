@@ -14,13 +14,14 @@ export const sortBlogEntries = (entries: CollectionEntry<"blog">[]) =>
 
 // Content dates are coerced at UTC midnight; format in UTC so the calendar day
 // in the frontmatter never shifts with the build machine's timezone.
-export const formatBlogDate = (value: Date) =>
-  new Intl.DateTimeFormat("en-GB", {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  }).format(value);
+const blogDateFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "UTC",
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
+export const formatBlogDate = (value: Date) => blogDateFormatter.format(value);
 
 export const getReadingTime = (entry: CollectionEntry<"blog">) => {
   const explicitReadingTime = entry.data.readingTime?.trim();
