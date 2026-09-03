@@ -12,12 +12,16 @@ export const sortBlogEntries = (entries: CollectionEntry<"blog">[]) =>
     return entryA.slug.localeCompare(entryB.slug, "en");
   });
 
-export const formatBlogDate = (value: Date) =>
-  new Intl.DateTimeFormat("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  }).format(value);
+// Content dates are coerced at UTC midnight; format in UTC so the calendar day
+// in the frontmatter never shifts with the build machine's timezone.
+const blogDateFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "UTC",
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
+export const formatBlogDate = (value: Date) => blogDateFormatter.format(value);
 
 export const getReadingTime = (entry: CollectionEntry<"blog">) => {
   const explicitReadingTime = entry.data.readingTime?.trim();
