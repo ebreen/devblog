@@ -31,11 +31,13 @@ const latestCreation = getLatestCreation();
       <span aria-hidden="true">/</span>
       <a href="/room">room</a>
       <span aria-hidden="true">/</span>
-      <a href={resumeProfile.github} target="_blank" rel="noreferrer">github</a>
-      <span aria-hidden="true">/</span>
-      <span class="home-email">
-        <a href={`mailto:${resumeProfile.email}`} aria-describedby="home-email-tip">email</a>
-        <span id="home-email-tip" class="home-email-tip" role="tooltip">{resumeProfile.email}</span>
+      <span class="home-links-tail">
+        <a href={resumeProfile.github} target="_blank" rel="noreferrer">github</a>
+        <span aria-hidden="true">/</span>
+        <span class="home-email">
+          <a href={`mailto:${resumeProfile.email}`} aria-describedby="home-email-tip">email</a>
+          <span id="home-email-tip" class="home-email-tip" role="tooltip">{resumeProfile.email}</span>
+        </span>
       </span>
     </nav>
 
@@ -147,6 +149,14 @@ const latestCreation = getLatestCreation();
     display: inline-flex;
   }
 
+  .home-links-tail {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0.35rem 0.8rem;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
   .home-email-tip {
     position: absolute;
     right: 0;
@@ -247,6 +257,27 @@ const latestCreation = getLatestCreation();
 
     .latest-block {
       margin-top: 1.5rem;
+    }
+
+    .home-email-tip {
+      top: calc(100% + 0.55rem);
+      bottom: auto;
+      left: 0;
+      right: auto;
+    }
+
+    .home-email-tip::before {
+      top: auto;
+      bottom: 100%;
+    }
+
+    .home-email-tip::after {
+      top: auto;
+      bottom: 100%;
+      left: 0.7rem;
+      right: auto;
+      border-top-color: transparent;
+      border-bottom-color: rgba(8, 16, 40, 0.9);
     }
   }
 
