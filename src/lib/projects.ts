@@ -1,4 +1,12 @@
-export type ProjectStatus = "live" | "in-progress" | "open-source";
+export type ProjectStatus = "soon" | "live" | "in-progress" | "open-source";
+
+export type ProjectImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+};
 
 export type Project = {
   id: string;
@@ -7,13 +15,36 @@ export type Project = {
   status: ProjectStatus;
   summary: string;
   technologies: string[];
-  href: string;
+  /** Omitted while a project is unreleased. */
+  href?: string;
   linkLabel?: string;
   homeTitle?: string;
   homeCopy?: string[];
+  image?: ProjectImage;
 };
 
 export const projects: Project[] = [
+  {
+    id: "baton",
+    title: "Baton",
+    category: "macOS app",
+    status: "soon",
+    summary:
+      "An inbox and a voice remote for coding agents on macOS. A tab on the screen edge keeps a dot for every agent: blue while it works, amber when it needs you, green when it is done. Their questions land in one inbox and you answer with a single key, or double-tap \u2325 and say what you need. Claude Code, Codex, OpenCode, and Pi run through herdr; Baton reads their state and passes your words along.",
+    technologies: ["swift", "macos", "agents", "on-device speech"],
+    homeTitle: "baton",
+    homeCopy: [
+      "an inbox and a voice remote for all your coding agents, on macos.",
+      "answer with one key, or double-tap option and just say it."
+    ],
+    image: {
+      src: "/made/baton-inbox.webp",
+      alt: "Baton's inbox card over a desktop: claude-7 asks which layout to use for a pricing page, with three numbered answers, and the edge toolbar beside it shows one dot per agent.",
+      width: 1040,
+      height: 1000,
+      caption: "An agent is waiting. Press 1, 2, or 3 to answer from wherever you are."
+    }
+  },
   {
     id: "modeltable",
     title: "ModelTable",
@@ -85,6 +116,8 @@ export const projects: Project[] = [
 
 export function projectStatusLabel(status: ProjectStatus): string {
   switch (status) {
+    case "soon":
+      return "coming soon";
     case "live":
       return "live";
     case "in-progress":
@@ -104,6 +137,15 @@ export function projectLinkLabel(project: Project): string {
 
 export function getLatestCreation(list = projects): Project | undefined {
   return list.find((project) => project.homeTitle) ?? list[0];
+}
+
+/** Where a project points: its own site or repo, or its entry on the made page. */
+export function projectHref(project: Project): string {
+  return project.href ?? `/projects#${project.id}`;
+}
+
+export function isExternal(project: Project): boolean {
+  return Boolean(project.href && /^https?:/.test(project.href));
 }
 
 export function formatProjectIndex(index: number, total = projects.length): string {

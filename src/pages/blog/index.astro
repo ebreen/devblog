@@ -17,13 +17,12 @@ const hasEntries = entries.length > 0;
 
 <BaseLayout title="Blog" description="Field notes from Eirik Breen on infrastructure, homelabs, software, and useful AI.">
   <section class="blog-page">
-    <header class="blog-header">
-      <p class="blog-label">Field notes</p>
-      <h1>Things worth writing down.</h1>
-      <p class="blog-intro">Occasional notes on infrastructure, the homelab, small software, and useful AI.</p>
-      <p class="blog-tally" data-blog-tally aria-label={`${entries.length} published posts`}>
-        {entries.length} {entries.length === 1 ? "note" : "notes"}, newest first.
+    <header class="page-head">
+      <h1 class="page-title">Things worth writing down.</h1>
+      <p class="page-meta" data-blog-tally>
+        field notes · {entries.length} {entries.length === 1 ? "note" : "notes"}, newest first
       </p>
+      <p class="page-lede">Occasional notes on infrastructure, the homelab, small software, and useful AI.</p>
     </header>
 
     <div class="empty-state" role="status" data-blog-empty-state hidden={hasEntries}>
@@ -35,17 +34,19 @@ const hasEntries = entries.length > 0;
       {entries.map((entry) => (
         <li class="post-item">
           <article>
-            <p class="post-meta">
-              <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-              <span aria-hidden="true">/</span>
-              <span>{getReadingTime(entry)}</span>
-            </p>
             <h2><a href={`/blog/${entry.slug}`}>{entry.data.title}</a></h2>
-            {entry.data.tags.length > 0 && (
-              <ul class="post-tags" aria-label="Tags">
-                {entry.data.tags.map((tag) => <li>{tag}</li>)}
-              </ul>
-            )}
+            <div class="post-details">
+              <p class="post-meta">
+                <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{getReadingTime(entry)}</span>
+              </p>
+              {entry.data.tags.length > 0 && (
+                <ul class="post-tags" aria-label="Tags">
+                  {entry.data.tags.map((tag) => <li>{tag}</li>)}
+                </ul>
+              )}
+            </div>
           </article>
         </li>
       ))}
@@ -109,56 +110,8 @@ const hasEntries = entries.length > 0;
 
 <style>
   .blog-page {
-    width: min(100%, 40rem);
+    width: min(100%, var(--page));
     margin-inline: auto;
-  }
-
-  .blog-header {
-    margin-bottom: clamp(5.5rem, 15vw, 9rem);
-  }
-
-  .blog-label,
-  .blog-tally,
-  .post-meta,
-  .post-tags {
-    font-family: var(--font-mono);
-  }
-
-  .blog-label {
-    margin: 0 0 1.35rem;
-    color: var(--accent);
-    font-size: 0.67rem;
-    letter-spacing: 0.12em;
-    text-transform: lowercase;
-  }
-
-  .blog-header h1 {
-    max-width: 11ch;
-    margin: 0;
-    color: var(--text);
-    font-family: var(--font-display);
-    font-size: clamp(3.35rem, 10vw, 5.4rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 0.98;
-    text-wrap: balance;
-  }
-
-  .blog-intro {
-    max-width: 33rem;
-    margin: 2.1rem 0 0;
-    color: var(--text-secondary);
-    font-family: var(--font-sans);
-    font-size: clamp(1rem, 2.2vw, 1.12rem);
-    line-height: 1.8;
-  }
-
-  .blog-tally {
-    margin: 2rem 0 0;
-    color: var(--muted);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
   }
 
   .blog-list {
@@ -169,29 +122,18 @@ const hasEntries = entries.length > 0;
   }
 
   .post-item {
-    padding-block: clamp(1.9rem, 5vw, 2.65rem);
+    padding-block: clamp(1.6rem, 4.5vw, 2.2rem);
     border-bottom: 1px solid var(--border);
   }
 
-  .post-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin: 0 0 0.85rem;
-    color: var(--muted);
-    font-size: 0.63rem;
-    letter-spacing: 0.075em;
-    text-transform: lowercase;
-  }
-
   .post-item h2 {
-    max-width: 24ch;
+    max-width: 26ch;
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 5vw, 2.35rem);
+    font-size: clamp(1.55rem, 4.2vw, 2.05rem);
     font-weight: 400;
     letter-spacing: -0.025em;
-    line-height: 1.16;
+    line-height: 1.18;
   }
 
   .post-item h2 a {
@@ -206,22 +148,46 @@ const hasEntries = entries.length > 0;
     text-decoration-color: var(--accent);
   }
 
+  .post-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.25rem;
+    margin-top: 0.8rem;
+  }
+
+  .post-meta,
+  .post-tags {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: lowercase;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
   .post-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
-    margin: 1rem 0 0;
     padding: 0;
     color: var(--faint);
-    font-size: 0.61rem;
-    letter-spacing: 0.04em;
     list-style: none;
   }
 
-  .post-tags li:not(:last-child)::after {
-    margin-inline: 0.55rem;
-    color: var(--border);
-    content: "/";
+  .post-tags li::before {
+    color: var(--accent);
+    content: "#";
+  }
+
+  .post-tags li:not(:last-child) {
+    margin-right: 0.7rem;
   }
 
   .empty-state,
@@ -259,11 +225,5 @@ const hasEntries = entries.length > 0;
     font-family: var(--font-mono);
     font-size: 0.68rem;
     text-underline-offset: 0.25em;
-  }
-
-  @media (max-width: 34rem) {
-    .blog-header {
-      margin-bottom: 5rem;
-    }
   }
 </style>

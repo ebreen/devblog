@@ -1,182 +1,98 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { resumeProfile } from "../lib/resume";
 ---
 
-<BaseLayout title="Contact" description="Get in touch with Eirik Breen.">
+<BaseLayout title="Contact" description="Get in touch with Eirik Breen, senior systems consultant in Oslo.">
   <section class="page contact-page">
-    <header class="intro">
-      <p class="kicker">Say hello</p>
-      <h1>Good conversations welcome.</h1>
-      <p class="lede">
-        Want to compare homelab notes, talk infrastructure, or show me an AI workflow that is actually useful? My
+    <header class="page-head">
+      <h1 class="page-title">Good conversations welcome.</h1>
+      <p class="page-meta">oslo · replies arrive between terminal sessions</p>
+      <p class="page-lede">
+        Platform work, PCI Linux, GitOps, network HSMs, homelab notes, or an AI workflow that is actually useful. My
         inbox is open.
       </p>
     </header>
 
-    <section class="email-note" aria-labelledby="direct-route">
-      <h2 id="direct-route">The direct route</h2>
-      <a class="email-address" href="mailto:me@eirikbreen.com">me@eirikbreen.com</a>
-      <p>Start an email</p>
+    <section class="direct" aria-labelledby="direct-route">
+      <h2 class="section-title" id="direct-route">The direct route</h2>
+      <a class="email-address" href={`mailto:${resumeProfile.email}`}>{resumeProfile.email}</a>
     </section>
 
     <section class="elsewhere" aria-labelledby="elsewhere-title">
-      <h2 id="elsewhere-title">Elsewhere online</h2>
-      <ol>
+      <h2 class="section-title" id="elsewhere-title">Elsewhere</h2>
+      <ul class="rule-list">
         <li>
-          <span class="social-index">01</span>
-          <div>
-            <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>
-            <p>The sensible career version</p>
-          </div>
+          <a href={resumeProfile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+          <span>the sensible career version</span>
         </li>
         <li>
-          <span class="social-index">02</span>
-          <div>
-            <a href="https://github.com/ebreen" target="_blank" rel="noreferrer">GitHub</a>
-            <p>Code, experiments, loose screws</p>
-          </div>
+          <a href={resumeProfile.github} target="_blank" rel="noreferrer">GitHub</a>
+          <span>code, experiments, loose screws</span>
         </li>
-      </ol>
+        <li>
+          <a href="/resume">The CV</a>
+          <span>dates, employers, the full stack</span>
+        </li>
+      </ul>
     </section>
-
-    <p class="contact-note">Based in Oslo · replies may arrive between terminal sessions</p>
   </section>
 </BaseLayout>
 
 <style>
   .contact-page {
-    width: min(100%, 42rem);
-    margin-inline: auto;
-    padding-block: clamp(5rem, 12vw, 10rem);
+    width: min(100%, var(--page));
   }
 
-  .intro {
-    margin-bottom: clamp(8rem, 19vw, 13rem);
-  }
-
-  .kicker,
-  .email-note h2,
-  .elsewhere > h2,
-  .social-index,
-  .contact-note {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 400;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
-
-  .kicker {
-    margin: 0 0 1.25rem;
-  }
-
-  h1 {
-    max-width: 9ch;
-    margin: 0;
-    color: var(--text);
-    font-family: var(--font-display);
-    font-size: clamp(3.8rem, 10vw, 6.8rem);
-    font-weight: 400;
-    letter-spacing: -0.055em;
-    line-height: 0.92;
-  }
-
-  .lede {
-    max-width: 35rem;
-    margin: 2.5rem 0 0;
-    color: var(--text-secondary);
-    font-family: var(--font-sans);
-    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
-    line-height: 1.75;
-  }
-
-  .email-note {
-    margin-bottom: clamp(8rem, 19vw, 13rem);
-    padding-block: 2rem;
+  .direct {
+    margin-bottom: clamp(3.5rem, 9vw, 5rem);
+    padding-block: 1.75rem 2rem;
     border-block: 1px solid var(--border);
   }
 
-  .email-note h2,
-  .elsewhere > h2 {
-    margin: 0 0 2rem;
-  }
-
   .email-address {
-    display: inline;
+    display: inline-block;
     color: var(--accent);
     font-family: var(--font-display);
-    font-size: clamp(2rem, 7vw, 4.2rem);
+    font-size: clamp(2rem, 6.4vw, 3.6rem);
     letter-spacing: -0.04em;
-    line-height: 1.2;
+    line-height: 1.15;
     overflow-wrap: anywhere;
-    text-decoration-line: underline;
+    text-decoration-color: rgba(214, 180, 95, 0.45);
     text-decoration-thickness: 1px;
-    text-underline-offset: 0.16em;
+    text-underline-offset: 0.14em;
   }
 
-  .email-address:hover,
-  .elsewhere a:hover {
+  .email-address:hover {
     color: var(--text);
   }
 
-  .email-note > p {
-    margin: 1.5rem 0 0;
-    color: var(--muted);
-    font-family: var(--font-sans);
-    font-size: 0.8rem;
-  }
-
-  .elsewhere {
-    margin-bottom: clamp(6rem, 14vw, 9rem);
-  }
-
-  .elsewhere ol {
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid var(--border);
-    list-style: none;
-  }
-
   .elsewhere li {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: 1rem;
-    padding-block: 1.75rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .social-index {
-    padding-top: 0.25rem;
-    color: var(--faint);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1.5rem;
+    padding-block: 1.1rem;
   }
 
   .elsewhere a {
-    color: var(--accent);
+    color: var(--text);
     font-family: var(--font-display);
-    font-size: 1.55rem;
-    text-decoration-line: underline;
+    font-size: 1.4rem;
+    text-decoration-color: var(--faint);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
   }
 
-  .elsewhere li p {
-    margin: 0.55rem 0 0;
+  .elsewhere a:hover {
+    color: var(--accent);
+  }
+
+  .elsewhere span {
     color: var(--muted);
-    font-family: var(--font-sans);
-    font-size: 0.8rem;
-    line-height: 1.55;
-  }
-
-  .contact-note {
-    margin: 0;
-    color: var(--faint);
-    line-height: 1.7;
-  }
-
-  @media (max-width: 36rem) {
-    .contact-page {
-      padding-block: 4rem 7rem;
-    }
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
   }
 </style>

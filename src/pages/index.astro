@@ -2,19 +2,20 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { sortBlogEntries, formatBlogDate, getReadingTime } from "../lib/blog";
-import { getLatestCreation } from "../lib/projects";
+import { getLatestCreation, isExternal, projectHref, projectStatusLabel } from "../lib/projects";
 import { resumeProfile } from "../lib/resume";
 
 const allPosts = sortBlogEntries(await getCollection("blog"));
 const latestPost = allPosts[0];
 const latestCreation = getLatestCreation();
+const creationExternal = latestCreation ? isExternal(latestCreation) : false;
 ---
 
 <BaseLayout title="Home">
   <section class="home-intro">
-    <p class="home-id">eirik breen — oslo</p>
-
     <h1>i like sidequests</h1>
+
+    <p class="home-id">eirik breen — senior systems consultant, oslo</p>
 
     <p class="home-copy">
       linux, homelabs, ai, and things that seemed like a good idea at midnight.
@@ -43,12 +44,24 @@ const latestCreation = getLatestCreation();
 
     {latestCreation && (
       <section class="latest-block latest-creation" aria-labelledby="latest-creation-title">
-        <p class="latest-label">latest creation</p>
         <h2 id="latest-creation-title">
-          <a href={latestCreation.href} target="_blank" rel="noreferrer">
+          <a
+            href={projectHref(latestCreation)}
+            target={creationExternal ? "_blank" : undefined}
+            rel={creationExternal ? "noreferrer" : undefined}
+          >
             {latestCreation.homeTitle ?? latestCreation.title}
           </a>
         </h2>
+        <p class="latest-label">
+          latest creation
+          {latestCreation.status === "soon" && (
+            <>
+              <span aria-hidden="true"> · </span>
+              <span class="latest-soon">{projectStatusLabel(latestCreation.status)}</span>
+            </>
+          )}
+        </p>
         {latestCreation.homeCopy && latestCreation.homeCopy.length > 0 && (
           <p class="latest-copy">{latestCreation.homeCopy.join("\n")}</p>
         )}
@@ -57,14 +70,17 @@ const latestCreation = getLatestCreation();
 
     {latestPost && (
       <section class="latest-block latest-note" aria-labelledby="latest-note-title">
-        <p class="latest-label">latest note · {allPosts.length} in the archive</p>
         <h2 id="latest-note-title">
           <a href={`/blog/${latestPost.slug}`}>{latestPost.data.title}</a>
         </h2>
-        <p class="latest-meta">
+        <p class="latest-label">
+          latest note
+          <span aria-hidden="true"> · </span>
           <time datetime={latestPost.data.date.toISOString()}>{formatBlogDate(latestPost.data.date)}</time>
           <span aria-hidden="true"> · </span>
           {getReadingTime(latestPost)}
+          <span aria-hidden="true"> · </span>
+          <a href="/blog">{allPosts.length} in the archive</a>
         </p>
       </section>
     )}
@@ -97,8 +113,8 @@ const latestCreation = getLatestCreation();
   }
 
   .home-id {
-    margin-bottom: 1.2rem;
-    color: var(--text-secondary);
+    margin: 1.15rem 0 0;
+    color: var(--text);
     font-size: 0.78rem;
     text-transform: lowercase;
   }
@@ -115,7 +131,7 @@ const latestCreation = getLatestCreation();
 
   .home-copy {
     max-width: 32rem;
-    margin: 1.15rem 0 0;
+    margin: 0.35rem 0 0;
     color: var(--text-secondary);
     font-size: 0.86rem;
     line-height: 1.75;
@@ -219,7 +235,20 @@ const latestCreation = getLatestCreation();
   }
 
   .latest-label {
-    margin-bottom: 0.65rem;
+    margin: 0.6rem 0 0;
+  }
+
+  .latest-label a {
+    color: inherit;
+    text-decoration-color: var(--faint);
+  }
+
+  .latest-label a:hover {
+    color: var(--accent);
+  }
+
+  .latest-soon {
+    color: var(--accent);
   }
 
   .latest-block h2 {

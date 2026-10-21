@@ -36,7 +36,7 @@ export function displayUrl(url: string): string {
 
 export const resumeProfile = {
   name: "Eirik Breen",
-  role: "Systems Consultant",
+  role: "Senior Systems Consultant",
   location: "Oslo, Norway",
   email: "me@eirikbreen.com",
   linkedin: "https://www.linkedin.com/in/eirik-breen",
@@ -52,7 +52,7 @@ export const experience: Experience[] = [
     end: "Present",
     startDateTime: "2023-08",
     current: true,
-    title: "Systems Consultant, Service Delivery",
+    title: "Senior Systems Consultant, Service Delivery",
     company: "Orange Business (Basefarm)",
     location: "Oslo",
     highlights: [
@@ -61,7 +61,7 @@ export const experience: Experience[] = [
       "Build and maintain PCI DSS-compliant Linux environments, including successful security audits.",
       "Log analysis and monitoring with Splunk and Elastic Stack for troubleshooting and capacity planning.",
       "Automate configuration and deployment with Ansible and CI/CD pipelines.",
-      "Project lead for an HSM customer, implementing redundant Thales solutions across data centres."
+      "Project lead for a network HSM customer, implementing redundant Thales network HSMs across data centres."
     ],
     stack: [
       "RHEL",

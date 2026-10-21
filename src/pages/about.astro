@@ -1,71 +1,96 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { resumeProfile } from "../lib/resume";
 
-const emailHref = `mailto:me@eirikbreen.com?subject=${encodeURIComponent("Platform / PCI Linux")}`;
+const emailHref = `mailto:${resumeProfile.email}?subject=${encodeURIComponent("Platform / PCI Linux")}`;
 ---
 
 <BaseLayout
   title="About"
-  description="Eirik Breen, systems consultant in Oslo. PCI DSS Linux, Kubernetes with GitOps, and payment HSMs at Orange Business."
+  description="Eirik Breen, senior systems consultant in Oslo. PCI DSS Linux, Kubernetes with GitOps, and network HSMs at Orange Business."
 >
   <article class="page about-page">
-    <header class="intro">
-      <p class="kicker">Systems consultant, Oslo</p>
-      <h1>I run Linux platforms that have to pass an audit.</h1>
-      <p class="lede">
-        I design and run Kubernetes for customers at Orange Business. The PCI DSS Linux
-        environments I run have made it through their security audits. I also lead a project
-        for redundant payment HSMs across data centres.
+    <header class="page-head">
+      <h1 class="page-title">I run Linux platforms that have to pass an audit.</h1>
+      <p class="page-meta">senior systems consultant · orange business (basefarm) · oslo</p>
+      <p class="page-lede">
+        I design and run Kubernetes for customers at Orange Business. The PCI DSS Linux environments I run have
+        made it through their security audits. I also lead a project for redundant network HSMs across data
+        centres.
       </p>
     </header>
 
-    <section aria-labelledby="work-heading">
-      <h2 id="work-heading">The work</h2>
+    <dl class="glance" aria-label="At a glance">
+      <div>
+        <dt>role</dt>
+        <dd>Senior Systems Consultant, Service Delivery, since 2023</dd>
+      </div>
+      <div>
+        <dt>platform</dt>
+        <dd>RHEL, K3s and MKS, Argo CD, Cilium, OpenBao and Vault</dd>
+      </div>
+      <div>
+        <dt>compliance</dt>
+        <dd>PCI DSS environments, Thales network HSMs</dd>
+      </div>
+      <div>
+        <dt>automation</dt>
+        <dd>Ansible, CI/CD pipelines</dd>
+      </div>
+      <div>
+        <dt>logging</dt>
+        <dd>Splunk, Elastic Stack</dd>
+      </div>
+      <div>
+        <dt>based</dt>
+        <dd>Oslo, Norway</dd>
+      </div>
+    </dl>
+
+    <section class="prose" aria-labelledby="work-heading">
+      <h2 class="section-title" id="work-heading">The work</h2>
       <p>
-        The clusters are K3s and MKS on RHEL. GitOps goes through Argo CD. Cilium handles
-        networking, and secrets live in OpenBao and Vault. Ansible and CI/CD do the routine
-        changes. When I need to know what actually happened, I am in Splunk or Elastic.
+        The clusters are K3s and MKS on RHEL. GitOps goes through Argo CD. Cilium handles networking, and secrets
+        live in OpenBao and Vault. Ansible and CI/CD do the routine changes. When I need to know what actually
+        happened, I am in Splunk or Elastic.
       </p>
       <p>
-        A lot of it runs under PCI DSS, so "probably fine" is not a deployment strategy. The HSM
-        side is redundant Thales PayShield and Luna. I write the change so the person on the next
-        shift can follow it. I will take a dull pipeline over automation that hides what it did.
+        A lot of it runs under PCI DSS, so "probably fine" is not a deployment strategy. On the HSM side I have worked
+        with both Thales PayShield and Luna; the project I lead is a redundant network HSM setup across data centres.
+        I write the change so
+        the person on the next shift can follow it. I will take a dull pipeline over automation that hides what it did.
       </p>
       <p>
-        I came up through operations. Senior on the incident team at Orange Business before
-        consulting, mostly RHEL and Azure, nights and weekends on the roster. I mentored
-        apprentices through their trade exam. Before that, first and second line at HDO in Gjøvik,
-        supporting AMK centres, out-of-hours clinics, and A&amp;E on Norway's emergency network.
-        Trade certificate with distinction. I am glad I did that work. I am not trying to get back
+        I came up through operations. Senior on the incident team at Orange Business before consulting, mostly RHEL
+        and Azure, nights and weekends on the roster. I mentored apprentices through their trade exam. Before that,
+        first and second line at HDO in Gjøvik, supporting AMK centres, out-of-hours clinics, and A&amp;E on Norway's
+        emergency network. Trade certificate with distinction. I am glad I did that work. I am not trying to get back
         on the incident roster.
       </p>
+      <p><a href="/resume">Read the CV for dates and the full stack</a></p>
+    </section>
+
+    <section class="prose" aria-labelledby="after-heading">
+      <h2 class="section-title" id="after-heading">After hours</h2>
       <p>
-        <a href="/resume">Read the CV for dates and the full stack</a>
+        The homelab is K3s. Claude Code and OpenCode started after hours and now show up in the day job. If a project
+        lasts more than a weekend it lands with <a href="/projects">the other things I made</a> or
+        <a href="/blog">on the blog</a>. The newest is <a href="/projects#baton">Baton</a>, an inbox and voice remote
+        for coding agents on macOS, out soon. Before that came ModelTable, a live LLM price table on one Cloudflare
+        Worker, and PixelWitness, a browser extension that scores images for likely AI generation without sending
+        them off the machine.
       </p>
     </section>
 
-    <section aria-labelledby="after-heading">
-      <h2 id="after-heading">After hours</h2>
-      <p>
-        The homelab is K3s. Claude Code and OpenCode started after hours and now show up in the
-        day job. If a project lasts more than a weekend it lands with
-        <a href="/projects">the other things I made</a>
-        or <a href="/blog">on the blog</a>. ModelTable is the newest, a live LLM price table
-        on one Cloudflare Worker. PixelWitness is a browser extension that scores images for
-        likely AI generation without sending them off the machine.
-      </p>
-    </section>
-
-    <section class="contact" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Write me</h2>
-      <p>Platform work, PCI Linux, GitOps, or payment HSMs. Email me.</p>
+    <section class="contact prose" aria-labelledby="contact-heading">
+      <h2 class="section-title" id="contact-heading">Write me</h2>
+      <p>Platform work, PCI Linux, GitOps, or network HSMs. Email me.</p>
       <p class="cta">
-        <a href={emailHref}>me@eirikbreen.com</a>
+        <a href={emailHref}>{resumeProfile.email}</a>
       </p>
       <p class="secondary">
         Dates, employers, and the full stack are on <a href="/resume">the CV</a>.
-        <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">LinkedIn</a>
-        works if you prefer.
+        <a href={resumeProfile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> works if you prefer.
       </p>
     </section>
   </article>
@@ -73,82 +98,72 @@ const emailHref = `mailto:me@eirikbreen.com?subject=${encodeURIComponent("Platfo
 
 <style>
   .about-page {
-    width: min(100%, 38rem);
-    margin-inline: auto;
+    width: min(100%, 40rem);
   }
 
-  .kicker {
-    margin: 0 0 1rem;
+  .about-page .page-title {
+    max-width: 17ch;
+    font-size: clamp(2.3rem, 5.6vw, 3.4rem);
+    line-height: 1.04;
+  }
+
+  .glance {
+    margin: 0 0 clamp(3rem, 7vw, 4rem);
+    border-top: 1px solid var(--border);
+  }
+
+  .glance div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .glance dt {
+    padding-top: 0.15rem;
     color: var(--muted);
     font-family: var(--font-mono);
     font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
+    letter-spacing: 0.05em;
   }
 
-  h1 {
-    max-width: 18ch;
+  .glance dd {
     margin: 0;
-    font-size: clamp(2.15rem, 5.8vw, 3.05rem);
-    letter-spacing: -0.035em;
-    line-height: 1.08;
-  }
-
-  .lede {
-    max-width: 36rem;
-    margin: 1.35rem 0 0;
-    color: var(--text-secondary);
+    color: var(--text);
     font-family: var(--font-sans);
-    font-size: clamp(1rem, 2vw, 1.08rem);
-    line-height: 1.7;
+    font-size: 0.92rem;
+    line-height: 1.5;
   }
 
   section {
-    margin-top: clamp(2.5rem, 5.5vw, 3.25rem);
-  }
-
-  h2 {
-    margin: 0 0 0.9rem;
-    font-size: 1.35rem;
-    letter-spacing: -0.015em;
-    line-height: 1.2;
-  }
-
-  section p {
-    margin: 0 0 1.1rem;
-    color: var(--text-secondary);
-    font-family: var(--font-sans);
-    font-size: 0.97rem;
-    line-height: 1.75;
-  }
-
-  section p:last-child {
-    margin-bottom: 0;
-  }
-
-  section a {
-    color: var(--accent);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.28em;
-  }
-
-  section a:hover {
-    color: var(--text);
+    margin-top: clamp(2.75rem, 6vw, 3.5rem);
   }
 
   .contact {
-    padding-top: clamp(1.5rem, 4vw, 2rem);
+    padding-top: clamp(1.75rem, 4vw, 2.25rem);
     border-top: 1px solid var(--border);
+  }
+
+  .cta {
+    margin: 0.4rem 0 1.25rem !important;
   }
 
   .cta a {
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 2.8vw, 1.6rem);
+    font-size: clamp(1.4rem, 3.2vw, 1.85rem);
     letter-spacing: -0.02em;
   }
 
   .secondary {
-    color: var(--muted);
-    font-size: 0.9rem;
+    color: var(--muted) !important;
+    font-size: 0.9rem !important;
+  }
+
+  @media (max-width: 34rem) {
+    .glance div {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
   }
 </style>

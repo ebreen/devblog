@@ -10,6 +10,10 @@
   --font-display: Georgia, "Times New Roman", Times, serif;
   --font-sans: "Avenir Next", Avenir, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --page: 42rem;
+  --page-wide: 62rem;
+  --status-live: #7ad18a;
   color-scheme: dark;
 }
 
@@ -23,7 +27,10 @@ html {
   min-width: 20rem;
   min-height: 100%;
   background: var(--bg);
+  caret-color: var(--accent);
   scroll-behavior: smooth;
+  scrollbar-color: #3a3833 var(--bg);
+  scrollbar-width: thin;
 }
 
 body {
@@ -304,16 +311,144 @@ html.is-fade-leave {
 }
 
 .page {
-  width: min(100%, 36rem);
+  width: min(100%, var(--page));
   margin-inline: auto;
 }
 
-.page-narrow {
-  width: min(100%, 32rem);
+/* One header pattern for every page: title, a meta line, a lede. */
+.page-head {
+  margin-bottom: clamp(3.5rem, 9vw, 5.5rem);
 }
 
-.page-header {
-  margin-bottom: clamp(4rem, 10vw, 6rem);
+.page-title {
+  max-width: 16ch;
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6.4vw, 4.1rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.page-meta {
+  margin: 1.15rem 0 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.page-meta strong {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.page-lede {
+  max-width: 36rem;
+  margin: 1.5rem 0 0;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  line-height: 1.7;
+}
+
+.section-title {
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3.4vw, 1.8rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.prose p {
+  margin: 0 0 1.1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.prose a,
+.text-link {
+  color: var(--accent);
+  text-decoration-color: rgba(214, 180, 95, 0.45);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+}
+
+.prose a:hover,
+.text-link:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+.text-link {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.meta-line {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+.rule-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+.rule-list > li {
+  border-bottom: 1px solid var(--border);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
+.status::before {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--faint);
+  content: "";
+}
+
+.status-soon {
+  color: var(--accent);
+}
+
+.status-soon::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(214, 180, 95, 0.16);
+}
+
+.status-live::before {
+  background: var(--status-live);
+}
+
+.status-in-progress::before {
+  background: var(--muted);
 }
 
 .eyebrow,
@@ -326,47 +461,8 @@ html.is-fade-leave {
   text-transform: lowercase;
 }
 
-.eyebrow {
-  margin-bottom: 1.2rem;
-}
-
-.page h1 {
-  max-width: 14ch;
-  margin: 0;
-  font-size: clamp(2.8rem, 9vw, 4.6rem);
-  letter-spacing: -0.035em;
-  line-height: 1;
-}
-
-.page h2 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.55rem, 4vw, 2.1rem);
-  line-height: 1.15;
-}
-
-.page h3 {
-  font-size: 1.25rem;
-}
-
-.page-header .lede,
-.lede {
-  max-width: 34rem;
-  margin: 1.5rem 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.75;
-}
-
-.page p {
-  color: var(--text-secondary);
-}
-
 .section {
   margin-bottom: 4rem;
-}
-
-.section-label {
-  margin-bottom: 0.75rem;
 }
 
 .button {
@@ -456,8 +552,8 @@ html.is-fade-leave {
     flex-direction: column;
   }
 
-  .page h1 {
-    font-size: clamp(2.55rem, 15vw, 3.7rem);
+  .page-title {
+    font-size: clamp(2.45rem, 12.5vw, 3.4rem);
   }
 }
 

@@ -25,12 +25,11 @@ const { Content } = await entry.render();
     <a class="back-link" href="/blog"><span aria-hidden="true">←</span> All field notes</a>
 
     <header class="post-header">
-      <p class="post-kicker">Field note</p>
       <h1>{entry.data.title}</h1>
       <div class="post-details">
         <p class="post-meta">
           <time datetime={entry.data.date.toISOString()}>{formatBlogDate(entry.data.date)}</time>
-          <span aria-hidden="true">/</span>
+          <span aria-hidden="true">·</span>
           <span>{getReadingTime(entry)}</span>
         </p>
         {entry.data.tags.length > 0 && (
@@ -64,7 +63,7 @@ const { Content } = await entry.render();
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    margin-bottom: clamp(4.5rem, 12vw, 7rem);
+    margin-bottom: clamp(3.5rem, 9vw, 5rem);
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: 0.64rem;
@@ -81,24 +80,15 @@ const { Content } = await entry.render();
     max-width: 44rem;
   }
 
-  .post-kicker {
-    margin: 0 0 1.45rem;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: lowercase;
-  }
-
   .post-header h1 {
     max-width: 15ch;
     margin: 0;
     color: var(--text);
     font-family: var(--font-display);
-    font-size: clamp(3.1rem, 9vw, 5.35rem);
+    font-size: clamp(2.6rem, 7vw, 4.4rem);
     font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 1;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
     text-wrap: balance;
   }
 
@@ -136,15 +126,18 @@ const { Content } = await entry.render();
     list-style: none;
   }
 
-  .post-tags li:not(:last-child)::after {
-    margin-inline: 0.55rem;
-    color: var(--border);
-    content: "/";
+  .post-tags li::before {
+    color: var(--accent);
+    content: "#";
+  }
+
+  .post-tags li:not(:last-child) {
+    margin-right: 0.7rem;
   }
 
   .article-rule {
     height: 1px;
-    margin-block: clamp(3.5rem, 9vw, 5.5rem) clamp(4.5rem, 11vw, 7rem);
+    margin-block: clamp(2.75rem, 7vw, 4rem) clamp(3rem, 8vw, 4.5rem);
     border: 0;
     background: var(--border);
   }

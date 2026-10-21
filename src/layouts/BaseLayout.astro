@@ -10,6 +10,8 @@ type NavItem = {
 type Props = {
   title?: string;
   description?: string;
+  /** Extra body class for full-bleed surfaces such as the room. */
+  bodyClass?: string;
 };
 
 const navItems: NavItem[] = [
@@ -23,7 +25,11 @@ const navItems: NavItem[] = [
 
 const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const isHome = normalizedPath === "/";
-const { title: pageTitle, description = "Eirik Breen's notes on Linux, homelabs, software, and AI sidequests." } = Astro.props as Props;
+const {
+  title: pageTitle,
+  description = "Eirik Breen, senior systems consultant in Oslo. Notes on Linux, homelabs, software, and AI sidequests.",
+  bodyClass
+} = Astro.props as Props;
 const title = pageTitle ? `${pageTitle} — Eirik Breen` : "Eirik Breen — sidequests";
 const year = new Date().getFullYear();
 const mountainPortrait = "/home-mountain.webp";
@@ -78,7 +84,7 @@ const isActive = (href: NavItem["href"]) =>
       } catch {}
     </script>
   </head>
-  <body class:list={{ "is-home": isHome }}>
+  <body class:list={[{ "is-home": isHome }, bodyClass]}>
     <a class="skip-link" href="#main-content">skip to content</a>
 
     {
@@ -124,8 +130,14 @@ const isActive = (href: NavItem["href"]) =>
       </main>
 
       <footer class="site-footer">
-        <p>© {year} eirik breen</p>
-        <p><a href="https://github.com/ebreen" target="_blank" rel="noreferrer">github</a> / <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">linkedin</a></p>
+        <p>© {year} eirik breen · senior systems consultant, oslo</p>
+        <p>
+          <a href="https://github.com/ebreen" target="_blank" rel="noreferrer">github</a>
+          <span aria-hidden="true">/</span>
+          <a href="https://www.linkedin.com/in/eirik-breen" target="_blank" rel="noreferrer">linkedin</a>
+          <span aria-hidden="true">/</span>
+          <a href="mailto:me@eirikbreen.com">email</a>
+        </p>
       </footer>
     </div>
 
