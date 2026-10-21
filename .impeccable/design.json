@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T14:42:36.117067+00:00",
+  "title": "Design System: Eirik Breen",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#090909",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Desk Surface",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#efece3",
+        "tonalRamp": [
+          "#0d0b06",
+          "#26241d",
+          "#424038",
+          "#605d56",
+          "#807d75",
+          "#a19e96",
+          "#c7c4bb",
+          "#f1eee5"
+        ]
+      },
+      "paper-dim": {
+        "role": "neutral",
+        "displayName": "Dim Paper",
+        "canonical": "#cbc6bb",
+        "tonalRamp": [
+          "#0e0b04",
+          "#27241b",
+          "#433f36",
+          "#625d54",
+          "#817d73",
+          "#a39e93",
+          "#c9c4b9",
+          "#f3eee3"
+        ]
+      },
+      "stone": {
+        "role": "neutral",
+        "displayName": "Stone",
+        "canonical": "#98938a",
+        "tonalRamp": [
+          "#0e0b05",
+          "#27231c",
+          "#433f37",
+          "#625d55",
+          "#817d74",
+          "#a39e95",
+          "#c9c3ba",
+          "#f3eee4"
+        ]
+      },
+      "ash": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "#7d7971",
+        "tonalRamp": [
+          "#0e0b06",
+          "#27241d",
+          "#433f38",
+          "#615d55",
+          "#817d75",
+          "#a29e96",
+          "#c8c4bb",
+          "#f2eee5"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#292929",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "brass": {
+        "role": "primary",
+        "displayName": "Desk-Lamp Brass",
+        "canonical": "#d6b45f",
+        "tonalRamp": [
+          "#190600",
+          "#371f00",
+          "#573a00",
+          "#785800",
+          "#99781b",
+          "#bb9a44",
+          "#e1c070",
+          "#ffeca6"
+        ]
+      },
+      "ultramarine": {
+        "role": "secondary",
+        "displayName": "Bjørvika Ultramarine",
+        "canonical": "#072da7",
+        "tonalRamp": [
+          "#020040",
+          "#01126a",
+          "#0e3298",
+          "#2350c8",
+          "#3f73f0",
+          "#5f96ff",
+          "#8bc0ff",
+          "#bcedff"
+        ]
+      },
+      "fjord-glass": {
+        "role": "secondary",
+        "displayName": "Fjord Glass",
+        "canonical": "#8ea6d6",
+        "tonalRamp": [
+          "#010824",
+          "#122245",
+          "#2b3e67",
+          "#485d88",
+          "#667dab",
+          "#879ece",
+          "#abc4f6",
+          "#d7efff"
+        ]
+      },
+      "status-live": {
+        "role": "neutral",
+        "displayName": "Live Green",
+        "canonical": "#7ad18a",
+        "tonalRamp": [
+          "#001300",
+          "#003000",
+          "#005015",
+          "#0d712f",
+          "#3a924f",
+          "#5eb56f",
+          "#8ada98",
+          "#bdffc8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles; larger on the home and room scenes."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles, project names, post titles in lists."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Listing entries, placard titles, nav links."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose at a 36–40rem measure."
+      },
+      "voice": {
+        "displayName": "Voice",
+        "purpose": "Lowercase mono asides on home, room, and placards."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Meta lines, dates, tags, statuses, keycaps."
+      }
+    },
+    "shadows": [
+      {
+        "name": "scene-float",
+        "value": "0 30px 80px rgba(0, 0, 0, 0.45)",
+        "purpose": "Glass panels floating over the room scene."
+      },
+      {
+        "name": "screenshot-lift",
+        "value": "0 24px 60px -18px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.4)",
+        "purpose": "Real product captures on the page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrances: home intro rise, room panels, placards."
+      },
+      {
+        "name": "page-fade",
+        "value": "720ms ease",
+        "purpose": "Veil between same-site page navigations."
+      },
+      {
+        "name": "panel-in",
+        "value": "420ms ease-out with 6px blur to 0",
+        "purpose": "Placard entrance in the room."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow",
+        "value": "34rem"
+      },
+      {
+        "name": "compact",
+        "value": "38rem"
+      },
+      {
+        "name": "room-mobile",
+        "value": "44rem"
+      },
+      {
+        "name": "column",
+        "value": "48rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one framed action, e.g. start visning.",
+      "html": "<button class=\"ds-btn-primary\">start visning <span>→</span></button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:.6rem;min-height:2.9rem;padding:.5rem 1.15rem .55rem;border:1px solid #d6b45f;border-radius:.2rem;background:rgba(214,180,95,.1);color:#d6b45f;font-family:Georgia,serif;font-size:1.15rem;cursor:pointer;transition:background 180ms ease,color 180ms ease}.ds-btn-primary span{font-family:SFMono-Regular,Consolas,monospace;transition:transform 220ms cubic-bezier(.16,1,.3,1)}.ds-btn-primary:hover{background:#d6b45f;color:#090909}.ds-btn-primary:hover span{transform:translateX(.2rem)}.ds-btn-primary:focus-visible{outline:2px solid #d6b45f;outline-offset:4px}"
+    },
+    {
+      "name": "Text Link",
+      "kind": "custom",
+      "refersTo": "link-text",
+      "description": "Every action that is not the one primary button.",
+      "html": "<a class=\"ds-link\" href=\"#\">read the notes</a>",
+      "css": ".ds-link{color:#d6b45f;font-family:'Avenir Next',Avenir,sans-serif;font-size:.9rem;text-decoration:underline;text-decoration-color:rgba(214,180,95,.45);text-decoration-thickness:1px;text-underline-offset:.28em;transition:color 140ms ease}.ds-link:hover{color:#efece3;text-decoration-color:currentColor}.ds-link:focus-visible{outline:2px solid #d6b45f;outline-offset:4px;border-radius:.15rem}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Slash-separated serif nav with a brass current page.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">about</a><span>/</span><a href=\"#\" aria-current=\"page\">made</a><span>/</span><a href=\"#\">cv</a><span>/</span><a href=\"#\">wrote</a><span>/</span><a href=\"#\">room</a></nav>",
+      "css": ".ds-nav{display:flex;gap:.65rem;align-items:baseline;font-family:Georgia,serif;font-size:.98rem}.ds-nav span{color:#7d7971}.ds-nav a{color:#cbc6bb;text-decoration:underline;text-decoration-color:#7d7971;text-underline-offset:.25em}.ds-nav a:hover,.ds-nav a[aria-current=page]{color:#d6b45f;text-decoration-color:currentColor}"
+    },
+    {
+      "name": "Page Head",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Title first, mono meta line, then a sans lede.",
+      "html": "<header class=\"ds-head\"><h1>Things I built.</h1><p class=\"ds-meta\">seven projects · one live · <strong>one out soon</strong></p><p class=\"ds-lede\">Side projects from evenings and the homelab.</p></header>",
+      "css": ".ds-head h1{margin:0;color:#efece3;font-family:Georgia,serif;font-weight:400;font-size:3.2rem;letter-spacing:-.04em;line-height:1}.ds-meta{margin:1.15rem 0 0;color:#98938a;font-family:SFMono-Regular,Consolas,monospace;font-size:.7rem;letter-spacing:.04em}.ds-meta strong{color:#d6b45f;font-weight:400}.ds-lede{margin:1.5rem 0 0;color:#cbc6bb;font-family:'Avenir Next',Avenir,sans-serif;font-size:1.05rem;line-height:1.7}"
+    },
+    {
+      "name": "Keycap",
+      "kind": "chip",
+      "refersTo": "keycap",
+      "description": "Controls and shortcuts; brass when it is the key to press now.",
+      "html": "<span class=\"ds-keys\"><kbd class=\"ds-kbd\">w</kbd><kbd class=\"ds-kbd\">a</kbd><kbd class=\"ds-kbd\">s</kbd><kbd class=\"ds-kbd\">d</kbd> walk · <kbd class=\"ds-kbd ds-kbd-now\">e</kbd> open</span>",
+      "css": ".ds-keys{color:#cbc6bb;font-family:SFMono-Regular,Consolas,monospace;font-size:.7rem}.ds-kbd{display:inline-grid;min-width:1.35em;place-items:center;padding:.08em .38em;border:1px solid rgba(239,236,227,.26);border-radius:.2rem;background:rgba(9,9,9,.6);box-shadow:inset 0 -1px 0 rgba(239,236,227,.1);color:#efece3;font:inherit;font-size:.92em}.ds-kbd-now{border-color:#d6b45f;color:#d6b45f}"
+    },
+    {
+      "name": "Status",
+      "kind": "chip",
+      "refersTo": "status-soon",
+      "description": "Project and service state: dot plus lowercase mono label.",
+      "html": "<span class=\"ds-status ds-status-soon\">coming soon</span> <span class=\"ds-status ds-status-live\">live</span>",
+      "css": ".ds-status{display:inline-flex;align-items:center;gap:.45rem;color:#98938a;font-family:SFMono-Regular,Consolas,monospace;font-size:.66rem;letter-spacing:.05em}.ds-status::before{width:.4rem;height:.4rem;border-radius:50%;background:#7d7971;content:''}.ds-status-soon{color:#d6b45f}.ds-status-soon::before{background:#d6b45f;box-shadow:0 0 0 3px rgba(214,180,95,.16)}.ds-status-live::before{background:#7ad18a}"
+    },
+    {
+      "name": "Glass Panel",
+      "kind": "card",
+      "refersTo": "glass-panel",
+      "description": "Chrome over a scene only: prospectus card, placards, plan.",
+      "html": "<aside class=\"ds-glass\"><h2>the shelf</h2><p>notes on linux, homelabs, ai.</p></aside>",
+      "css": ".ds-glass{padding:1.4rem 1.5rem;border:1px solid rgba(239,236,227,.14);border-radius:.25rem;background:rgba(10,10,11,.74);backdrop-filter:blur(14px);box-shadow:0 30px 80px rgba(0,0,0,.45)}.ds-glass h2{margin:0 0 .6rem;color:#efece3;font-family:Georgia,serif;font-weight:400;font-size:1.8rem;letter-spacing:-.025em}.ds-glass p{margin:0;color:#cbc6bb;font-family:SFMono-Regular,Consolas,monospace;font-size:.78rem;line-height:1.7}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Desk",
+    "overview": "The site reads like a desk lamp left on after the last ticket closed: a near-black field, one warm brass light, paper-white serif headlines, and the small monospace handwriting of someone who keeps notes. It is a working operator's site, not a template portfolio. Every page is quiet and typographic; the two places that get colour are the home page (a painted mountain under an ultramarine sky) and the room (a lamp-lit flat above a snowing Bjørvika). Both are scenes, and the interface sits on top of them in the same near-black glass.",
+    "keyCharacteristics": [
+      "Near-black ground, a single brass accent, warm paper text.",
+      "Georgia for every heading; Avenir for prose; mono for labels, data, keys, and the lowercase voice.",
+      "Hairline rules and underlines instead of boxes and fills.",
+      "Title first, then a meta line: no labels above headings.",
+      "Scenes (mountain, room) carry colour; chrome stays near-black glass."
+    ],
+    "rules": [
+      {
+        "name": "The One Lamp Rule",
+        "body": "Brass is the only interface accent. If something brass cannot be clicked, pressed, or is not a status you should notice, it should not be brass.",
+        "section": "colors"
+      },
+      {
+        "name": "The Scene Owns Colour Rule",
+        "body": "Saturated colour (ultramarine, the rug, neon, city light) lives inside scenes. Chrome laid over a scene stays ink glass with hairlines.",
+        "section": "colors"
+      },
+      {
+        "name": "The Title-Then-Meta Rule",
+        "body": "A heading speaks first; its context (dates, role, status, counts) follows on a mono meta line below it. Nothing sits above a heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lowercase Voice Rule",
+        "body": "Mono text is lowercase. Proper nouns inside it stay lowercase too (\"bjørvika\", \"baton\") when it is the voice; data such as times and counts uses tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Page Rule",
+        "body": "If it is not floating over a scene or a photograph, it has no shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put context on a mono meta line under the heading (page-title then page-meta).",
+      "Do keep brass for actions, keys, and \"soon\"; everything else is paper, stone, or ash.",
+      "Do separate list entries with 1px hairlines and generous vertical padding instead of cards.",
+      "Do keep scenes full bleed and lay chrome over them as ink glass with hairlines.",
+      "Do mirror anything reachable only in 3D as plain HTML on the same page."
+    ],
+    "donts": [
+      "Don't put labels or eyebrows above headings.",
+      "Don't use section numbers unless they map to something the reader uses (the room's station keys do).",
+      "Don't add shadows or fills to plain page content.",
+      "Don't introduce a second accent colour in interface chrome.",
+      "Don't ship generated imagery as product screenshots; captures must be real and carry provenance."
+    ]
+  }
+}
