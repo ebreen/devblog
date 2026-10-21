@@ -1,74 +1,270 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sortBlogEntries } from "../lib/blog";
+import { projectHref, projects, projectStatusLabel } from "../lib/projects";
+import {
+  formatStation,
+  hotspotLinks,
+  hotspots,
+  planLeft,
+  planShapes,
+  planTop,
+  stationKey,
+  stations,
+  type RoomData
+} from "../scripts/room/hotspots";
+
+const posts = sortBlogEntries(await getCollection("blog")).slice(0, 4);
+const shortDate = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
+
+const data: RoomData = {
+  posts: posts.map((post) => ({
+    title: post.data.title,
+    href: `/blog/${post.slug}`,
+    meta: shortDate.format(post.data.date).toLowerCase()
+  })),
+  projects: projects.slice(0, 5).map((project) => ({
+    title: project.title,
+    href: projectHref(project),
+    meta: projectStatusLabel(project.status)
+  }))
+};
+
+const extras = hotspots
+  .filter((hotspot) => !hotspot.station && hotspot.lines.length > 0)
+  .map((hotspot) => hotspot.title.replace(/^the /, ""));
+const extrasLine = `also in the room, unnumbered: ${extras.join(", ")}, and a light switch by the door.`;
+const thingCount = hotspots.length;
+
+// Door swing for the plan: hinge on the window side of the opening.
+const door = { x: 3.98, z: 2.02, r: 0.96 };
 ---
 
 <BaseLayout
   title="Room"
-  description="A small first-person 3d room above Oslo at night. Look around, walk, poke at things, print the cv."
+  description="A one-room flat above Bjørvika, open for viewing. Walk around in first person, poke at things, print the cv."
+  bodyClass="is-room"
 >
-  <section class="room-page">
-    <header class="room-header">
-      <p class="eyebrow">room</p>
-      <h1>the room</h1>
-      <p class="lede">
-        a small room on the tenth floor above bjørvika. the opera and the fjord
-        are out the window. look around, walk, poke at things, print the cv.
-      </p>
-    </header>
+  <div class="room-page">
+    <section class="room-stage" id="room-stage" data-mode="intro" aria-label="The room: a 3D flat above Bjørvika">
+      <canvas id="room-canvas" aria-hidden="true"></canvas>
+      <div class="room-scrim" aria-hidden="true"></div>
+      <div class="room-tags" aria-hidden="true"></div>
+      <div class="room-reticle" aria-hidden="true"></div>
+      <div class="room-cut" aria-hidden="true"></div>
 
-    <div class="room-stage" id="room-stage">
-      <canvas id="room-canvas"></canvas>
-
-      <div class="room-loading">booting the room…</div>
-      <p class="room-look-hint">
-        <span class="room-look-hint-keyboard">click to look around</span>
-        <span class="room-look-hint-touch">drag to look around</span>
-      </p>
-
-      <p class="room-prompt" hidden></p>
-
-      <aside class="room-dialog" aria-live="polite" hidden>
-        <p class="room-dialog-title"></p>
-        <div class="room-dialog-lines"></div>
-        <div class="room-dialog-status" hidden></div>
-        <p class="room-dialog-linkrow" hidden>
-          <a class="room-dialog-link" href="/">leave</a>
-          <span class="arrow" aria-hidden="true">→</span>
+      <div class="visning" data-visning>
+        <h1>the room</h1>
+        <p class="visning-facts">visning tonight · 1 rom · 10. etasje · bjørvika</p>
+        <p class="visning-lede">
+          a small flat above the fjord, open for viewing. walk around, poke at things, put a record on, print the cv.
         </p>
-        <p class="room-dialog-close">esc — close</p>
+        <dl class="visning-key">
+          <div>
+            <dt>utsikt</dt>
+            <dd>the opera, munch, the fjord in snow</dd>
+          </div>
+          <div>
+            <dt>inkludert</dt>
+            <dd>one roomba, mostly working</dd>
+          </div>
+          <div>
+            <dt>to poke at</dt>
+            <dd>{thingCount} things</dd>
+          </div>
+          <div>
+            <dt>klokka</dt>
+            <dd><span data-oslo-time>late</span> in oslo</dd>
+          </div>
+        </dl>
+        <div class="visning-actions">
+          <button type="button" class="visning-start" data-visning-start>
+            start visning <span aria-hidden="true">→</span>
+          </button>
+          <a class="visning-skip" href="#listing">or read the listing</a>
+        </div>
+      </div>
+
+      <nav class="room-plan" aria-label="Floor plan: travel to a spot in the room">
+        <p class="plan-north" aria-hidden="true">fjorden</p>
+        <div class="plan-sheet">
+          <svg class="plan-drawing" viewBox="-4.25 -3.85 8.5 7.7" aria-hidden="true" focusable="false">
+            {
+              planShapes.map((shape) => (
+                <rect
+                  class:list={["plan-shape", shape.kind && `plan-shape-${shape.kind}`]}
+                  x={shape.x - shape.w / 2}
+                  y={shape.z - shape.d / 2}
+                  width={shape.w}
+                  height={shape.d}
+                  rx={shape.r ?? 0.02}
+                  vector-effect="non-scaling-stroke"
+                />
+              ))
+            }
+            <path
+              class="plan-walls"
+              d="M -4 -3.5 L -4 3.5 L 4 3.5 L 4 3.04 M 4 2.02 L 4 -3.5"
+              vector-effect="non-scaling-stroke"
+            />
+            <path class="plan-glass" d="M -4 -3.5 L 4 -3.5" vector-effect="non-scaling-stroke" />
+            <path class="plan-glass plan-glass-inner" d="M -4 -3.42 L 4 -3.42" vector-effect="non-scaling-stroke" />
+            <path
+              class="plan-door"
+              d={`M ${door.x} ${door.z} L ${door.x - door.r} ${door.z} A ${door.r} ${door.r} 0 0 0 ${door.x} ${door.z + door.r}`}
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+          <ol class="plan-stations">
+            {
+              stations.map((station) => (
+                <li>
+                  <button
+                    type="button"
+                    data-station={station.station}
+                    style={`left: ${planLeft(station.plan?.x ?? station.x)}; top: ${planTop(station.plan?.z ?? station.z)};`}
+                    aria-label={`${station.station}: go to the ${station.name}`}
+                    title={`${stationKey(station.station)} — ${station.name}`}
+                  >
+                    {stationKey(station.station)}
+                  </button>
+                </li>
+              ))
+            }
+          </ol>
+          <span class="plan-roomba" aria-hidden="true"></span>
+          <span class="plan-you" aria-hidden="true">
+            <svg viewBox="-20 -20 40 40" focusable="false">
+              <defs>
+                <radialGradient id="plan-cone" cx="0" cy="0" r="20" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#d6b45f" stop-opacity="0.55"></stop>
+                  <stop offset="1" stop-color="#d6b45f" stop-opacity="0"></stop>
+                </radialGradient>
+              </defs>
+              <path d="M 0 0 L -11 -18 A 21 21 0 0 1 11 -18 Z" fill="url(#plan-cone)"></path>
+              <circle r="3.4" fill="#d6b45f"></circle>
+            </svg>
+          </span>
+        </div>
+      </nav>
+
+      <ul class="room-legend" aria-label="Controls">
+        <li class="legend-desktop"><kbd>click</kbd> look</li>
+        <li class="legend-desktop"><span class="legend-keys"><kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd></span> walk</li>
+        <li class="legend-desktop"><kbd>e</kbd> open</li>
+        <li class="legend-desktop"><span class="legend-keys"><kbd>1</kbd>–<kbd>0</kbd></span> go to</li>
+        <li class="legend-desktop"><kbd>esc</kbd> let go</li>
+        <li class="legend-touch">drag to look · pad to walk · tap e</li>
+        <li>
+          <button type="button" class="legend-sound" data-room-sound aria-pressed="false">
+            <kbd>m</kbd> <span data-sound-label>sound off</span>
+          </button>
+        </li>
+      </ul>
+
+      <p class="room-look-hint" hidden>
+        <span class="hint-desktop">click to keep walking</span>
+        <span class="hint-touch">drag to look around</span>
+      </p>
+      <p class="room-prompt" hidden></p>
+      <p class="room-flash" role="status" hidden></p>
+
+      <aside class="placard" aria-labelledby="placard-title" hidden>
+        <div class="placard-head">
+          <h2 class="placard-title" id="placard-title">the room</h2>
+          <span class="placard-key"></span>
+        </div>
+        <div class="placard-lines"></div>
+        <div class="placard-status" hidden></div>
+        <div class="placard-feed" hidden>
+          <p class="placard-feed-heading"></p>
+          <ul></ul>
+        </div>
+        <a class="placard-cta" href="/" hidden><span data-cta-label>leave</span> <span aria-hidden="true">→</span></a>
+        <button type="button" class="placard-close"><kbd>esc</kbd> close</button>
       </aside>
 
       <div class="room-touch" aria-hidden="true">
         <div class="room-joystick">
           <div class="room-joystick-nub"></div>
         </div>
-        <button type="button" class="room-interact-button">e</button>
+        <button type="button" class="room-interact-button" tabindex="-1">e</button>
+      </div>
+
+      <div class="room-loading" aria-hidden="true">
+        <span>unlocking the door</span>
       </div>
 
       <div class="room-fallback" hidden>
-        <p>this room needs webgl. the same stuff, in boring html:</p>
-        <p>
-          <a href="/about">about</a> / <a href="/projects">made</a> /
-          <a href="/resume">cv</a> / <a href="/blog">wrote</a> /
-          <a href="/contact">email</a>
-        </p>
+        <p>this room needs webgl, and this browser has it switched off.</p>
+        <p><a href="#listing">everything in it is in the listing below</a></p>
       </div>
-    </div>
+    </section>
 
-    <p class="room-hint">
-      <span class="room-hint-keyboard">click to look · wasd / arrows — walk · e — interact · esc — close</span>
-      <span class="room-hint-touch">drag to look · pad to walk · tap e to interact</span>
-    </p>
+    <section class="listing" id="listing" aria-labelledby="listing-title">
+      <header class="listing-head">
+        <h2 id="listing-title">the listing</h2>
+        <p>
+          everything in the room, in plain html. the numbers match the plan and the keys, and the links go to the same
+          places the placards do.
+        </p>
+      </header>
 
-    <noscript>
-      <p class="room-noscript">
-        the room runs on javascript. without it:
-        <a href="/about">about</a> / <a href="/projects">made</a> /
-        <a href="/resume">cv</a> / <a href="/blog">wrote</a> /
-        <a href="/contact">email</a>
-      </p>
-    </noscript>
-  </section>
+      <ol class="listing-items">
+        {
+          stations.map((hotspot) => {
+            const links = hotspotLinks(hotspot, data);
+            return (
+              <li class="listing-item">
+                <span class="listing-key" aria-hidden="true">
+                  {formatStation(hotspot.station)}
+                </span>
+                <div class="listing-body">
+                  <h3>{hotspot.title}</h3>
+                  {hotspot.lines.map((line) => (
+                    <p>{line}</p>
+                  ))}
+                  {(links.length > 0 || hotspot.link) && (
+                    <ul class="listing-links">
+                      {hotspot.link && (
+                        <li>
+                          <a href={hotspot.link.href}>{hotspot.link.label}</a>
+                        </li>
+                      )}
+                      {links.map((link) => (
+                        <li>
+                          <a href={link.href}>{link.label}</a>
+                          {link.meta && <span>{link.meta}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            );
+          })
+        }
+      </ol>
+
+      <p class="listing-extras">{extrasLine}</p>
+    </section>
+  </div>
+
+  <script is:inline type="application/json" id="room-data" set:html={JSON.stringify(data)} />
+
+  <noscript>
+    <style>
+      .room-stage canvas,
+      .room-loading,
+      .visning-start,
+      .room-plan,
+      .room-legend {
+        display: none !important;
+      }
+    </style>
+    <p class="room-noscript">the room runs on javascript. the listing below has everything in it.</p>
+  </noscript>
 </BaseLayout>
 
 <script>
@@ -78,78 +274,819 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </script>
 
 <style is:global>
+  .is-room {
+    --room-gutter: clamp(1rem, 3vw, 2.5rem);
+    --room-glass: rgba(10, 10, 11, 0.74);
+    --room-line: rgba(239, 236, 227, 0.14);
+    --room-header: 5.5rem;
+  }
+
+  .is-room .site-header {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 30;
+    width: calc(100% - 2 * var(--room-gutter));
+    max-width: none;
+    border-bottom-color: transparent;
+    transform: translateX(-50%);
+  }
+
+  .is-room .site-main {
+    width: 100%;
+    padding: 0;
+  }
+
+  .is-room .site-footer {
+    width: min(100% - 2rem, 48rem);
+  }
+
   .room-page {
     width: 100%;
   }
 
-  .room-header {
-    width: min(100%, 36rem);
-    margin-inline: auto;
-    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  .room-page kbd {
+    display: inline-grid;
+    min-width: 1.35em;
+    place-items: center;
+    padding: 0.08em 0.38em;
+    border: 1px solid rgba(239, 236, 227, 0.26);
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.6);
+    box-shadow: inset 0 -1px 0 rgba(239, 236, 227, 0.1);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    line-height: 1.3;
   }
 
-  .room-header h1 {
-    max-width: 14ch;
-    margin: 0;
-    font-size: clamp(2.8rem, 9vw, 4.6rem);
-    letter-spacing: -0.035em;
-    line-height: 1;
-  }
+  /* ---------- stage ---------- */
 
   .room-stage {
     position: relative;
-    width: min(100vw - 2rem, 72rem);
-    height: min(72vh, 42rem);
-    min-height: 22rem;
-    margin-inline: calc((100% - min(100vw - 2rem, 72rem)) / 2);
+    height: 100svh;
+    min-height: 34rem;
     overflow: hidden;
-    border: 1px solid var(--border);
-    background: #050505;
+    background: #060607;
+    isolation: isolate;
   }
 
   .room-stage canvas {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
-    image-rendering: pixelated;
-    cursor: grab;
+    cursor: pointer;
     touch-action: none;
+  }
+
+  .room-stage[data-mode="walk"] canvas {
+    cursor: crosshair;
   }
 
   .room-stage.is-looking canvas {
     cursor: none;
   }
 
-  .room-look-hint {
+  .room-scrim {
     position: absolute;
     inset: 0;
-    display: grid;
-    place-items: end center;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, rgba(6, 6, 7, 0.82), rgba(6, 6, 7, 0) 9rem),
+      linear-gradient(to top, rgba(6, 6, 7, 0.55), rgba(6, 6, 7, 0) 7rem);
+  }
+
+  .room-stage[data-mode="intro"] .room-scrim {
+    background:
+      linear-gradient(to bottom, rgba(6, 6, 7, 0.82), rgba(6, 6, 7, 0) 9rem),
+      linear-gradient(to right, rgba(6, 6, 7, 0.6), rgba(6, 6, 7, 0) 46%),
+      linear-gradient(to top, rgba(6, 6, 7, 0.6), rgba(6, 6, 7, 0) 9rem);
+  }
+
+  .room-cut {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: #060607;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .room-reticle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: rgba(239, 236, 227, 0.75);
+    box-shadow: 0 0 0 1px rgba(6, 6, 7, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 200ms ease;
+  }
+
+  .room-stage.is-looking:not(.has-placard) .room-reticle {
+    opacity: 1;
+  }
+
+  /* ---------- the prospectus card ---------- */
+
+  .visning {
+    position: absolute;
+    bottom: calc(var(--room-gutter) + 3rem);
+    left: var(--room-gutter);
+    z-index: 10;
+    width: min(27rem, 100% - 2 * var(--room-gutter));
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+    border: 1px solid var(--room-line);
+    border-radius: 0.25rem;
+    background: var(--room-glass);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    animation: visning-in 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+  }
+
+  .visning[hidden] {
+    display: block !important;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.75rem);
+    filter: blur(6px);
+    transition:
+      opacity 420ms ease,
+      transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 420ms ease;
+    animation: none;
+    visibility: hidden;
+    transition-property: opacity, transform, filter, visibility;
+  }
+
+  .visning h1 {
     margin: 0;
-    padding-bottom: 3.4rem;
+    color: var(--text);
+    font-size: clamp(2.9rem, 5.4vw, 4.4rem);
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+
+  .visning-facts {
+    margin: 0.95rem 0 0;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+
+  .visning-lede {
+    margin: 1rem 0 0;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  .visning-key {
+    display: grid;
+    margin: 1.25rem 0 0;
+    border-top: 1px solid var(--room-line);
+  }
+
+  .visning-key div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.42rem;
+    border-bottom: 1px solid var(--room-line);
+  }
+
+  .visning-key dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+  }
+
+  .visning-key dd {
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .visning-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.4rem;
+  }
+
+  .visning-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.9rem;
+    padding: 0.5rem 1.15rem 0.55rem;
+    border: 1px solid var(--accent);
+    border-radius: 0.2rem;
+    background: rgba(214, 180, 95, 0.1);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition:
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .visning-start span {
+    font-family: var(--font-mono);
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .visning-start:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .visning-start:hover span {
+    transform: translateX(0.2rem);
+  }
+
+  .visning-skip {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  /* ---------- floor plan ---------- */
+
+  .room-plan {
+    position: absolute;
+    right: var(--room-gutter);
+    bottom: var(--room-gutter);
+    z-index: 10;
+    width: clamp(12.5rem, 17vw, 16rem);
+    padding: 1.6rem 0.85rem 0.85rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.25rem;
+    background: var(--room-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: visning-in 1100ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
+  }
+
+  .plan-north {
+    position: absolute;
+    top: 0.45rem;
+    left: 0;
+    right: 0;
+    margin: 0;
+    color: #8ea6d6;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  .plan-sheet {
+    position: relative;
+    aspect-ratio: 8.5 / 7.7;
+  }
+
+  .plan-drawing {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .plan-shape {
+    fill: rgba(239, 236, 227, 0.035);
+    stroke: rgba(239, 236, 227, 0.32);
+    stroke-width: 1;
+  }
+
+  .plan-shape-soft {
+    fill: rgba(239, 236, 227, 0.07);
+  }
+
+  .plan-shape-rug {
+    fill: rgba(40, 70, 190, 0.18);
+    stroke: rgba(120, 150, 230, 0.35);
+    stroke-dasharray: 2 3;
+  }
+
+  .plan-walls {
+    fill: none;
+    stroke: rgba(239, 236, 227, 0.85);
+    stroke-width: 2;
+    stroke-linecap: square;
+  }
+
+  .plan-glass {
+    fill: none;
+    stroke: #8ea6d6;
+    stroke-width: 1.25;
+  }
+
+  .plan-glass-inner {
+    stroke-opacity: 0.45;
+  }
+
+  .plan-door {
+    fill: none;
+    stroke: rgba(239, 236, 227, 0.4);
+    stroke-width: 1;
+    stroke-dasharray: 2 2;
+  }
+
+  .plan-stations {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plan-stations button {
+    position: absolute;
+    display: grid;
+    width: 1.3rem;
+    height: 1.3rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(214, 180, 95, 0.75);
+    border-radius: 50%;
+    background: rgba(9, 9, 9, 0.88);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition:
+      background 160ms ease,
+      color 160ms ease,
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .plan-stations button::after {
+    position: absolute;
+    inset: -0.35rem;
+    border-radius: 50%;
+    content: "";
+  }
+
+  .plan-stations button:hover,
+  .plan-stations button.is-active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+
+  .plan-you {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 2.2rem;
+    height: 2.2rem;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .plan-you svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .plan-roomba {
+    position: absolute;
+    width: 0.38rem;
+    height: 0.38rem;
+    border: 1px solid rgba(122, 209, 138, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ---------- legend, prompt, hints ---------- */
+
+  .room-legend {
+    position: absolute;
+    bottom: var(--room-gutter);
+    left: var(--room-gutter);
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.1rem;
+    max-width: calc(100% - 2 * var(--room-gutter) - 17rem);
+    margin: 0;
+    padding: 0;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    list-style: none;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+  }
+
+  .room-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .legend-touch {
+    display: none !important;
+  }
+
+  .legend-sound {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0 0.55rem 0 0.3rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.5);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: inherit;
+    cursor: pointer;
+  }
+
+  .legend-sound[aria-pressed="true"] {
+    border-color: rgba(214, 180, 95, 0.6);
+    color: var(--accent);
+  }
+
+  .legend-sound:hover {
+    color: var(--text);
+  }
+
+  .room-prompt {
+    position: absolute;
+    bottom: calc(var(--room-gutter) + 3.4rem);
+    left: 50%;
+    z-index: 8;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.42rem 0.85rem 0.42rem 0.45rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.82);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    animation: prompt-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .room-prompt kbd {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .room-look-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 8;
+    margin: 0;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.7);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    pointer-events: none;
+    transform: translate(-50%, 2.2rem);
+  }
+
+  .hint-touch {
+    display: none;
+  }
+
+  .room-flash {
+    position: absolute;
+    top: calc(var(--room-header) + 0.5rem);
+    left: 50%;
+    z-index: 12;
+    margin: 0;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.85);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    transition: opacity 500ms ease;
+  }
+
+  .room-flash.is-out {
+    opacity: 0;
+  }
+
+  /* ---------- floating tags ---------- */
+
+  .room-tags {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .room-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.16rem 0.45rem 0.18rem 0.2rem;
+    border-radius: 0.2rem;
+    background: rgba(9, 9, 9, 0.62);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    white-space: nowrap;
+    will-change: transform, opacity;
+  }
+
+  .room-tag:not(:has(kbd)) {
+    padding-left: 0.45rem;
+  }
+
+  .room-tag::after {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 1px;
+    height: 0.6rem;
+    background: rgba(239, 236, 227, 0.35);
+    content: "";
+  }
+
+  .room-tag kbd {
+    min-width: 1.15rem;
+    padding: 0 0.25rem;
+    font-size: 0.6rem;
+  }
+
+  .room-tag.is-target {
+    background: rgba(9, 9, 9, 0.88);
+    box-shadow: inset 0 0 0 1px rgba(214, 180, 95, 0.7);
+    color: var(--text);
+  }
+
+  .room-tag.is-target::after {
+    background: var(--accent);
+  }
+
+  .room-tag.is-target kbd {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ---------- placard ---------- */
+
+  .placard {
+    position: absolute;
+    top: calc(var(--room-header) + 0.5rem);
+    left: var(--room-gutter);
+    z-index: 14;
+    display: flex;
+    flex-direction: column;
+    width: min(25rem, 100% - 2 * var(--room-gutter));
+    max-height: calc(100% - var(--room-header) - var(--room-gutter) - 3.5rem);
+    overflow-y: auto;
+    padding: 1.4rem 1.5rem 1.1rem;
+    border: 1px solid var(--room-line);
+    border-radius: 0.25rem;
+    background: rgba(10, 10, 11, 0.86);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    scrollbar-color: var(--faint) transparent;
+    scrollbar-width: thin;
+    animation: placard-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .placard[hidden] {
+    display: none;
+  }
+
+  .placard-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .placard-title {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(1.6rem, 2.4vw, 2rem);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+
+  .placard-key {
+    padding-top: 0.35rem;
+    font-size: 0.72rem;
+  }
+
+  .placard-key kbd {
+    border-color: rgba(214, 180, 95, 0.7);
+    color: var(--accent);
+  }
+
+  .placard-lines {
+    margin-top: 0.85rem;
+  }
+
+  .placard-lines p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  .placard-status {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--room-line);
+  }
+
+  .placard-status ul {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .placard-status li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    pointer-events: none;
-    text-shadow: 0 1px 8px #050505;
   }
 
-  .room-look-hint-touch {
-    display: none;
+  .status-dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: var(--faint);
   }
+
+  .status-up .status-dot {
+    background: #7ad18a;
+    box-shadow: 0 0 8px rgba(122, 209, 138, 0.6);
+  }
+
+  .status-degraded .status-dot {
+    background: var(--accent);
+  }
+
+  .status-down .status-dot {
+    background: #d6503c;
+  }
+
+  .status-note .status-dot,
+  .status-note {
+    color: var(--muted);
+  }
+
+  .placard-status .status-note {
+    margin: 0.5rem 0 0;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+  }
+
+  .placard-feed {
+    margin-top: 1.15rem;
+  }
+
+  .placard-feed-heading {
+    margin: 0 0 0.35rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+  }
+
+  .placard-feed ul {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--room-line);
+    list-style: none;
+  }
+
+  .placard-feed li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--room-line);
+  }
+
+  .placard-feed a {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1.3;
+    text-decoration-color: var(--faint);
+  }
+
+  .placard-feed a:hover {
+    color: var(--accent);
+  }
+
+  .placard-feed li span {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    white-space: nowrap;
+  }
+
+  .placard-cta {
+    align-self: flex-start;
+    margin-top: 1.15rem;
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    text-decoration-color: rgba(214, 180, 95, 0.5);
+  }
+
+  .placard-cta:hover {
+    color: var(--text);
+  }
+
+  .placard-close {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.1rem;
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    cursor: pointer;
+  }
+
+  .placard-close:hover {
+    color: var(--text);
+  }
+
+  /* ---------- loading, fallback ---------- */
 
   .room-loading {
     position: absolute;
     inset: 0;
+    z-index: 20;
     display: grid;
     place-items: center;
-    background: #050505;
+    background: #060607;
     color: var(--muted);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    transition: opacity 400ms ease;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    transition: opacity 700ms ease;
+  }
+
+  .room-loading span {
+    animation: loading-pulse 1.6s ease-in-out infinite;
   }
 
   .room-loading.is-done {
@@ -157,183 +1094,63 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     pointer-events: none;
   }
 
-  .room-prompt {
+  .room-fallback {
     position: absolute;
-    bottom: 1.1rem;
-    left: 50%;
-    margin: 0;
-    padding: 0.4rem 0.75rem;
-    border: 1px solid var(--border);
-    background: rgba(9, 9, 9, 0.88);
+    inset: 0;
+    z-index: 21;
+    display: grid;
+    place-content: center;
+    gap: 0.4rem;
+    background: #060607;
     color: var(--text-secondary);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    transform: translateX(-50%);
-    white-space: nowrap;
+    font-size: 0.8rem;
+    text-align: center;
   }
 
-  .room-prompt-key {
+  .room-fallback p {
+    margin: 0;
+  }
+
+  .room-fallback a {
     color: var(--accent);
   }
 
-  .room-dialog {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    width: min(92%, 26rem);
-    padding: 1rem 1.15rem 0.85rem;
-    border: 1px solid var(--border);
-    background: rgba(17, 17, 17, 0.96);
-    transform: translateX(-50%);
-  }
-
-  .room-dialog-title {
-    margin: 0 0 0.45rem;
-    color: var(--text);
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-  }
-
-  .room-dialog-lines p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    line-height: 1.7;
-  }
-
-  .room-dialog-status {
-    margin-top: 0.65rem;
-    padding-top: 0.6rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .room-dialog-status p {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    line-height: 1.7;
-  }
-
-  .room-status-accent {
-    color: var(--accent);
-  }
-
-  .room-status-muted {
+  .room-noscript {
+    width: min(100% - 2rem, 48rem);
+    margin: 1.5rem auto 0;
     color: var(--muted);
-  }
-
-  .room-status-faint {
-    color: var(--faint);
-  }
-
-  .room-status-note {
-    margin-top: 0.35rem !important;
-    color: var(--faint);
-    font-size: 0.64rem !important;
-  }
-
-  .room-dialog-linkrow {
-    margin: 0.75rem 0 0;
-  }
-
-  .room-dialog-link {
-    color: var(--text);
-    font-family: var(--font-display);
-    font-size: 0.98rem;
-    text-decoration-color: var(--faint);
-  }
-
-  .room-dialog-link:hover {
-    color: var(--accent);
-  }
-
-  .room-dialog-close {
-    margin: 0.7rem 0 0;
-    color: var(--faint);
     font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.05em;
+    font-size: 0.75rem;
   }
+
+  /* ---------- mode visibility ---------- */
+
+  .room-stage:not([data-mode="walk"]) .room-prompt,
+  .room-stage:not([data-mode="walk"]) .room-tags {
+    display: none;
+  }
+
+  .room-legend {
+    animation: prompt-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
+  }
+
+  /* ---------- touch ---------- */
 
   .room-touch {
     display: none;
   }
 
-  .room-hint {
-    width: min(100%, 36rem);
-    margin: 0.9rem auto 0;
-    color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-  }
-
-  .room-hint-touch {
-    display: none;
-  }
-
-  .room-noscript {
-    width: min(100%, 36rem);
-    margin: 1rem auto 0;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-  }
-
-  .room-fallback {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: 0.4rem;
-    background: #050505;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    text-align: center;
-  }
-
-  @media (pointer: coarse) {
-    .room-touch {
-      display: block;
-    }
-
-    .room-hint-keyboard {
-      display: none;
-    }
-
-    .room-hint-touch {
-      display: inline;
-    }
-
-    .room-look-hint-keyboard {
-      display: none;
-    }
-
-    .room-look-hint-touch {
-      display: inline;
-    }
-
-    .room-prompt {
-      bottom: 8.4rem;
-    }
-
-    .room-dialog {
-      bottom: 8.2rem;
-    }
-  }
-
   .room-joystick {
     position: absolute;
-    bottom: 1.1rem;
-    left: 1.1rem;
-    width: 6.6rem;
-    height: 6.6rem;
-    border: 1px solid var(--border);
+    bottom: calc(var(--room-gutter) + 2.5rem);
+    left: var(--room-gutter);
+    z-index: 11;
+    width: 6.4rem;
+    height: 6.4rem;
+    border: 1px solid var(--room-line);
     border-radius: 50%;
-    background: rgba(9, 9, 9, 0.4);
+    background: rgba(9, 9, 9, 0.45);
     touch-action: none;
   }
 
@@ -343,16 +1160,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     left: 50%;
     width: 2.4rem;
     height: 2.4rem;
-    border: 1px solid var(--faint);
+    border: 1px solid rgba(239, 236, 227, 0.4);
     border-radius: 50%;
-    background: var(--surface);
+    background: rgba(239, 236, 227, 0.12);
     transform: translate(-50%, -50%);
   }
 
   .room-interact-button {
     position: absolute;
-    right: 1.1rem;
-    bottom: 2.2rem;
+    right: var(--room-gutter);
+    bottom: calc(var(--room-gutter) + 3.5rem);
+    z-index: 11;
     width: 3.6rem;
     height: 3.6rem;
     padding: 0;
@@ -363,5 +1181,245 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-family: var(--font-mono);
     font-size: 1.05rem;
     cursor: pointer;
+  }
+
+  @media (pointer: coarse) {
+    .room-stage[data-mode="walk"] .room-touch {
+      display: block;
+    }
+
+    .legend-desktop,
+    .hint-desktop {
+      display: none !important;
+    }
+
+    .legend-touch,
+    .hint-touch {
+      display: inline-flex !important;
+    }
+
+    .legend-sound kbd,
+    .placard-close kbd {
+      display: none;
+    }
+
+    .room-stage[data-mode="walk"] .room-plan {
+      top: calc(var(--room-header) + 0.25rem);
+      bottom: auto;
+      width: 9.5rem;
+      padding: 1.3rem 0.5rem 0.5rem;
+    }
+
+    .room-prompt {
+      bottom: calc(var(--room-gutter) + 10rem);
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .is-room {
+      --room-header: 6.5rem;
+    }
+
+    .visning {
+      right: var(--room-gutter);
+      bottom: var(--room-gutter);
+      width: auto;
+    }
+
+    .visning-key div {
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+    }
+
+    .room-stage[data-mode="intro"] .room-plan,
+    .room-stage[data-mode="intro"] .room-legend {
+      display: none;
+    }
+
+    .room-stage[data-mode="walk"] .room-plan {
+      top: calc(var(--room-header) + 0.25rem);
+      bottom: auto;
+      width: 9rem;
+      padding: 1.3rem 0.5rem 0.5rem;
+    }
+
+    .room-legend {
+      max-width: calc(100% - 2 * var(--room-gutter));
+    }
+
+    .placard {
+      top: auto;
+      right: var(--room-gutter);
+      bottom: calc(var(--room-gutter) + 2.75rem);
+      width: auto;
+      max-height: 58%;
+    }
+  }
+
+  @media (max-height: 40rem) and (min-width: 44rem) {
+    .visning-key {
+      display: none;
+    }
+  }
+
+  /* ---------- listing ---------- */
+
+  .listing {
+    width: min(100% - 2rem, 48rem);
+    margin-inline: auto;
+    padding-block: clamp(5rem, 11vw, 8rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  .listing-head {
+    margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+  }
+
+  .listing-head h2 {
+    margin: 0;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .listing-head p {
+    max-width: 36rem;
+    margin: 1.1rem 0 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  .listing-items {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+    list-style: none;
+  }
+
+  .listing-item {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 1.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .listing-key {
+    padding-top: 0.4rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .listing-body h3 {
+    margin: 0 0 0.45rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.015em;
+  }
+
+  .listing-body p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  .listing-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.2rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .listing-links li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+
+  .listing-links a {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    text-decoration-color: rgba(214, 180, 95, 0.45);
+  }
+
+  .listing-links a:hover {
+    color: var(--text);
+  }
+
+  .listing-links span {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+  }
+
+  .listing-extras {
+    margin: 1.5rem 0 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.7;
+  }
+
+  /* ---------- motion ---------- */
+
+  @keyframes visning-in {
+    from {
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(1.25rem);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes placard-in {
+    from {
+      opacity: 0;
+      filter: blur(6px);
+      transform: translateX(-0.75rem);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes prompt-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes loading-pulse {
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .visning,
+    .room-plan,
+    .placard,
+    .room-prompt,
+    .room-legend,
+    .room-loading span {
+      animation: none !important;
+    }
   }
 </style>

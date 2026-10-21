@@ -28,7 +28,7 @@ export function lookPlayer(player: Player, movementX: number, movementY: number)
   player.pitch = Math.min(PITCH_MAX, Math.max(PITCH_MIN, player.pitch - movementY * LOOK_SENSITIVITY));
 }
 
-function collides(x: number, z: number, colliders: RectCollider[], bounds: RectCollider): boolean {
+export function collides(x: number, z: number, colliders: RectCollider[], bounds: RectCollider): boolean {
   if (x < bounds.minX || x > bounds.maxX || z < bounds.minZ || z > bounds.maxZ) {
     return true;
   }
